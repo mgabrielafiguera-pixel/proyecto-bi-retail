@@ -1,0 +1,13 @@
+# ── DATOS CONFIDENCIALES: NUNCA SUBIR ──
+00_original/
+01_mapeos/
+
+# ── Temporales de Excel / Power BI / macOS ──
+~$*
+*.tmp
+.DS_Store
+
+# ── Python ──
+__pycache__/
+.venv/
+.ipynb_checkpoints/
