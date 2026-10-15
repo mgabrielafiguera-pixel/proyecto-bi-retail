@@ -459,6 +459,22 @@ Color Var Sell Out = IF ( [Crecimiento Obtenido %] >= 0, "#1F8A4C", "#C2412D" )
 
 En el modelo también están `Color Crec` (verde, rojo o gris para la fila "Crec. vs AA") y `Color Mes Futuro` (gris para los meses posteriores a la última venta). Esos textos fijos de las tarjetas están en la carpeta de medidas "Auxiliares".
 
+### Filtro Marca dependiente de Proveedor
+
+Proveedor no filtra Marca porque no hay relación entre ellas (ver la sección 1). Para que la segmentación de Marca muestre solo las marcas del proveedor elegido, se usa esta medida como filtro de nivel de objeto visual (`Marca del Proveedor` es 1) en la segmentación de Marca:
+
+```dax
+Marca del Proveedor =
+VAR _prov = VALUES ( Proveedor[CODIGO_INTERNO_PROVEEDOR] )
+RETURN
+    IF (
+        NOT ISEMPTY (
+            FILTER ( Producto, Producto[CODIGO_INTERNO_PROVEEDOR] IN _prov )
+        ),
+        1
+    )
+```
+
 ### Formatos sugeridos
 
 | Medidas | Formato |
@@ -512,6 +528,14 @@ Son compras reales y se incluyen en Sell In. No son traspasos. Representan el 3,
 - **Costos**: sin costo de importación. En 129 líneas `Factor_Importacion = 1` y `Margen_Nacionalizacion = 0`, y en el 77 % el costo nacionalizado es igual al Ex Works. La mayoría no tiene orden de compra (148) ni factura de proveedor (160).
 - **Fechas**: de 19-ene-2024 a 20-abr-2026, repartidas en 116 documentos de recepción, sin un periodo concreto. En 148 líneas el producto aparece por primera vez en esa recepción.
 - **Lectura probable**: producción o compra local de joyería de marca propia (orfebres o talleres) y suministros de servicio técnico, más que importaciones. Pendiente de confirmar.
+
+### Compras: devoluciones duplicadas con costo erróneo
+
+Hay 6 filas de Compras con `Es_Posible_Duplicado = Sí` y `Precio_Cero = Sí`. Son devoluciones duplicadas que no tienen costo nacionalizado. Cuatro de ellas, de marzo de 2026, traen un costo Ex-Work unitario de 242.042, cuando la mediana ronda los 200. Restan unos 968 mil al Ex-Work de 2026.
+
+Con esas filas, el factor de importación de 2026 sale en 1,88 y el de marzo en −9,88. Sin ellas, sale en 1,27 y 1,19. Se excluyen en Power Query, en el paso "Excluir errores de captura".
+
+En 2026, las compras "Sin clasificar" siguen siendo cerca del 45 % del Ex-Work. Es un dato real, no un error.
 
 ### Inventario
 
