@@ -459,12 +459,16 @@ Color Var Sell Out = IF ( [Crecimiento Obtenido %] >= 0, "#1F8A4C", "#C2412D" )
 
 En el modelo también están `Color Crec` (verde, rojo o gris para la fila "Crec. vs AA") y `Color Mes Futuro` (gris para los meses posteriores a la última venta). Esos textos fijos de las tarjetas están en la carpeta de medidas "Auxiliares".
 
-### Filtro Marca dependiente de Proveedor
+### Filtros en cascada: Proveedor → Marca → Departamento
 
-Proveedor no filtra Marca porque no hay relación entre ellas (ver la sección 1). Para que la segmentación de Marca muestre solo las marcas del proveedor elegido, se usa esta medida como filtro de nivel de objeto visual (`Marca del Proveedor` es 1) en la segmentación de Marca:
+Proveedor no filtra Marca ni Departamento porque no hay relación entre esas tablas (ver la sección 1). En cambio, Marca y Departamento sí filtran Producto, y Producto tiene la columna del proveedor. Por eso basta una sola medida.
+
+Esa medida se aplica como filtro de nivel de objeto visual (`Filtro Cascada` es 1) en las segmentaciones de **Marca** y **Departamento**. No se aplica en Proveedor, que es el primer nivel.
+
+Orden de las segmentaciones: Año, Origen, Proveedor, Marca, Departamento.
 
 ```dax
-Marca del Proveedor =
+Filtro Cascada =
 VAR _prov = VALUES ( Proveedor[CODIGO_INTERNO_PROVEEDOR] )
 RETURN
     IF (
