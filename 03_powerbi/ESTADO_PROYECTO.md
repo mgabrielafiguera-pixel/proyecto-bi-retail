@@ -76,6 +76,12 @@ Todo correcto: COD_SKU único en Producto; todos los SKU de Ventas, Compras e In
 
 Las 6 compras con error de captura siguen en el Excel y se excluyen en Power Query (paso "Excluir errores de captura", aplicado el 16-oct). Compras queda en 16.715 filas y el factor de importación de 2026 en 1,27.
 
+## Dónde quedamos (16-oct-2026)
+
+- Power BI: páginas Resumen anual, Ventas, Compras e Inventario (con punto de reorden) terminadas y guardadas.
+- README reescrito como caso de negocio, con los hallazgos validados.
+- **Siguiente sesión:** correr `prompts/04_budget_forecast.md` en Claude in Chrome y validar sus controles. Después, capturas y PDF del informe antes del 5-dic.
+
 ## Próximo paso
 
 1. Página **Budget / Forecast** con la lógica de forecast definida (estacionalidad 2024-2025).
