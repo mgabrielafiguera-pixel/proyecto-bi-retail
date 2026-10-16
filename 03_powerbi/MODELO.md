@@ -463,7 +463,7 @@ En el modelo también están `Color Crec` (verde, rojo o gris para la fila "Crec
 
 Proveedor no filtra Marca ni Departamento porque no hay relación entre esas tablas (ver la sección 1). En cambio, Marca y Departamento sí filtran Producto, y Producto tiene la columna del proveedor. Por eso basta una sola medida.
 
-Esa medida se aplica como filtro de nivel de objeto visual (`Filtro Cascada` es 1) en las segmentaciones de **Marca** y **Departamento**. No se aplica en Proveedor, que es el primer nivel.
+Esa medida se aplica como filtro de nivel de objeto visual (`Filtro Cascada` es 1) en las segmentaciones de **Marca** y **Departamento** de las páginas Ventas y Compras. No se aplica en Proveedor, que es el primer nivel. Resumen anual no tiene estas segmentaciones: es una vista global.
 
 Orden de las segmentaciones: Año, Origen, Proveedor, Marca, Departamento.
 
