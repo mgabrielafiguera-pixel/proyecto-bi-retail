@@ -54,30 +54,35 @@ Las decisiones de diseño, las fórmulas y los controles de cada página están 
 
 ## 4. Hallazgos y recomendaciones
 
-> Hallazgos obtenidos del análisis de los datos. Las causas son **hipótesis** que debe validar el negocio.
+> Hallazgos obtenidos del análisis de los datos. Las causas están **validadas con el negocio**.
 
 ### 4.1 Se compra más mientras se vende menos
 - **Qué pasó:** en ene–abr 2026 las compras a costo Ex-Work fueron unas **3 veces** las de ene–abr 2025, mientras la venta en importe cayó un **7,3 %**. El sell-through en unidades bajó de 1,30 a **0,78**.
 - **Contexto:** es un ciclo. En 2024 se compró de más (sell-through 0,69), en 2025 se vendió ese stock (1,16) y en 2026 se vuelve a acumular.
-- **Posibles causas:** pedidos de importación grandes y poco frecuentes, para aprovechar condiciones del proveedor o anticipar aumentos de costo; o compras planificadas sobre un crecimiento que no llegó.
-- **Recomendación:** atar las compras al Rolling Forecast mensual y al punto de reorden por marca, en lugar de pedidos anuales.
+- **Causa (validada):** a finales de 2025, la situación del país interrumpió los vuelos internacionales. La mercancía de los compromisos con proveedores internacionales no llegó en su momento y se recibió toda junta en los primeros meses de 2026. No es una sobrecompra, es un **desfase logístico**.
+- **Implicación:** el sell-through de ene–abr 2026 está deformado por esa llegada acumulada. Para leer la tendencia real hay que mirar el semestre o el año completo.
+- **Recomendación:** atar las compras al Rolling Forecast mensual y al punto de reorden por marca, y tener un plan de contingencia logística (rutas alternativas, más stock de seguridad en las marcas top) para los periodos de riesgo.
 
 ### 4.2 La caída de 2026 es de precio medio, no de volumen
 - **Qué pasó:** en ene–abr 2026 frente a 2025, las unidades vendidas apenas cambian (−1,7 %), las facturas suben un 0,6 % y los clientes un 6 %. Pero el **ticket promedio baja un 8 %**.
 - **Dónde:** en Relojería, que es el 58 % de la venta, el precio medio por pieza cae un **29 %** mientras las unidades suben un 16 %. Su margen se mantiene en 36 %.
-- **Posible causa:** como el margen no cae, no parece una política de descuentos. Apunta a un **cambio de mezcla** hacia relojes de menor precio: menos piezas de alta gama, o marcas de entrada que ganan peso.
+- **Causa (validada):** como el margen no cae, no es una política de descuentos. Es un **cambio de mezcla**: hubo **menos relojes de alta gama disponibles**, por la misma interrupción logística, y se vendieron piezas de menor precio.
 - **Contrapunto:** Joyería crece un 10 %, con más precio por pieza y un margen que sube del 51 % al 57 %.
-- **Recomendación:** revisar la disponibilidad y la exhibición de las referencias de alta gama de Relojería. Si faltan, es venta perdida.
+- **Recomendación:** medir la venta perdida en alta gama y priorizar esas referencias en los pedidos internacionales. Cada reloj de alta gama que falta se sustituye por uno de menor precio y baja el ticket.
 
 ### 4.3 El inventario se duplicó y casi la mitad no rota
 - **Qué pasó:** el stock pasó de 7.089 unidades (dic-2023) a **15.452** (abr-2026), un +118 %, con la venta en unidades estable. El **46 %** de las unidades en stock no tuvo ninguna venta en los últimos 12 meses.
 - **Dónde:** **38 de 88 marcas** con venta tienen más de 12 meses de cobertura. Belleza y Accesorios guardan el 25 % del stock, pero suman menos del 3 % de la venta.
-- **Posibles causas:** compras por mínimos de pedido del proveedor, surtido amplio en categorías complementarias y falta de liquidación de referencias antiguas.
-- **Recomendación:** plan de liquidación (outlet o promociones de temporada baja) para el stock sin venta de 12 meses, y freno de compras a las marcas en sobrestock.
+- **Causa (validada):** los **mínimos de pedido de los proveedores** obligan a comprar más de lo que se vende en las categorías de menor rotación. A eso se suma la llegada acumulada de 2026.
+- **Recomendación:**
+  - Plan de liquidación (outlet o promociones de temporada baja) para el stock sin venta de 12 meses.
+  - Frenar las compras a las marcas en sobrestock.
+  - Negociar mínimos de pedido más bajos, o pedidos combinados, en Belleza y Accesorios.
 
 ### 4.4 Pocas marcas a reponer, pero son las que venden
 - **Qué pasó:** con el punto de reorden por marca (demanda de 6 meses, lead time real de unos 32 días y nivel de servicio del 95 %), **7 marcas** están por debajo del punto de reorden. La compra sugerida es de unas 308 unidades.
 - **Dato:** el 80 % de la venta lo hacen **15 de 141 marcas**. La marca `MARC0004` (8 % de la venta) vende más de lo que se le compra (sell-through 1,27).
+- **Causa (validada):** la interrupción de los vuelos internacionales retrasó la reposición de estas marcas.
 - **Recomendación:** priorizar la reposición de las marcas que concentran la venta. La compra total no tiene que subir: hay que reasignarla.
 
 ### 4.5 El cierre de 2026 queda por debajo del presupuesto
@@ -86,12 +91,12 @@ Las decisiones de diseño, las fórmulas y los controles de cada página están 
 - **Recomendación:** recalibrar el presupuesto con la tendencia real, y asegurar el stock de las marcas top antes de octubre, porque el lead time es de un mes.
 
 ### 4.6 La concentración es un riesgo
-- **Almacén:** el Almacén 1 factura el 89 % de la venta. Falta confirmar si es una tienda o un punto central de facturación.
-- **Clientes:** 77 de 13.090 clientes hacen el 50 % de la venta, y el primero el 7,6 %. Puede ser un cliente corporativo o mayorista, o un código genérico.
-- **Recomendación:** si son clientes VIP, un programa de fidelización. Si es un código genérico, corregirlo en el punto de venta para poder analizar la clientela.
+- **Almacén:** el Almacén 1 factura el 89 % de la venta. Es una tienda y además funciona como **punto central** de facturación, así que la venta por almacén no equivale a la venta por tienda.
+- **Clientes:** 77 de 13.090 clientes hacen el 50 % de la venta, y el primero el 7,6 %. Son **clientes VIP**.
+- **Recomendación:** un programa de fidelización y atención personalizada para los clientes VIP, con seguimiento de su frecuencia de compra. Perder uno de ellos se nota en el resultado del año.
 
 ### 4.7 Calidad de datos que afecta a las decisiones
-- **Recepciones sin registrar:** en 463 casos (SKU y mes) se vendió más de lo que había en stock, y el kardex puro subestima el inventario real en un 22 % a 6 meses. Todo apunta a recepciones que no se registran en Compras.
+- **Recepciones sin registrar:** en 463 casos (SKU y mes) se vendió más de lo que había en stock, y el kardex puro subestima el inventario real en un 22 % a 6 meses. **Validado:** se vendía mercancía que aún no estaba registrada como recibida en Compras.
 - **Errores de captura:** 6 devoluciones duplicadas con costo erróneo hacían que el factor de importación de 2026 saliera en 1,88 (marzo en −9,88). Sin ellas sale en 1,27. Se excluyen en Power Query.
 - **Compras sin clasificar:** 1.384 compras "Sin clasificar" (8,4 % del Sell In) no tienen tipo de movimiento ni factor de importación.
 - **Recomendación:**
