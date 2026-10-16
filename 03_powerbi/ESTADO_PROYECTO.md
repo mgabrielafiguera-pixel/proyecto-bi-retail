@@ -25,7 +25,7 @@
 ## Modelo: terminado
 
 - [x] 10 tablas cargadas: Ventas, Compras, Producto, Cliente, Proveedor, Marca, Vendedor, Almacen, Departamento, Calendario
-- [ ] Tabla 11, **Inventario**: ya está en el Excel, falta cargarla en Power BI (`prompts/02_inventario.md`)
+- [x] Tabla 11, **Inventario**, con relaciones a Producto y Calendario. El modelo tiene 120 medidas
 - [x] 12 relaciones varios a uno, filtro único (Proveedor NO se relaciona con Producto ni con Marca)
 - [x] Calendario marcado como tabla de fechas
 - [x] `Nombre_Mes` ordenado por `Mes`
@@ -44,7 +44,7 @@ Cada página replica una hoja del Excel de trabajo original.
 | 1 | **Resumen anual** | ✅ Terminada |
 | 2 | **Ventas** | ✅ Terminada (`prompts/01_ventas_compras.md`) |
 | 3 | **Compras** | ✅ Terminada, falta excluir 6 compras con error de captura en Power Query |
-| 4 | **Inventario** | Datos listos en el Excel. Prompt preparado: `prompts/02_inventario.md` |
+| 4 | **Inventario** | ✅ Terminada (`prompts/02_inventario.md`). Controles: stock jun-25 11.715, dic-25 14.063, abr-26 15.452; rotación 2025 1,41x |
 | 5 | **Budget / Forecast** | Pendiente. Boceto `04_presentacion/forecast_marca_propuesta.png` |
 
 Ventas y Compras tienen segmentaciones en cascada **Proveedor → Marca → Departamento** con la medida `Filtro Cascada` (ver `MODELO.md`). Resumen anual se deja como vista global, sin cascada.
@@ -74,13 +74,11 @@ Decisión: las 4 compras con costo Ex-Work atípico se dejan como están. Acceso
 
 Todo correcto: COD_SKU único en Producto; todos los SKU de Ventas, Compras e Inventario existen en Producto; sin duplicados SKU+Fecha; fechas de Inventario a fin de mes y dentro de Calendario; sin stock negativo; marcas, departamentos y proveedores de Producto existen en sus tablas.
 
-Pendiente conocido: las 6 compras con error de captura siguen en el Excel y se excluyen en Power Query (paso "Excluir errores de captura").
+Las 6 compras con error de captura siguen en el Excel y se excluyen en Power Query (paso "Excluir errores de captura", aplicado el 16-oct). Compras queda en 16.715 filas y el factor de importación de 2026 en 1,27.
 
 ## Próximo paso
 
-1. En Power BI: correr el prompt de Power Query que excluye las 6 compras con error (factor de importación).
-2. Correr `prompts/02_inventario.md`: guarda copia de las medidas, carga la tabla Inventario, crea las medidas y la página. Comprobar los totales de control.
-3. Página **Budget / Forecast** con la lógica de forecast definida (estacionalidad 2024-2025).
+1. Página **Budget / Forecast** con la lógica de forecast definida (estacionalidad 2024-2025).
 
 Preguntas abiertas:
 

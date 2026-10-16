@@ -79,7 +79,8 @@ AVERAGEX (
 
 ```dax
 Uds Vendidas Periodo Inv =
-CALCULATE ( [Unidades Sell Out], KEEPFILTERS ( Calendario[Fecha] <= [Fecha Ultimo Inventario] ) )
+VAR _u = [Fecha Ultimo Inventario]
+RETURN CALCULATE ( [Unidades Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _u ) )
 ```
 
 ```dax
@@ -120,7 +121,12 @@ RETURN
 ```
 
 ```dax
-Cobertura Meses Real = DIVIDE ( [Stock Final Uds], [Venta Promedio Mensual Uds] )
+Cobertura Meses Real =
+VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 )
+VAR _venta =
+    DIVIDE ( CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _f, -3, MONTH ) ), 3 )
+RETURN DIVIDE ( [Stock Final Uds], _venta )
 ```
 
 ```dax
