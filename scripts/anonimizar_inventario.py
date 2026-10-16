@@ -14,7 +14,7 @@ fila a fila las bases originales de ventas y compras con la base anonimizada
 (--ventas-original y --compras-original) y la guarda en 01_mapeos/.
 
 Salidas:
-    02_anonimizado/inventario_sku_mes.csv    COD_SKU, Fecha, Unidades
+    02_anonimizado/inventario_sku_mes.csv    COD_SKU, COD_MARCA, Departamento, Con_Movimiento, Fecha, Unidades
     02_anonimizado/inventario_marca_mes.csv  COD_MARCA, Anio, Mes, Unidades
     trabajo/sin_mapeo_*.csv                  lo que no se pudo mapear (local, no se sube)
 """
@@ -214,15 +214,34 @@ def inventario_sku(ruta, mapeos, salida, trabajo, ventas=None, compras=None):
     por_cod = df["COD_SKU"].notna().sum()
     df["COD_SKU"] = df["COD_SKU"].fillna(df["ref"].map(mapa))
     print(f"  Filas cruzadas por Código: {por_cod:,} | por Ref. Prov: {df['COD_SKU'].notna().sum() - por_cod:,}")
-    guardar_mapeo_marca(df, col(df, "Marca"))
+    c_mar = col(df, "Marca")
+    guardar_mapeo_marca(df, c_mar)
+    mapa_marca = detectar_mapeo([MAPEOS] + list(mapeos), r"MARC\d+",
+                                set(df[c_mar].map(norm_txt).dropna()), norm_txt) or {}
     sin = df[df["COD_SKU"].isna()]
+    # Productos con stock pero sin ventas ni compras 2023-2026: no están en el maestro.
+    # Reciben un código propio (SKUI#####) para no perder esas unidades.
+    nuevos = {r: f"SKUI{i:05d}" for i, r in enumerate(sorted(sin["real"].dropna().unique()), 1)}
+    df["Con_Movimiento"] = df["COD_SKU"].notna().map({True: "Sí", False: "No"})
+    df["COD_SKU"] = df["COD_SKU"].fillna(df["real"].map(nuevos))
+    df["COD_MARCA"] = df[c_mar].map(norm_txt).map(mapa_marca)
+    try:
+        df["Departamento"] = df[col(df, "Departamento")].map(norm_txt)
+    except KeyError:
+        df["Departamento"] = None
     out = (df.dropna(subset=["COD_SKU"])
              .assign(Fecha=lambda d: pd.to_datetime(d[c_fec]) + pd.offsets.MonthEnd(0),
                      Unidades=lambda d: pd.to_numeric(d[c_qty], errors="coerce").fillna(0))
-             .groupby(["COD_SKU", "Fecha"], as_index=False)["Unidades"].sum())
+             .groupby(["COD_SKU", "Fecha"], as_index=False)
+             .agg(Unidades=("Unidades", "sum"), COD_MARCA=("COD_MARCA", "first"),
+                  Departamento=("Departamento", "first"), Con_Movimiento=("Con_Movimiento", "first")))
+    out = out[["COD_SKU", "COD_MARCA", "Departamento", "Con_Movimiento", "Fecha", "Unidades"]]
     out.to_csv(salida / "inventario_sku_mes.csv", index=False, date_format="%Y-%m-%d")
     sin[["real"]].drop_duplicates().to_csv(trabajo / "sin_mapeo_sku.csv", index=False)
-    print(f"  Filas: {len(df):,} | sin mapeo: {len(sin):,} ({sin['real'].nunique():,} SKU)")
+    print(f"  Filas: {len(df):,} | sin movimiento (SKUI): {len(sin):,} filas, {len(nuevos):,} SKU")
+    print(f"  Filas sin marca: {df['COD_MARCA'].isna().sum():,}")
+    print(f"  Unidades totales: con movimiento {out.loc[out.Con_Movimiento == 'Sí', 'Unidades'].sum():,.0f} | "
+          f"sin movimiento {out.loc[out.Con_Movimiento == 'No', 'Unidades'].sum():,.0f}")
     print(f"  Salida: {len(out):,} filas, {out['COD_SKU'].nunique():,} SKU, "
           f"{out['Fecha'].nunique()} cierres de mes ({out['Fecha'].min():%Y-%m} a {out['Fecha'].max():%Y-%m})")
 
@@ -234,7 +253,7 @@ def inventario_marca(ruta, mapeos, salida, trabajo):
     meses = list(df.columns[list(df.columns).index(c_con) + 1:][:12])  # bloque 1: piezas
     df = df[df[c_con].astype(str).str.contains("final", case=False)].copy()
     df["real"] = df[c_mar].map(norm_txt)
-    mapa = detectar_mapeo([MAPEOS], r"MARC\d+", set(df["real"].dropna()), norm_txt) or {}
+    mapa = detectar_mapeo([MAPEOS] + list(mapeos), r"MARC\d+", set(df["real"].dropna()), norm_txt) or {}
     df["COD_MARCA"] = df["real"].map(mapa)
     sin = df[df["COD_MARCA"].isna()]
     largo = (df.dropna(subset=["COD_MARCA"])
@@ -245,6 +264,7 @@ def inventario_marca(ruta, mapeos, salida, trabajo):
                .groupby(["COD_MARCA", "Anio", "Mes"], as_index=False)["Unidades"].sum())
     largo.to_csv(salida / "inventario_marca_mes.csv", index=False)
     sin[["real"]].drop_duplicates().to_csv(trabajo / "sin_mapeo_marca.csv", index=False)
+    print("  Las marcas sin mapeo están en trabajo/sin_mapeo_marca.csv (local).")
     print(f"  Marcas: {df['real'].nunique()} | sin mapeo: {sin['real'].nunique()}")
     print(f"  Salida: {len(largo):,} filas, {largo['COD_MARCA'].nunique()} marcas")
 
