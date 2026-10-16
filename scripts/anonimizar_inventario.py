@@ -53,7 +53,8 @@ def col(df, *nombres):
 
 
 def leer_hojas(carpeta):
-    for f in sorted(Path(carpeta).rglob("*")):
+    ruta = Path(carpeta)
+    for f in ([ruta] if ruta.is_file() else sorted(ruta.rglob("*"))):
         if f.name.startswith("~$"):
             continue
         if f.suffix.lower() in (".xlsx", ".xlsm", ".xls"):
@@ -63,35 +64,42 @@ def leer_hojas(carpeta):
             yield f.name, pd.read_csv(f, dtype=str)
 
 
-def detectar_mapeo(carpeta, patron, objetivo, normalizar):
-    """Encuentra en 01_mapeos la columna de códigos anonimizados (patron) y la
-    columna real que más coincide con los valores de 'objetivo'."""
-    mejor = None
-    for origen, df in leer_hojas(carpeta):
-        df = df.dropna(how="all")
-        if df.empty:
+def detectar_mapeo(carpetas, patron, objetivo, normalizar):
+    """Busca en los archivos de mapeo todas las columnas de códigos anonimizados
+    (patron) y las columnas reales que coinciden con 'objetivo', y las une.
+    Si un código real aparece con varios anonimizados, se queda el más frecuente."""
+    partes = []
+    for carpeta in carpetas:
+        if not Path(carpeta).exists():
             continue
-        cods = [c for c in df.columns
-                if df[c].dropna().astype(str).str.fullmatch(patron).mean() > 0.8]
-        for cc in cods:
-            for cr in df.columns:
-                if cr == cc:
-                    continue
-                vals = set(df[cr].map(normalizar).dropna())
-                tasa = len(objetivo & vals) / len(objetivo)
-                if mejor is None or tasa > mejor[0]:
-                    mejor = (tasa, origen, cr, cc, df)
-    if mejor is None or mejor[0] == 0:
-        print(f"  No hay en {carpeta} un mapeo con códigos {patron}.")
+        for origen, df in leer_hojas(carpeta):
+            df = df.dropna(how="all")
+            if df.empty:
+                continue
+            cods = [c for c in df.columns
+                    if df[c].dropna().astype(str).str.strip().str.fullmatch(patron).mean() > 0.8]
+            for cc in cods:
+                anon = df[cc].astype(str).str.strip().str.upper()
+                for cr in df.columns:
+                    if cr in cods or df[cr].nunique() < 0.3 * anon.nunique():
+                        continue
+                    d = pd.DataFrame({"real": df[cr].map(normalizar), "anon": anon}).dropna()
+                    d = d[d["anon"].str.fullmatch(patron) & d["real"].isin(objetivo)]
+                    tasa = d["real"].nunique() / len(objetivo)
+                    if tasa >= 0.01:
+                        print(f"  Mapeo: {origen} | '{cr}' -> '{cc}' | cubre {tasa:.1%}")
+                        partes.append(d)
+    if not partes:
+        print(f"  No hay en {', '.join(map(str, carpetas))} un mapeo con códigos {patron}.")
         return None
-    tasa, origen, cr, cc, df = mejor
-    print(f"  Mapeo: {origen} | real = '{cr}' -> anonimizado = '{cc}' | cubre {tasa:.1%}")
-    m = df[[cr, cc]].dropna()
-    m = m.assign(real=m[cr].map(normalizar)).drop_duplicates("real")
-    return dict(zip(m["real"], m[cc].str.strip().str.upper()))
+    d = (pd.concat(partes).groupby(["real", "anon"]).size().reset_index(name="n")
+           .sort_values("n", ascending=False).drop_duplicates("real"))
+    print(f"  Mapeo combinado: cubre {len(d) / len(objetivo):.1%} de los códigos")
+    return dict(zip(d["real"], d["anon"]))
 
 
 ANON = RAIZ / "02_anonimizado" / "retail_bi_anonimizado.xlsx"
+MAPEOS = RAIZ / "01_mapeos"  # aquí se guardan los mapeos encontrados o reconstruidos
 
 
 def alinear(ruta_orig, hoja_anon, objetivo):
@@ -134,7 +142,7 @@ def alinear(ruta_orig, hoja_anon, objetivo):
     return dict(zip(d["real"], d["COD_SKU"])), puntaje
 
 
-def reconstruir_mapeo_sku(ventas, compras, objetivo, mapeos):
+def reconstruir_mapeo_sku(ventas, compras, objetivo):
     print("  Reconstruyendo el mapeo desde las bases originales")
     mapa = {}
     for ruta, hoja in [(compras, "Compras24_26"), (ventas, "Ventas23_26")]:
@@ -144,14 +152,17 @@ def reconstruir_mapeo_sku(ventas, compras, objetivo, mapeos):
                 mapa.setdefault(k, v)
     if not mapa:
         raise SystemExit("No pude reconstruir el mapeo. Pégame la salida para revisarlo.")
-    Path(mapeos).mkdir(exist_ok=True)
-    pd.DataFrame({"codigo_real": list(mapa), "COD_SKU": list(mapa.values())}).to_csv(
-        Path(mapeos) / "mapeo_sku.csv", index=False)
-    print(f"  Guardado 01_mapeos/mapeo_sku.csv: {len(mapa):,} códigos (local, no se sube)")
     return mapa
 
 
-def guardar_mapeo_marca(df, c_marca, mapeos):
+def guardar_mapeo_sku(mapa):
+    MAPEOS.mkdir(exist_ok=True)
+    pd.DataFrame({"codigo_real": list(mapa), "COD_SKU": list(mapa.values())}).to_csv(
+        MAPEOS / "mapeo_sku.csv", index=False)
+    print(f"  Guardado 01_mapeos/mapeo_sku.csv: {len(mapa):,} códigos (local, no se sube)")
+
+
+def guardar_mapeo_marca(df, c_marca):
     """Deriva marca real -> MARC usando el SKU ya mapeado y el maestro anonimizado."""
     m = pd.read_excel(ANON, sheet_name="MAESTRO_SKU", usecols=["COD_SKU", "CODIGO_INTERNO_MARCA"])
     d = (df[["COD_SKU", c_marca]].dropna().merge(m, on="COD_SKU")
@@ -159,7 +170,7 @@ def guardar_mapeo_marca(df, c_marca, mapeos):
            .groupby(["real", "CODIGO_INTERNO_MARCA"]).size().reset_index(name="n")
            .sort_values("n", ascending=False).drop_duplicates("real"))
     d[["real", "CODIGO_INTERNO_MARCA"]].rename(columns={"real": "marca_real"}).to_csv(
-        Path(mapeos) / "mapeo_marca.csv", index=False)
+        MAPEOS / "mapeo_marca.csv", index=False)
     print(f"  Guardado 01_mapeos/mapeo_marca.csv: {len(d)} marcas (local, no se sube)")
 
 
@@ -171,7 +182,8 @@ def forma(v):
 def diagnostico(carpeta):
     """Muestra la estructura de 01_mapeos sin mostrar datos reales."""
     print(f"Carpeta: {carpeta}")
-    archivos = [f for f in sorted(Path(carpeta).rglob("*")) if f.is_file()]
+    ruta = Path(carpeta)
+    archivos = [ruta] if ruta.is_file() else [f for f in sorted(ruta.rglob("*")) if f.is_file()]
     print(f"  Archivos: {len(archivos)} ({', '.join(sorted({f.suffix.lower() for f in archivos}))})")
     for origen, df in leer_hojas(carpeta):
         print(f"  {origen}: {len(df):,} filas")
@@ -187,14 +199,22 @@ def inventario_sku(ruta, mapeos, salida, trabajo, ventas=None, compras=None):
     c_qty = col(df, "inventario final")
     c_fec = col(df, "fecha")
     df["real"] = df[c_cod].map(norm_cod)
-    objetivo = set(df["real"].dropna())
+    try:
+        df["ref"] = df[col(df, "Ref. Prov", "Ref Prov", "Referencia Proveedor")].map(norm_cod)
+    except KeyError:
+        df["ref"] = None
+    objetivo = set(df["real"].dropna()) | set(df["ref"].dropna())
     mapa = detectar_mapeo(mapeos, r"SKU\d+", objetivo, norm_cod)
     if mapa is None:
         if not (ventas or compras):
             raise SystemExit("Pasa --ventas-original y --compras-original para reconstruir el mapeo.")
-        mapa = reconstruir_mapeo_sku(ventas, compras, objetivo, mapeos)
+        mapa = reconstruir_mapeo_sku(ventas, compras, objetivo)
+    guardar_mapeo_sku(mapa)
     df["COD_SKU"] = df["real"].map(mapa)
-    guardar_mapeo_marca(df, col(df, "Marca"), mapeos)
+    por_cod = df["COD_SKU"].notna().sum()
+    df["COD_SKU"] = df["COD_SKU"].fillna(df["ref"].map(mapa))
+    print(f"  Filas cruzadas por Código: {por_cod:,} | por Ref. Prov: {df['COD_SKU'].notna().sum() - por_cod:,}")
+    guardar_mapeo_marca(df, col(df, "Marca"))
     sin = df[df["COD_SKU"].isna()]
     out = (df.dropna(subset=["COD_SKU"])
              .assign(Fecha=lambda d: pd.to_datetime(d[c_fec]) + pd.offsets.MonthEnd(0),
@@ -214,7 +234,7 @@ def inventario_marca(ruta, mapeos, salida, trabajo):
     meses = list(df.columns[list(df.columns).index(c_con) + 1:][:12])  # bloque 1: piezas
     df = df[df[c_con].astype(str).str.contains("final", case=False)].copy()
     df["real"] = df[c_mar].map(norm_txt)
-    mapa = detectar_mapeo(mapeos, r"MARC\d+", set(df["real"].dropna()), norm_txt) or {}
+    mapa = detectar_mapeo([MAPEOS], r"MARC\d+", set(df["real"].dropna()), norm_txt) or {}
     df["COD_MARCA"] = df["real"].map(mapa)
     sin = df[df["COD_MARCA"].isna()]
     largo = (df.dropna(subset=["COD_MARCA"])
@@ -233,14 +253,17 @@ def main():
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("--inventario")
     p.add_argument("--resumen")
-    p.add_argument("--mapeos", default=RAIZ / "01_mapeos")
+    p.add_argument("--mapeos", nargs="+", default=[RAIZ / "01_mapeos"],
+                   help="carpetas o archivos con los mapeos (por defecto 01_mapeos)")
     p.add_argument("--ventas-original", help="base original de ventas (para reconstruir el mapeo)")
     p.add_argument("--compras-original", help="base original de compras (para reconstruir el mapeo)")
     p.add_argument("--diagnostico", action="store_true",
                    help="muestra la estructura de 01_mapeos (sin datos) y termina")
     a = p.parse_args()
     if a.diagnostico:
-        return diagnostico(a.mapeos)
+        for m in a.mapeos:
+            diagnostico(m)
+        return
     if not a.inventario:
         p.error("falta --inventario")
     salida, trabajo = RAIZ / "02_anonimizado", RAIZ / "trabajo"
