@@ -543,7 +543,34 @@ En 2026, las compras "Sin clasificar" siguen siendo cerca del 45 % del Ex-Work. 
 
 ### Inventario
 
-**No incluido por ahora.** Las tablas de inventario (existencias por almacén y fecha) se añadirán en una fase posterior. Hasta entonces, no hay medidas de stock, rotación ni cobertura.
+Tabla `Inventario`: stock por SKU al cierre de cada mes, de dic-2023 a abr-2026. Columnas: `COD_SKU`, `Fecha` (último día del mes), `Unidades`, `Origen` y `Venta_Sin_Stock`. La genera `scripts/reconstruir_inventario.py`.
+
+Relaciones nuevas (uno a varios, filtro único):
+
+- `Producto[COD_SKU]` → `Inventario[COD_SKU]`
+- `Calendario[Fecha]` → `Inventario[Fecha]`
+
+Origen de cada mes:
+
+| Periodo | Origen | Cómo se obtiene |
+|---|---|---|
+| dic-2023 a jun-2025 | Real | Foto de inventario de cierre de mes. Los negativos se dejan en 0. |
+| jul-2025 a dic-2025 | Estimado calibrado | Kardex desde jun-2025 (IF = IF anterior + compras − ventas, mínimo 0). El total de las 41 marcas del resumen por marca se ajusta a la tendencia de ese resumen. |
+| ene-2026 a abr-2026 | Estimado kardex | Kardex desde dic-2025, sin ancla. |
+
+`Venta_Sin_Stock = Sí` marca los meses en que el kardex habría quedado negativo: se vendió más de lo registrado, por una recepción no registrada o por un error de inventario. No es lo mismo que un quiebre; el quiebre se mide en DAX (stock 0 con venta reciente).
+
+**Backtest** (se reconstruyó ene–jun 2025 desde la foto de dic-2024 y se comparó con las fotos reales):
+
+| Mes | Kardex: error del total | Calibrado: error del total | Calibrado: WAPE por SKU |
+|---|---|---|---|
+| 2025-01 | −2,9 % | −7,1 % | 7 % |
+| 2025-03 | −17,8 % | −15,1 % | 21 % |
+| 2025-06 | −22,1 % | −7,3 % | 39 % |
+
+Lectura: el kardex puro se queda corto con el tiempo porque en el primer semestre de 2025 entró mercancía que no está en Compras. La calibración corrige el total (error ±10 %), pero el reparto por SKU pierde precisión. Por eso los indicadores de inventario se leen a nivel de marca, departamento o total, no de SKU. En 2026 no hay ancla, así que hay que esperar un sesgo a la baja de hasta un 15–20 % hacia abril.
+
+SKU sin movimiento: 1.220 productos tienen stock pero ninguna venta ni compra entre 2023 y 2026. Se agregaron a `Producto` con código `SKUI#####`, `en_ventas = N` y `en_compras = N`. Son unas 22 mil unidades del total histórico de fotos y forman la base del análisis de inventario obsoleto.
 
 ### Ya resuelto en el Excel
 
