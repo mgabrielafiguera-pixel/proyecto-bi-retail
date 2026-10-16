@@ -44,8 +44,8 @@ Cada página replica una hoja del Excel de trabajo original.
 | 1 | **Resumen anual** | ✅ Terminada |
 | 2 | **Ventas** | ✅ Terminada (`prompts/01_ventas_compras.md`) |
 | 3 | **Compras** | ✅ Terminada, falta excluir 6 compras con error de captura en Power Query |
-| 4 | **Inventario** | ✅ Terminada (`prompts/02_inventario.md`). Controles: stock jun-25 11.715, dic-25 14.063, abr-26 15.452; rotación 2025 1,41x |
-| 5 | **Budget / Forecast** | Pendiente. Boceto `04_presentacion/forecast_marca_propuesta.png` |
+| 4 | **Inventario** | ✅ Terminada (`prompts/02_inventario.md`). Controles: stock jun-25 11.715, dic-25 14.063, abr-26 15.452; rotación 2025 1,41x. Punto de reorden por marca (`prompts/03_punto_reorden.md`): 2026 ROP 3.615 uds., 7 de 88 marcas a reponer, 38 en sobrestock, compra sugerida 308 uds. |
+| 5 | **Budget / Forecast** | Prompt listo (`prompts/04_budget_forecast.md`). Boceto `04_presentacion/budget_forecast_propuesta.png` |
 
 Ventas y Compras tienen segmentaciones en cascada **Proveedor → Marca → Departamento** con la medida `Filtro Cascada` (ver `MODELO.md`). Resumen anual se deja como vista global, sin cascada.
 
