@@ -133,7 +133,7 @@ def productos_sin_movimiento(inv):
     depto = pd.read_excel(XLSX, sheet_name="Departamento")
     cols = list(pd.read_excel(XLSX, sheet_name="Producto", nrows=0).columns)
     d = inv[inv["COD_SKU"].str.startswith("SKUI")].drop_duplicates("COD_SKU").copy()
-    d["Departamento"] = d["Departamento"].replace({"ACCESORIOS S": "ACCESORIOS"})
+    d["Departamento"] = d["Departamento"].replace({"ACCESORIOS S": "ACCESORIOS", "CORREAS PARA RELOJES": "CORREAS DE RELOJES"})
     cod_dep = depto.set_index("DEPARTAMENTO_ORIGINAL")["COD_DEPARTAMENTO"]
     prov = marca.set_index("CODIGO_INTERNO_MARCA")["CODIGO_INTERNO_PROVEEDOR"]
     filas = pd.DataFrame({
