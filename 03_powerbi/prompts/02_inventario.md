@@ -16,7 +16,8 @@ El Excel actualizado ya tiene dos cambios:
 
 1. Actualiza el modelo para que lea el Excel nuevo. Comprueba que `Producto` tenga 17.721 filas.
 2. En Transformar datos, abre la consulta `Producto` y duplícala. En la copia, cambia el paso de navegación para que apunte a la tabla `Inventario` (Kind = "Table") del mismo libro y borra los pasos que sean propios de Producto. Llama a la consulta `Inventario`.
-3. Si el editor de Power Query del Service no permite agregar la consulta, detente y avísame.
+   Si es más fácil, crea la tabla en la vista TMDL del editor del modelo, con la misma partición M que Producto pero navegando a la tabla `Inventario`. Así se hizo el paso "Excluir errores de captura" en Compras.
+3. Actualiza el modelo y comprueba que `Inventario` tenga 144.350 filas. Si no consigues agregar la tabla, detente y avísame.
 
 Tipos de datos: `Fecha` como fecha, `Unidades` como número entero, el resto como texto.
 
