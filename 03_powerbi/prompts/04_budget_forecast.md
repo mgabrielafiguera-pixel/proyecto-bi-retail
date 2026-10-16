@@ -1,9 +1,10 @@
-Trabaja en Power BI Service, en "Mi área de trabajo": informe **Sell In Sell Out v2**, modelo semántico **Retail BI v2**. Crea la página **Budget / Forecast**, que reúne Budget, Forecast y Rolling Forecast.
+Trabaja en Power BI Service, en "Mi área de trabajo": informe **Sell In Sell Out v2**, modelo semántico **Retail BI v2**. Crea la página **Budget / Forecast**, que reúne Budget, Forecast y Rolling Forecast **de ventas (Sell Out) y de compras (Sell In, a costo Ex-Work)**.
 
 ## Criterio
 
 - **Mes de corte:** 30-abr-2026, la fecha del último inventario (`[Fecha Ultimo Inventario]`). Hasta ese mes se usa el dato real. Desde mayo, el forecast. Las ventas reales de mayo y junio de 2026 quedan fuera a propósito, porque no hay compras ni inventario de esos meses.
-- **Budget:** el objetivo anual (venta del año anterior × `Proyección Crecimiento`) repartido por mes con la **estacionalidad** 2024–2025 (`Estacionalidad Ventas`). Es fijo: no cambia con lo que se venda.
+- **Budget de ventas:** venta del año anterior × `Proyección Crecimiento`, repartida por mes con la **estacionalidad de ventas** 2024–2025. Es fijo: no cambia con lo que se venda.
+- **Budget de compras:** compras Ex-Work del año anterior × `Proyección Crecimiento`, repartidas por mes con la **estacionalidad de compras** 2024–2025.
 - **Forecast** (meses después del corte), con la lógica del Excel de trabajo:
   - Venta (uds.) = pieza promedio mensual (últimos 12 meses) × estacionalidad en unidades.
   - Compra (uds.) = venta del mes anterior.
@@ -55,6 +56,26 @@ RETURN SUMX ( VALUES ( Calendario[Mes] ), _anual * [Estacionalidad Uds] / 12 )
 
 ```dax
 Budget Acumulado $ = CALCULATE ( [Budget $], DATESYTD ( Calendario[Fecha] ) )
+```
+
+```dax
+Estacionalidad Compras ExW =
+VAR _meses = VALUES ( Calendario[Mes] )
+VAR _total =
+    CALCULATE ( [Importe Sell In ExW], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 } )
+VAR _mes =
+    CALCULATE ( [Importe Sell In ExW], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 }, _meses )
+RETURN DIVIDE ( _mes, _total / 12 )
+```
+Igual que `Estacionalidad Compras`, pero siempre a costo Ex-Work, sin depender del selector Tipo Costo.
+
+```dax
+Budget Compras $ =
+VAR _anio = SELECTEDVALUE ( Calendario[Año] )
+VAR _anual =
+    CALCULATE ( [Importe Sell In ExW], REMOVEFILTERS ( Calendario ), Calendario[Año] = _anio - 1 )
+        * [Proyección Crecimiento]
+RETURN SUMX ( VALUES ( Calendario[Mes] ), _anual * [Estacionalidad Compras ExW] / 12 )
 ```
 
 ### Bases del forecast
@@ -204,6 +225,21 @@ Brecha vs Budget $ = [Rolling SO $] - [Budget $]
 ```
 
 ```dax
+Real SI $ =
+VAR _c = [Fecha Corte Forecast]
+RETURN CALCULATE ( [Importe Sell In ExW], KEEPFILTERS ( Calendario[Fecha] <= _c ) )
+```
+
+```dax
+Var Compras RF vs Budget % = DIVIDE ( [Rolling SI $] - [Budget Compras $], [Budget Compras $] )
+```
+
+```dax
+Color Var Compras = IF ( [Var Compras RF vs Budget %] > 0, "#C2412D", "#1F8A4C" )
+```
+En compras, pasarse del budget es lo que se marca en rojo.
+
+```dax
 Avance Real vs Budget % = DIVIDE ( [Real SO $], [Budget $] )
 ```
 
@@ -224,19 +260,28 @@ Duplica la página **Ventas** (hereda fondo, segmentaciones sincronizadas con ca
 
 1. **Segmentaciones a la izquierda:** Año (selección única, 2026 por defecto), Origen, Proveedor, Marca, Departamento y **Proyección de crecimiento** (`Proyeccion`, igual que en Resumen anual).
 2. **Panel "Bases del forecast"** bajo las segmentaciones: `Pieza Promedio Mensual` (uds./mes), `Precio Promedio Venta 12M` y `Costo Promedio ExW 12M`, con la nota "últimos 12 meses al 30-abr-2026".
-3. **6 tarjetas arriba:**
+3. **Tarjetas arriba, en dos filas:**
+   Fila Ventas:
    - Budget anual → `Budget $`, subtítulo "venta año anterior × proyección".
    - Real a abril → `Real SO $`, subtítulo `Avance Real vs Budget %` & " del budget".
    - Forecast may–dic → `Forecast SO $`.
    - Cierre estimado (Rolling) → `Rolling SO $`.
    - Var. vs Budget → `Var RF vs Budget %`, color con `Color Var Budget`, subtítulo `Brecha vs Budget $`.
    - Stock proyectado a dic. → `Stock Proyectado Uds`, en uds.
+   Fila Compras (Ex-Work):
+   - Budget compras → `Budget Compras $`.
+   - Real compras a abril → `Real SI $`.
+   - Forecast compras may–dic → `Forecast SI $`.
+   - Cierre estimado compras → `Rolling SI $`.
+   - Var. vs Budget compras → `Var Compras RF vs Budget %`, color con `Color Var Compras`.
 4. **Matriz mensual** (columnas = `Calendario[Nombre_Mes]` ordenado por Mes, valores en filas, con total):
    - Bloque $: `Budget $` ("Budget"), `Real SO $` ("Real"), `Forecast SO $` ("Forecast"), `Rolling SO $` ("Rolling Forecast", en negrita), `Var RF vs Budget %` ("Var. vs Budget", color de fuente con `Color Var Budget`) y `Estacionalidad Ventas` ("Estacionalidad", fondo `#FCEDE7`).
-   - Bloque uds.: `Rolling SO Uds` ("Venta uds."), `Rolling SI Uds` ("Compra uds."), `Stock Proyectado Uds` ("Inventario final uds.") y `Rolling SI $` ("Compra Ex-Work").
+   - Bloque compras $: `Budget Compras $` ("Budget compras"), `Real SI $` ("Real"), `Forecast SI $` ("Forecast"), `Rolling SI $` ("Rolling Forecast compras", en negrita), `Var Compras RF vs Budget %` ("Var. vs Budget", color con `Color Var Compras`) y `Estacionalidad Compras ExW` ("Estacionalidad compras", fondo `#FCEDE7`).
+   - Bloque uds.: `Rolling SO Uds` ("Venta uds."), `Rolling SI Uds` ("Compra uds.") y `Stock Proyectado Uds` ("Inventario final uds.").
+   - Si la matriz queda muy larga, haz dos matrices: Ventas arriba y Compras + unidades abajo.
    - Fondo de las columnas de forecast con `Color Mes Forecast`, para distinguirlas de los meses reales.
 5. **Gráfico de líneas acumulado** por `Calendario[Nombre_Mes]`: `Budget Acumulado $` (azul oscuro `#0B2A80`, discontinua), `Rolling Acumulado $` (azul `#1A73E8`) y `Real Acumulado $` (naranja `#E4643F`). Título "Budget vs Rolling Forecast acumulado".
-6. **Nota al pie:** "Real hasta el 30-abr-2026 (último inventario). Forecast: venta = pieza promedio 12M × estacionalidad; compra = venta del mes anterior; IF = II + SI − SO. Budget = venta año anterior × proyección, repartida con la estacionalidad 2024–2025."
+6. **Nota al pie:** "Real hasta el 30-abr-2026 (último inventario). Forecast: venta = pieza promedio 12M × estacionalidad; compra = venta del mes anterior; IF = II + SI − SO. Budget = año anterior × proyección, repartido con la estacionalidad 2024–2025 (de ventas o de compras). Compras a costo Ex-Work."
 7. Guarda el informe.
 
 ## PASO 3 · Controles
@@ -258,6 +303,13 @@ Año 2026, `Proyección Crecimiento` = 1,20, sin otros filtros (aprox.; si algo 
 | Compra mayo | 1.129 uds. (venta real de abril) |
 | Inventario final mayo | ≈ 14.551 uds. |
 | Inventario final diciembre | ≈ 12.711 uds. |
+| `Estacionalidad Compras ExW`, total del año | 12,00 |
+| Budget compras 2026 | ≈ 9.376.735 (compras Ex-Work 2025 × 1,20) |
+| Budget compras ene–abr | ≈ 1.688.360 |
+| Real compras ene–abr | ≈ 2.976.207 (5.669 uds.) |
+| Forecast compras may–dic | ≈ 11.357 uds. · ≈ 6.172.826 |
+| Rolling Forecast compras 2026 | ≈ 9.149.033 |
+| Var. compras vs Budget | ≈ −2,4 % |
 
 Comprueba también que con Año 2025 el Rolling Forecast sea igual al real de cada mes y que al elegir un proveedor cambien la estacionalidad, el Budget y el forecast.
 
