@@ -9,18 +9,14 @@ El Excel actualizado ya tiene dos cambios:
 1. **Respaldo de medidas.** Abre la vista de consultas DAX del modelo y ejecuta:
    `EVALUATE SELECTCOLUMNS ( INFO.VIEW.MEASURES (), "Tabla", [Table], "Medida", [Name], "DAX", [Expression] )`
    Copia el resultado completo y entrégamelo en tu reporte final. Es el respaldo de las medidas.
-2. **Diagnóstico de la fuente.** Revisa de dónde lee el modelo el Excel: Configuración del modelo semántico → Credenciales del origen de datos, o Transformar datos → Configuración del origen de datos. Anota:
-   - si el archivo está en OneDrive o SharePoint (dime la ruta) o si se subió desde el computador;
-   - si el modelo permite "Transformar datos" o "Editar tablas" en el Service.
+2. **Fuente de datos.** El modelo lee el Excel desde GitHub con el conector Web: `https://raw.githubusercontent.com/mgabrielafiguera-pixel/proyecto-bi-retail/main/03_powerbi/retail_bi_powerbi.xlsx` (conexión `RetailBI_GitHub`, anónima). Esa URL ya trae el Excel nuevo. Comprueba que el modelo use esa URL; si usa otra fuente, detente y avísame.
 3. **No vuelvas a subir el Excel con "Reemplazar".** Reemplazar el modelo borraría las medidas, las relaciones y el parámetro "Ranking por" creados en el Service. Si la única forma de cargar la tabla fuera reemplazar el modelo, **detente y avísame**.
 
 ## PASO 1 · Cargar la tabla Inventario
 
-- **Si la fuente es OneDrive o SharePoint:** María Gabriela reemplazará ese archivo por el Excel nuevo, con el mismo nombre y en la misma carpeta. Espera a que te confirme. Después:
-  1. Actualiza el modelo.
-  2. En Transformar datos, agrega la tabla `Inventario` del mismo archivo.
-  3. Comprueba que `Producto` tenga 17.721 filas.
-- **Si la fuente es un archivo subido desde el computador:** no hagas cambios. Detente y repórtame lo que encontraste en el Paso 0.
+1. Actualiza el modelo para que lea el Excel nuevo. Comprueba que `Producto` tenga 17.721 filas.
+2. En Transformar datos, abre la consulta `Producto` y duplícala. En la copia, cambia el paso de navegación para que apunte a la tabla `Inventario` (Kind = "Table") del mismo libro y borra los pasos que sean propios de Producto. Llama a la consulta `Inventario`.
+3. Si el editor de Power Query del Service no permite agregar la consulta, detente y avísame.
 
 Tipos de datos: `Fecha` como fecha, `Unidades` como número entero, el resto como texto.
 
