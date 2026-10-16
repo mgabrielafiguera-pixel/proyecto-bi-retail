@@ -280,6 +280,205 @@ Devoluciones % Var pp =
 [Devoluciones %] - [Devoluciones % AA]
 ```
 
+### Resumen anual (Fase 4)
+
+Medidas y tablas añadidas para la página **Resumen anual**, una réplica de la hoja de Excel original del mismo nombre.
+
+**Regla para comparar con el año anterior:** el año actual y el anterior se cortan en la **misma fecha**, que es la última venta cargada. Si no, un año incompleto se compara contra un año completo. En DAX, el corte se aplica *fuera* de la medida AA: `CALCULATE ( [X AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )`. Si `SAMEPERIODLASTYEAR` va en el mismo `CALCULATE` que el corte, el año anterior no se recorta.
+
+#### Tablas sin relaciones (parámetros)
+
+```dax
+Tipo Costo =
+DATATABLE (
+    "Tipo Costo", STRING,
+    "Orden", INTEGER,
+    { { "Ex-Work", 1 }, { "Puesto", 2 } }
+)
+```
+
+```dax
+Proyeccion =
+SELECTCOLUMNS ( GENERATESERIES ( 80, 200, 5 ), "Value", [Value] / 100 )
+```
+
+`GENERATESERIES ( 0.80, 2.00, 0.05 )` pierde el 2,00 por el redondeo de los decimales. Por eso la serie se genera con enteros y se divide entre 100.
+
+#### Sell In según el tipo de costo
+
+```dax
+Importe Sell In ExW =
+SUM ( Compras[Total_Costo_Ex_Works] )
+```
+
+```dax
+Sell In (selector) =
+SWITCH (
+    SELECTEDVALUE ( 'Tipo Costo'[Tipo Costo], "Ex-Work" ),
+    "Ex-Work", [Importe Sell In ExW],
+    "Puesto",  [Importe Sell In]
+)
+```
+
+```dax
+Sell In (selector) AA =
+CALCULATE ( [Sell In (selector)], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )
+```
+
+```dax
+Sell In Var % =
+VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _act = CALCULATE ( [Sell In (selector)], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+VAR _aa  = CALCULATE ( [Sell In (selector) AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+RETURN DIVIDE ( _act - _aa, _aa )
+```
+
+#### Matrices (meses sin datos en 0)
+
+```dax
+S/I Matriz = COALESCE ( [Sell In (selector)], 0 )
+```
+
+```dax
+S/O Matriz = COALESCE ( [Importe Sell Out], 0 )
+```
+
+```dax
+Histórico Crecimiento % =
+VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _act = CALCULATE ( [Importe Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+VAR _aa  = CALCULATE ( [Importe Sell Out AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+RETURN
+    IF (
+        NOT ISINSCOPE ( Calendario[Nombre_Mes] ),
+        [Crecimiento Obtenido %],
+        IF ( ISBLANK ( _act ) || _aa <= 0, 0, DIVIDE ( _act - _aa, _aa ) )
+    )
+```
+
+En el total, el histórico devuelve la misma medida que la tarjeta "Crecimiento obtenido", así que los dos números siempre coinciden.
+
+#### Tarjetas
+
+```dax
+Ratio Reposición = DIVIDE ( [Importe Sell Out], [Sell In (selector)] )
+```
+
+```dax
+Ratio Reposición Unidades = DIVIDE ( [Unidades Sell Out], [Unidades Sell In] )
+```
+
+```dax
+Proyección Crecimiento = SELECTEDVALUE ( Proyeccion[Value], 1.20 )
+```
+
+```dax
+Crecimiento Obtenido % =
+VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _act = CALCULATE ( [Importe Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+VAR _aa  = CALCULATE ( [Importe Sell Out AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+RETURN DIVIDE ( _act - _aa, _aa )
+```
+
+```dax
+Presupuesto Comercial =
+VAR _anio = SELECTEDVALUE ( Calendario[Año] )
+RETURN
+    CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] = _anio - 1 )
+        * [Proyección Crecimiento]
+```
+
+```dax
+Avance Presupuesto % = DIVIDE ( [Importe Sell Out], [Presupuesto Comercial] )
+```
+
+El "Ratio Reposición" mezcla precio de venta (Sell Out) con costo (Sell In), así que sale inflado por el margen. La versión en unidades es la que mide la reposición real: si da más de 1, se está consumiendo stock.
+
+#### Presupuesto top-down mensual
+
+El presupuesto anual se reparte por mes con la estacionalidad del año anterior. No hace falta ninguna tabla de presupuesto.
+
+```dax
+Presupuesto Mes = [Importe Sell Out AA] * [Proyección Crecimiento]
+```
+
+```dax
+Presupuesto Acumulado =
+CALCULATE ( [Importe Sell Out AA], DATESYTD ( Calendario[Fecha] ) ) * [Proyección Crecimiento]
+```
+
+```dax
+Sell Out Acumulado =
+VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+RETURN
+    IF (
+        MIN ( Calendario[Fecha] ) > _ult,
+        BLANK (),
+        CALCULATE ( [Importe Sell Out], DATESYTD ( Calendario[Fecha] ) )
+    )
+```
+
+```dax
+Ritmo Esperado % =
+VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _anio = SELECTEDVALUE ( Calendario[Año] )
+VAR _aaHasta =
+    CALCULATE (
+        [Importe Sell Out], REMOVEFILTERS ( Calendario ),
+        Calendario[Fecha] >= DATE ( _anio - 1, 1, 1 ),
+        Calendario[Fecha] <= EDATE ( _ult, -12 )
+    )
+VAR _aaAnual =
+    CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] = _anio - 1 )
+RETURN DIVIDE ( _aaHasta, _aaAnual )
+```
+
+El "Ritmo esperado" es el % del año anterior que ya se había vendido a la misma fecha. Sirve para leer el "Avance del presupuesto": si vas por debajo del ritmo esperado, vas atrasada respecto al presupuesto.
+
+#### Textos y colores de las tarjetas
+
+```dax
+Texto Var Sell In =
+VAR g = [Sell In Var %]
+RETURN IF ( g >= 0, "▲ ", "▼ " ) & FORMAT ( g, "0.0%", "es-ES" ) & " vs AA"
+```
+
+```dax
+Texto Var Sell Out =
+VAR g = [Crecimiento Obtenido %]
+RETURN IF ( g >= 0, "▲ ", "▼ " ) & FORMAT ( g, "0.0%", "es-ES" ) & " vs AA"
+```
+
+```dax
+Color Var Sell In = IF ( [Sell In Var %] >= 0, "#1F8A4C", "#C2412D" )
+```
+
+```dax
+Color Var Sell Out = IF ( [Crecimiento Obtenido %] >= 0, "#1F8A4C", "#C2412D" )
+```
+
+En el modelo también están `Color Crec` (verde, rojo o gris para la fila "Crec. vs AA") y `Color Mes Futuro` (gris para los meses posteriores a la última venta). Esos textos fijos de las tarjetas están en la carpeta de medidas "Auxiliares".
+
+### Filtros en cascada: Proveedor → Marca → Departamento
+
+Proveedor no filtra Marca ni Departamento porque no hay relación entre esas tablas (ver la sección 1). En cambio, Marca y Departamento sí filtran Producto, y Producto tiene la columna del proveedor. Por eso basta una sola medida.
+
+Esa medida se aplica como filtro de nivel de objeto visual (`Filtro Cascada` es 1) en las segmentaciones de **Marca** y **Departamento** de las páginas Ventas y Compras. No se aplica en Proveedor, que es el primer nivel. Resumen anual no tiene estas segmentaciones: es una vista global.
+
+Orden de las segmentaciones: Año, Origen, Proveedor, Marca, Departamento.
+
+```dax
+Filtro Cascada =
+VAR _prov = VALUES ( Proveedor[CODIGO_INTERNO_PROVEEDOR] )
+RETURN
+    IF (
+        NOT ISEMPTY (
+            FILTER ( Producto, Producto[CODIGO_INTERNO_PROVEEDOR] IN _prov )
+        ),
+        1
+    )
+```
+
 ### Formatos sugeridos
 
 | Medidas | Formato |
@@ -305,6 +504,7 @@ No se borró ninguna fila. Los casos dudosos están marcados con columnas Sí/No
 | **Factura más de 60 días después de la recepción** | — | 470 | Revisar si la fecha de factura es fiable antes de usarla |
 | **Ventas posteriores a abril de 2026** | 2.308 (mayo: 1.985, junio: 323) | — | El archivo original es de "Abril 2026". Pueden ser fechas mal escritas |
 | **`Tipo_Movi` = "Sin clasificar"** | — | 1.384 (8,4 % del importe de Sell In) | **Compras pendientes de clasificar.** Venían con `Tipo_Movi` vacío y se rellenaron con "Sin clasificar" para que aparezcan en los gráficos por tipo de compra. Casi todas son de 2026 (1.263) y de proveedores internacionales, y tampoco tienen `Factor_Importacion`. Se incluyen en Sell In |
+| **Costo Ex-Work atípico** | — | 4 | Son 4 devoluciones del mismo SKU en marzo de 2026. Tienen un costo Ex-Work unitario unas 1.800 veces mayor que el de su compra y el costo nacionalizado vacío. Dejan Accesorios en negativo con el selector en Ex-Work. **Decisión (15-oct-2026): se dejan como están** y la página lo explica en una nota al pie |
 | **`Precio_Unitario_USD`** casi vacía | 18.774 de 49.936 con valor | — | No usarla en medidas |
 
 ### Rangos de fechas y comparaciones con el año anterior
@@ -333,9 +533,44 @@ Son compras reales y se incluyen en Sell In. No son traspasos. Representan el 3,
 - **Fechas**: de 19-ene-2024 a 20-abr-2026, repartidas en 116 documentos de recepción, sin un periodo concreto. En 148 líneas el producto aparece por primera vez en esa recepción.
 - **Lectura probable**: producción o compra local de joyería de marca propia (orfebres o talleres) y suministros de servicio técnico, más que importaciones. Pendiente de confirmar.
 
+### Compras: devoluciones duplicadas con costo erróneo
+
+Hay 6 filas de Compras con `Es_Posible_Duplicado = Sí` y `Precio_Cero = Sí`. Son devoluciones duplicadas que no tienen costo nacionalizado. Cuatro de ellas, de marzo de 2026, traen un costo Ex-Work unitario de 242.042, cuando la mediana ronda los 200. Restan unos 968 mil al Ex-Work de 2026.
+
+Con esas filas, el factor de importación de 2026 sale en 1,88 y el de marzo en −9,88. Sin ellas, sale en 1,27 y 1,19. Se excluyen en Power Query, en el paso "Excluir errores de captura".
+
+En 2026, las compras "Sin clasificar" siguen siendo cerca del 45 % del Ex-Work. Es un dato real, no un error.
+
 ### Inventario
 
-**No incluido por ahora.** Las tablas de inventario (existencias por almacén y fecha) se añadirán en una fase posterior. Hasta entonces, no hay medidas de stock, rotación ni cobertura.
+Tabla `Inventario`: stock por SKU al cierre de cada mes, de dic-2023 a abr-2026. Columnas: `COD_SKU`, `Fecha` (último día del mes), `Unidades`, `Origen` y `Venta_Sin_Stock`. La genera `scripts/reconstruir_inventario.py`.
+
+Relaciones nuevas (uno a varios, filtro único):
+
+- `Producto[COD_SKU]` → `Inventario[COD_SKU]`
+- `Calendario[Fecha]` → `Inventario[Fecha]`
+
+Origen de cada mes:
+
+| Periodo | Origen | Cómo se obtiene |
+|---|---|---|
+| dic-2023 a jun-2025 | Real | Foto de inventario de cierre de mes. Los negativos se dejan en 0. |
+| jul-2025 a dic-2025 | Estimado calibrado | Kardex desde jun-2025 (IF = IF anterior + compras − ventas, mínimo 0). El total de las 41 marcas del resumen por marca se ajusta a la tendencia de ese resumen. |
+| ene-2026 a abr-2026 | Estimado kardex | Kardex desde dic-2025, sin ancla. |
+
+`Venta_Sin_Stock = Sí` marca los meses en que el kardex habría quedado negativo: se vendió más de lo registrado, por una recepción no registrada o por un error de inventario. No es lo mismo que un quiebre; el quiebre se mide en DAX (stock 0 con venta reciente).
+
+**Backtest** (se reconstruyó ene–jun 2025 desde la foto de dic-2024 y se comparó con las fotos reales):
+
+| Mes | Kardex: error del total | Calibrado: error del total | Calibrado: WAPE por SKU |
+|---|---|---|---|
+| 2025-01 | −2,9 % | −7,1 % | 7 % |
+| 2025-03 | −17,8 % | −15,1 % | 21 % |
+| 2025-06 | −22,1 % | −7,3 % | 39 % |
+
+Lectura: el kardex puro se queda corto con el tiempo porque en el primer semestre de 2025 entró mercancía que no está en Compras. La calibración corrige el total (error ±10 %), pero el reparto por SKU pierde precisión. Por eso los indicadores de inventario se leen a nivel de marca, departamento o total, no de SKU. En 2026 no hay ancla, así que hay que esperar un sesgo a la baja de hasta un 15–20 % hacia abril.
+
+SKU sin movimiento: 1.220 productos tienen stock pero ninguna venta ni compra entre 2023 y 2026. Se agregaron a `Producto` con código `SKUI#####`, `en_ventas = N` y `en_compras = N`. Son unas 22 mil unidades del total histórico de fotos y forman la base del análisis de inventario obsoleto.
 
 ### Ya resuelto en el Excel
 
