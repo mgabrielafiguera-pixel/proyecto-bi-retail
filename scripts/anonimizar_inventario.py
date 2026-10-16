@@ -86,6 +86,23 @@ def detectar_mapeo(carpeta, patron, objetivo, normalizar):
     return dict(zip(m["real"], m[cc].str.strip().str.upper()))
 
 
+def forma(v):
+    """Patrón del valor sin el dato: dígitos -> 9, letras -> A (ej. SKU00012 -> AAA99999)."""
+    return re.sub(r"[^\W\d_]", "A", re.sub(r"\d", "9", str(v)))[:20]
+
+
+def diagnostico(carpeta):
+    """Muestra la estructura de 01_mapeos sin mostrar datos reales."""
+    print(f"Carpeta: {carpeta}")
+    archivos = [f for f in sorted(Path(carpeta).rglob("*")) if f.is_file()]
+    print(f"  Archivos: {len(archivos)} ({', '.join(sorted({f.suffix.lower() for f in archivos}))})")
+    for origen, df in leer_hojas(carpeta):
+        print(f"  {origen}: {len(df):,} filas")
+        for c in df.columns:
+            v = df[c].dropna()
+            print(f"    - {c}: {forma(v.iloc[0]) if len(v) else '(vacía)'}")
+
+
 def inventario_sku(ruta, mapeos, salida, trabajo):
     print("Inventario por SKU")
     df = pd.read_excel(ruta, sheet_name="inventarios")
@@ -131,10 +148,16 @@ def inventario_marca(ruta, mapeos, salida, trabajo):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    p.add_argument("--inventario", required=True)
+    p.add_argument("--inventario")
     p.add_argument("--resumen")
     p.add_argument("--mapeos", default=RAIZ / "01_mapeos")
+    p.add_argument("--diagnostico", action="store_true",
+                   help="muestra la estructura de 01_mapeos (sin datos) y termina")
     a = p.parse_args()
+    if a.diagnostico:
+        return diagnostico(a.mapeos)
+    if not a.inventario:
+        p.error("falta --inventario")
     salida, trabajo = RAIZ / "02_anonimizado", RAIZ / "trabajo"
     trabajo.mkdir(exist_ok=True)
     inventario_sku(a.inventario, a.mapeos, salida, trabajo)
