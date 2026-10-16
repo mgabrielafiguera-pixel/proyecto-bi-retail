@@ -259,7 +259,7 @@ Formatos: importes en **miles** sin decimales; unidades sin decimales con miles;
 Duplica la página **Ventas** (hereda fondo, segmentaciones sincronizadas con cascada y estilo) y llámala **Budget / Forecast**. Borra los visuales que no sirvan.
 
 1. **Segmentaciones a la izquierda:** Año (selección única, 2026 por defecto), Origen, Proveedor, Marca, Departamento y **Proyección de crecimiento** (`Proyeccion`, igual que en Resumen anual).
-2. **Panel "Bases del forecast"** bajo las segmentaciones: `Pieza Promedio Mensual` (uds./mes), `Precio Promedio Venta 12M` y `Costo Promedio ExW 12M`, con la nota "últimos 12 meses al 30-abr-2026".
+2. **Panel "Bases del forecast"** (boceto: `04_presentacion/budget_forecast_propuesta.png`) bajo las segmentaciones: `Pieza Promedio Mensual` (uds./mes), `Precio Promedio Venta 12M` y `Costo Promedio ExW 12M`, con la nota "últimos 12 meses al 30-abr-2026".
 3. **Tarjetas arriba, en dos filas:**
    Fila Ventas:
    - Budget anual → `Budget $`, subtítulo "venta año anterior × proyección".
@@ -275,8 +275,8 @@ Duplica la página **Ventas** (hereda fondo, segmentaciones sincronizadas con ca
    - Cierre estimado compras → `Rolling SI $`.
    - Var. vs Budget compras → `Var Compras RF vs Budget %`, color con `Color Var Compras`.
 4. **Matriz mensual** (columnas = `Calendario[Nombre_Mes]` ordenado por Mes, valores en filas, con total):
-   - Bloque $: `Budget $` ("Budget"), `Real SO $` ("Real"), `Forecast SO $` ("Forecast"), `Rolling SO $` ("Rolling Forecast", en negrita), `Var RF vs Budget %` ("Var. vs Budget", color de fuente con `Color Var Budget`) y `Estacionalidad Ventas` ("Estacionalidad", fondo `#FCEDE7`).
-   - Bloque compras $: `Budget Compras $` ("Budget compras"), `Real SI $` ("Real"), `Forecast SI $` ("Forecast"), `Rolling SI $` ("Rolling Forecast compras", en negrita), `Var Compras RF vs Budget %` ("Var. vs Budget", color con `Color Var Compras`) y `Estacionalidad Compras ExW` ("Estacionalidad compras", fondo `#FCEDE7`).
+   - Bloque $: **primera fila** `Estacionalidad Ventas` ("Estacionalidad", fondo `#FCEDE7`, negrita), porque es la base del Budget y del Forecast. Después `Budget $` ("Budget"), `Real SO $` ("Real"), `Forecast SO $` ("Forecast"), `Rolling SO $` ("Rolling Forecast", en negrita) y `Var RF vs Budget %` ("Var. vs Budget", color de fuente con `Color Var Budget`).
+   - Bloque compras $: **primera fila** `Estacionalidad Compras ExW` ("Estacionalidad compras", fondo `#FCEDE7`, negrita). Después `Budget Compras $` ("Budget compras"), `Real SI $` ("Real"), `Forecast SI $` ("Forecast"), `Rolling SI $` ("Rolling Forecast compras", en negrita) y `Var Compras RF vs Budget %` ("Var. vs Budget", color con `Color Var Compras`).
    - Bloque uds.: `Rolling SO Uds` ("Venta uds."), `Rolling SI Uds` ("Compra uds.") y `Stock Proyectado Uds` ("Inventario final uds.").
    - Si la matriz queda muy larga, haz dos matrices: Ventas arriba y Compras + unidades abajo.
    - Fondo de las columnas de forecast con `Color Mes Forecast`, para distinguirlas de los meses reales.
