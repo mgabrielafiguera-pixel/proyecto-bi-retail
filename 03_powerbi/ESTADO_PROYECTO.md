@@ -86,7 +86,7 @@ Las 6 compras con error de captura siguen en el Excel y se excluyen en Power Que
 
 Auditoría completa en `docs/auditoria.md`. Nuevos: controles de calidad (`scripts/validar_modelo.py`), recálculo de las cifras del README (`scripts/hallazgos.py`), backtest del forecast (`scripts/backtest_forecast.py`), pruebas (`tests/`) y documentación en `docs/`.
 
-Pendiente en Power BI: `prompts/05_correcciones_auditoria.md` (probar el filtro de proveedor en Inventario y el corte de las comparaciones con el año anterior). Pendiente de decisión: generalizar las direcciones de los almacenes (`scripts/generalizar_almacenes.py`).
+Pendiente en Power BI: `prompts/05_correcciones_auditoria.md` (probar el filtro de proveedor en Inventario y el corte de las comparaciones con el año anterior). Decisión: las direcciones de los almacenes se mantienen para el mapa de ventas por almacén.
 
 ## Próximo paso
 

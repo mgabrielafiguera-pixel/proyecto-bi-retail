@@ -158,7 +158,7 @@ negocio; los datos por sí solos no demuestran causalidad.
 `scripts/validar_modelo.py` ejecuta 68 controles sobre el Excel que lee Power BI: claves únicas, claves huérfanas,
 nulos, fechas, devoluciones, duplicados, costos, consistencia entre tablas, confidencialidad y totales contra Power BI.
 
-Resultado del 17-oct-2026: **48 OK, 14 avisos (casos legítimos o tratados), 6 a revisar y 0 errores**. Los 7 totales de
+Resultado del 17-oct-2026: **48 OK, 15 avisos (casos legítimos o tratados), 5 a revisar y 0 errores**. Los 7 totales de
 control (ventas, compras y stock en 3 fechas) coinciden con lo que muestra Power BI. Detalle:
 [`docs/resultados/controles_calidad.md`](docs/resultados/controles_calidad.md).
 

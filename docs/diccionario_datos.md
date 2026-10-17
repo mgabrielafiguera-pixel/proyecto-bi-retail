@@ -86,7 +86,7 @@ Solo se guardan filas con stock mayor que 0 o con venta sin stock. Un SKU sin fi
 | Departamento | 12 | COD_DEPARTAMENTO | DEPARTAMENTO_ORIGINAL (nombre) |
 | Cliente | 13.090 | COD_CLIENTE | fecha_primera_compra, n_filas_ventas |
 | Vendedor | 89 | COD_VENDEDOR | fecha_primera_venta, n_filas_ventas |
-| Almacen | 13 | COD_ALMACEN | ESTADO_ALMACEN (activo / inactivo), fechas de primera venta. Las columnas DIRECCION, DIRECCION2, ZONA_POSTAL, CIUDAD, ESTADO y PAIS están pendientes de generalizar (ver `docs/auditoria.md`) |
+| Almacen | 13 | COD_ALMACEN | ESTADO_ALMACEN (activo / inactivo), fechas de primera venta. DIRECCION, DIRECCION2, ZONA_POSTAL, CIUDAD, ESTADO y PAIS: ubicación del almacén, para el mapa de ventas |
 | Calendario | 1.461 | Fecha | Año, Mes, Nombre_Mes (en español, ordenado por Mes), Trimestre, Año_Mes |
 
 ## Otros archivos de datos

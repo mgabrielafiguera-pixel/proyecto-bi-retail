@@ -7,7 +7,6 @@
 - `scripts/validar_modelo.py`: 68 controles de calidad → `docs/resultados/controles_calidad.md` y `.csv`.
 - `scripts/hallazgos.py`: recalcula las cifras de la sección de resultados del README → `docs/resultados/hallazgos.md`.
 - `scripts/backtest_forecast.py`: backtest del forecast frente a dos métodos base → `docs/resultados/backtest_forecast.md` y `.csv`.
-- `scripts/generalizar_almacenes.py`: generaliza la ubicación de los almacenes. **No se ha ejecutado**: espera la decisión de la dueña del proyecto.
 - `tests/`: 12 pruebas con pytest, incluido el backtest del inventario y las cifras del README.
 - `requirements.txt`.
 - `docs/`: auditoría, modelo de datos, auditoría de DAX y Power Query, catálogo de KPI, diccionario de datos, validación, guía de capturas y PDF, y resumen ejecutivo.

@@ -190,8 +190,8 @@ def confidencialidad(t):
     genericos = a[cols].apply(lambda s: s.isna() | s.astype(str).str.match(r"^(Ciudad|Estado|País) \d+$"))
     afectadas = (~genericos).any(axis=1).sum()
     return [control("Direcciones y ubicación de almacenes", "Almacen", len(a), afectadas,
-                    "OK" if afectadas == 0 else "Revisar",
-                    "Si son reales, correr scripts/generalizar_almacenes.py (requiere autorización)",
+                    "OK" if afectadas == 0 else "Aviso",
+                    "Se publican a propósito para el mapa de ventas por almacén (decisión del 17-oct-2026)",
                     tipo="Confidencialidad")]
 
 

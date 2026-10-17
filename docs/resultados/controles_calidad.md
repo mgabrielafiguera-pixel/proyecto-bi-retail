@@ -5,8 +5,8 @@ Generado por `scripts/validar_modelo.py` sobre `03_powerbi/retail_bi_powerbi.xls
 | Resultado | Controles |
 |---|---|
 | OK | 48 |
-| Aviso | 14 |
-| Revisar | 6 |
+| Aviso | 15 |
+| Revisar | 5 |
 | Error | 0 |
 
 **OK**: se cumple. **Aviso**: hay casos legítimos o ya tratados en el modelo. **Revisar**: posibles errores de origen sin corregir. **Error**: hay que corregir antes de publicar.
@@ -73,7 +73,7 @@ Generado por `scripts/validar_modelo.py` sobre `03_powerbi/retail_bi_powerbi.xls
 | Consistencia | Proveedor de Compras = proveedor de Producto | Compras | 16,721 | 55 | Aviso | Filtrar por Proveedor (relación con la tabla de hechos) y por Marca (vía Producto) puede dar totales algo distintos |
 | Consistencia | SKU sin movimiento (SKUI) con departamento | Producto | 1,220 | 0 | OK | Sin departamento quedan fuera de los filtros por departamento |
 | Consistencia | SKUI presentes en Inventario | Producto | 1,220 | 0 | OK | Los SKUI solo existen para dar dimensión al stock |
-| Confidencialidad | Direcciones y ubicación de almacenes | Almacen | 13 | 13 | Revisar | Si son reales, correr scripts/generalizar_almacenes.py (requiere autorización) |
+| Confidencialidad | Direcciones y ubicación de almacenes | Almacen | 13 | 13 | Aviso | Se publican a propósito para el mapa de ventas por almacén (decisión del 17-oct-2026) |
 | Totales | Total de control: Unidades Sell Out | Ventas | 1 | 0 | OK | Excel 48,052 vs Power BI 48,052 |
 | Totales | Total de control: Importe Sell Out | Ventas | 1 | 0 | OK | Excel 44,271,198 vs Power BI 44,271,198 |
 | Totales | Total de control: Unidades Sell In | Compras | 1 | 0 | OK | Excel 44,990 vs Power BI 44,990 |

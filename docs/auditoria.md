@@ -45,7 +45,6 @@ comprobar en Power BI queda **por validar**, con un prompt de prueba.
 | Página Budget / Forecast | Creada y con los controles correctos. Faltan dos detalles de formato (fila Rolling resaltada y fondo de la estacionalidad de compras) | María Gabriela, con Claude in Chrome |
 | Capturas y PDF | Sacarlas del Service antes del 5-dic | María Gabriela (`docs/guia_capturas_pdf.md`) |
 | Exportación de medidas | Guardar el resultado de `INFO.VIEW.MEASURES ()` en el repo para auditar el DAX real | María Gabriela |
-| Generalizar la ubicación de los almacenes | Confirmar si las direcciones son reales y correr `scripts/generalizar_almacenes.py` | Decisión de María Gabriela |
 
 ### Por validar
 
@@ -60,7 +59,7 @@ comprobar en Power BI queda **por validar**, con un prompt de prueba.
 
 | Riesgo | Nivel | Estado |
 |---|---|---|
-| La tabla Almacen tiene direcciones, zona postal, ciudad, estado y país en texto libre (9 direcciones distintas, 7 ciudades, 1 país). Están en el Excel de Power BI y en `02_anonimizado/retail_bi_anonimizado.xlsx`, y también en el historial de Git | **Crítico** | Script listo (`scripts/generalizar_almacenes.py`), sin ejecutar: falta la confirmación de la dueña. Borrarlas también del historial obliga a reescribirlo, y eso requiere su autorización expresa |
+| La tabla Almacen tiene direcciones, zona postal, ciudad, estado y país en texto libre (9 direcciones distintas, 7 ciudades, 1 país). Están en el Excel de Power BI y en `02_anonimizado/retail_bi_anonimizado.xlsx`, y también en el historial de Git | Aceptado | **Decisión del 17-oct-2026: se mantienen**, porque son la base del mapa de ventas por almacén. Riesgo asumido por la dueña del proyecto |
 | Re-identificación por combinación: fechas, unidades y mezcla reales, 13 almacenes en un país, atributos de producto (quilates, medidas) y la causa de 4.1 (interrupción de vuelos internacionales a finales de 2025) | Alto | El README generaliza la causa a "disrupción logística internacional". Lo demás es inherente a usar datos reales |
 | Importes | Bajo | Escalados |
 | Nombres de clientes, vendedores, marcas y proveedores | Bajo | Codificados. Los mapeos no están en el repo |
@@ -69,7 +68,6 @@ comprobar en Power BI queda **por validar**, con un prompt de prueba.
 
 | Prioridad | Tarea | Estado |
 |---|---|---|
-| Crítica | Generalizar la ubicación de los almacenes | Esperando decisión |
 | Crítica | Corregir la descripción del backtest y las cifras del README | Hecho en este PR |
 | Crítica | Probar el filtro de proveedor en Inventario | Prompt listo |
 | Importante | Controles de calidad, pruebas y reproducibilidad | Hecho en este PR |

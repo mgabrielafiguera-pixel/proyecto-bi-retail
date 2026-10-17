@@ -116,7 +116,7 @@ Tabla completa, por mes y con el pliegue secundario, MAE, sesgo y MAPE: [`result
 ## 4. Controles de calidad y consistencia
 
 `scripts/validar_modelo.py` ejecuta 68 controles sobre el Excel que lee Power BI. Resultado del 17-oct-2026:
-**48 OK, 14 avisos, 6 a revisar y 0 errores**. Detalle: [`resultados/controles_calidad.md`](resultados/controles_calidad.md).
+**48 OK, 15 avisos, 5 a revisar y 0 errores**. Detalle: [`resultados/controles_calidad.md`](resultados/controles_calidad.md).
 
 | Área | Controles ejecutados | Resultado |
 |---|---|---|
@@ -126,7 +126,7 @@ Tabla completa, por mes y con el pliegue secundario, MAE, sesgo y MAPE: [`result
 | Importes | Devoluciones, costo con signo contrario, costo cero, duplicados, precio cero, compras excluidas, compras sin clasificar | Marcados y tratados en el modelo. A revisar en el origen: 210 devoluciones registradas como factura, 1.070 ventas con costo 0 y 1.384 compras sin clasificar |
 | Inventario | Stock negativo, duplicados SKU + fecha, venta sin stock registrado | OK. 463 ventas sin stock registrado (aviso) |
 | Totales | 4 totales de ventas y compras, y stock en 3 fechas, contra lo que muestra Power BI | 7 de 7 coinciden |
-| Confidencialidad | Direcciones y ubicación de los almacenes | **Revisar** (ver la sección 5) |
+| Confidencialidad | Direcciones y ubicación de los almacenes | Aviso: se publican a propósito para el mapa de ventas por almacén |
 
 **Validación temporal.** Los backtests usan solo información anterior a cada corte, salvo la calibración del método B
 del inventario, que se declara como fuga en la sección 2.
