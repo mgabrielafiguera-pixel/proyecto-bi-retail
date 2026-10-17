@@ -568,7 +568,7 @@ Origen de cada mes:
 | 2025-03 | −17,8 % | −15,1 % | 21 % |
 | 2025-06 | −22,1 % | −7,3 % | 39 % |
 
-Lectura: el kardex puro se queda corto con el tiempo porque en el primer semestre de 2025 entró mercancía que no está en Compras. La calibración corrige el total (error ±10 %), pero el reparto por SKU pierde precisión. Por eso los indicadores de inventario se leen a nivel de marca, departamento o total, no de SKU. En 2026 no hay ancla, así que hay que esperar un sesgo a la baja de hasta un 15–20 % hacia abril.
+Lectura: el kardex puro se queda corto con el tiempo porque en el primer semestre de 2025 entró mercancía que no está en Compras. La calibración corrige el total (error ±10 %), pero el reparto por SKU pierde precisión. La calibración usa el resumen por marca de los mismos meses que evalúa, así que el −7,3 % no es la precisión de una estimación a ciegas: esa es la del kardex puro (−22,1 % a 6 meses). Tabla completa y fórmulas en [`docs/validacion.md`](../docs/validacion.md). Por eso los indicadores de inventario se leen a nivel de marca, departamento o total, no de SKU. En 2026 no hay ancla, así que hay que esperar un sesgo a la baja de hasta un 15–20 % hacia abril.
 
 SKU sin movimiento: 1.220 productos tienen stock pero ninguna venta ni compra entre 2023 y 2026. Se agregaron a `Producto` con código `SKUI#####`, `en_ventas = N` y `en_compras = N`. Son unas 22 mil unidades del total histórico de fotos y forman la base del análisis de inventario obsoleto.
 

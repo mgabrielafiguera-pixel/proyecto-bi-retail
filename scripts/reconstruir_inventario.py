@@ -17,7 +17,7 @@ Método:
 Además corre un backtest: reconstruye ene-jun 2025 desde dic-2024 y lo compara con
 las fotos reales.
 
-Uso: python3 scripts/reconstruir_inventario.py
+Uso: python3 scripts/reconstruir_inventario.py [--xlsx RUTA]   (por defecto, el Excel de Power BI)
 Salidas:
     02_anonimizado/inventario_reconstruido.csv
     03_powerbi/retail_bi_powerbi.xlsx  tabla Inventario (nueva) y SKU sin movimiento en la tabla Producto
@@ -160,22 +160,36 @@ def escribir_excel(inventario, nuevos):
     ws.add_table(Table(displayName="Inventario", ref=f"A1:E{ws.max_row}",
                        tableStyleInfo=TableStyleInfo(name="TableStyleMedium2", showRowStripes=True)))
     wp = wb["Producto"]
-    existentes = {c.value for c in wp["A"]}
+    # Las filas SKUI se reemplazan en cada ejecución para que una corrección se aplique
+    # también a los SKUI ya creados. Se borran de abajo arriba para no mover los índices.
+    for r in range(wp.max_row, 1, -1):
+        if str(wp.cell(r, 1).value or "").startswith("SKUI"):
+            wp.delete_rows(r)
     for fila in nuevos.itertuples(index=False):
-        if fila.COD_SKU not in existentes:
-            wp.append([None if pd.isna(x) else x for x in fila])
-    # La tabla de Excel debe crecer para que Power BI vea las filas nuevas
+        wp.append([None if pd.isna(x) else x for x in fila])
+    # La tabla de Excel debe ajustarse para que Power BI vea las filas nuevas
     wp.tables["Producto"].ref = f"A1:{get_column_letter(wp.max_column)}{wp.max_row}"
-    wb.save(XLSX)
+    # Se guarda primero en un archivo temporal: si algo falla, el Excel original queda intacto
+    tmp = XLSX.with_suffix(".tmp.xlsx")
+    wb.save(tmp)
+    tmp.replace(XLSX)
 
 
 def main():
+    global XLSX
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--xlsx", type=Path, default=XLSX, help="Excel a leer y actualizar (para pruebas, una copia)")
+    XLSX = ap.parse_args().xlsx
     inv, res, si, so, marca, real = cargar()
     bt = backtest(real, si, so, res, marca)
     print("Backtest ene-jun 2025 (desde la foto de dic-2024):")
     print(bt.pivot(index="Mes", columns="Metodo", values=["Error_total_%", "WAPE_SKU_%"]).to_string())
     inventario = reconstruir(real, si, so, res, marca)
-    inventario.to_csv(RAIZ / "02_anonimizado" / "inventario_reconstruido.csv", index=False, date_format="%Y-%m-%d")
+    csv = RAIZ / "02_anonimizado" / "inventario_reconstruido.csv"
+    if XLSX != RAIZ / "03_powerbi" / "retail_bi_powerbi.xlsx":
+        csv = XLSX.with_name("inventario_reconstruido.csv")
+    inventario.to_csv(csv, index=False, date_format="%Y-%m-%d")
     resumen = inventario.groupby(["Fecha", "Origen"]).agg(
         Unidades=("Unidades", "sum"), SKU=("COD_SKU", "nunique"),
         Ventas_Sin_Stock=("Venta_Sin_Stock", lambda s: (s == "Sí").sum()))
