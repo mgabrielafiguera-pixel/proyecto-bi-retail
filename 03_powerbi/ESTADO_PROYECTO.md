@@ -1,6 +1,6 @@
 # Estado del proyecto · Sell In / Sell Out (Power BI)
 
-Última actualización: 16 de octubre de 2026
+Última actualización: 17 de octubre de 2026
 
 ## Dónde está todo
 
@@ -68,7 +68,7 @@ Decisión: las 4 compras con costo Ex-Work atípico se dejan como están. Acceso
 - Jul-2025 a abr-2026 reconstruido con kardex (IF = II + Sell In − Sell Out) y calibrado con el resumen por marca hasta dic-2025 → `02_anonimizado/inventario_reconstruido.csv` y tabla `Inventario` del Excel (144.350 filas).
 - 1.220 SKU con stock pero sin ventas ni compras se añadieron a Producto con código `SKUI#####` (Producto pasa a 17.721 filas).
 - Totales de control (unidades): jun-2025 11.715 · dic-2025 14.063 · abr-2026 15.452.
-- Precisión: el backtest da un error del total de −7,3 % a 6 meses, pero 39 % por SKU. Los KPI de inventario se leen por marca, departamento o total, no por SKU.
+- Precisión (backtest ene–jun 2025): error del total a 6 meses de −22,1 % con el kardex puro y −7,3 % con el calibrado, que usa datos del mismo periodo. Por SKU, WAPE 27–39 %. Los KPI de inventario se leen por marca, departamento o total, no por SKU. Ver `docs/validacion.md`.
 
 ### Validación del Excel para Power BI (16-oct-2026)
 
@@ -81,6 +81,12 @@ Las 6 compras con error de captura siguen en el Excel y se excluyen en Power Que
 - Power BI: páginas Resumen anual, Ventas, Compras e Inventario (con punto de reorden) terminadas y guardadas.
 - README reescrito como caso de negocio, con los hallazgos validados.
 - **Siguiente sesión:** correr `prompts/04_budget_forecast.md` en Claude in Chrome y validar sus controles. Después, capturas y PDF del informe antes del 5-dic.
+
+## Auditoría (17-oct-2026)
+
+Auditoría completa en `docs/auditoria.md`. Nuevos: controles de calidad (`scripts/validar_modelo.py`), recálculo de las cifras del README (`scripts/hallazgos.py`), backtest del forecast (`scripts/backtest_forecast.py`), pruebas (`tests/`) y documentación en `docs/`.
+
+Pendiente en Power BI: `prompts/05_correcciones_auditoria.md` (probar el filtro de proveedor en Inventario y el corte de las comparaciones con el año anterior). Pendiente de decisión: generalizar las direcciones de los almacenes (`scripts/generalizar_almacenes.py`).
 
 ## Próximo paso
 
