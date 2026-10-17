@@ -1,5 +1,9 @@
 # Registro de cambios
 
+## 17-oct-2026 · Página Ventas diarias
+
+- `03_powerbi/prompts/06_ventas_diarias.md`: página nueva con ventas por día, mapa de tiendas, rankings de marca, proveedor y vendedor, y controles de 5 escenarios calculados desde el Excel.
+
 ## 17-oct-2026 · Auditoría, validación y documentación
 
 **Nuevos**
