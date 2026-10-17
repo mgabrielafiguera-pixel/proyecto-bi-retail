@@ -12,3 +12,7 @@ __pycache__/
 .venv/
 .ipynb_checkpoints/
 trabajo/
+
+# ── Caché local de los scripts ──
+.cache/
+.pytest_cache/
