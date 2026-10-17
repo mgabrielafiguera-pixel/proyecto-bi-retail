@@ -1,7 +1,7 @@
 # Catálogo de indicadores (KPI)
 
 Cada indicador es una medida DAX del modelo **Retail BI v2**. El código está en
-[`03_powerbi/MODELO.md`](../03_powerbi/MODELO.md) y en [`03_powerbi/prompts/`](../03_powerbi/prompts/). Las cifras de
+[`03_powerbi/MODELO.md`](../03_powerbi/MODELO.md). Las cifras de
 ejemplo son del año 2026 con todos los filtros en "Todas", y salen de los controles de cada prompt o de
 [`resultados/hallazgos.md`](resultados/hallazgos.md).
 

@@ -6,13 +6,13 @@ Fecha: 17-oct-2026. Revisión del repo en la rama `main` después del PR #9, y d
 
 | Inspeccionado | No disponible |
 |---|---|
-| README, `03_powerbi/ESTADO_PROYECTO.md`, `03_powerbi/MODELO.md` y 5 prompts DAX | Archivo `.pbix` o exportación del modelo: el modelo vive en Power BI Service |
+| README, `03_powerbi/ESTADO_PROYECTO.md`, `03_powerbi/MODELO.md` y el código DAX de cada página | Archivo `.pbix` o exportación del modelo: el modelo vive en Power BI Service |
 | `scripts/anonimizar_inventario.py`, `scripts/reconstruir_inventario.py` | Código de las consultas de Power Query (solo el paso de exclusión está documentado) |
 | `03_powerbi/retail_bi_powerbi.xlsx` (11 tablas) y `02_anonimizado/` | SQL: el proyecto no lo usa |
 | Historial de Git | Capturas reales e informe PDF |
 
 Por eso el DAX se audita sobre el código documentado y los datos se auditan con scripts. Lo que solo se puede
-comprobar en Power BI queda **por validar**, con un prompt de prueba.
+comprobar en Power BI queda **por validar**, con una prueba descrita.
 
 ## 2. Estado por categoría
 
@@ -50,8 +50,8 @@ comprobar en Power BI queda **por validar**, con un prompt de prueba.
 
 | Elemento | Cómo se valida |
 |---|---|
-| El filtro de Proveedor no llega a las medidas de Inventario | Prueba 1 de `03_powerbi/prompts/05_correcciones_auditoria.md` |
-| La variación de Sell In se subestima por el corte en la última venta | Prueba 2 del mismo prompt (comprobado en los datos; falta verlo en la tarjeta) |
+| El filtro de Proveedor no llega a las medidas de Inventario | Prueba descrita en `docs/auditoria_dax.md`, D1 |
+| La variación de Sell In se subestima por el corte en la última venta | `docs/auditoria_dax.md`, D2 (comprobado en los datos; falta verlo en la tarjeta) |
 | Unas 140 medidas en el modelo | Exportación de medidas |
 | Tipos de datos de Power Query | Exportación del modelo o revisión en el editor |
 

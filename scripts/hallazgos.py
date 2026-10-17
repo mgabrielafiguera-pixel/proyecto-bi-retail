@@ -208,7 +208,7 @@ def lead_time_dias(c):
 
 
 def punto_reorden(d, corte=CORTE):
-    """Punto de reorden por marca y total (03_powerbi/prompts/03_punto_reorden.md)."""
+    """Punto de reorden por marca y total (03_powerbi/MODELO.md, sección 4)."""
     v, c, inv = d["v"], d["c"], d["inv"]
     meses = pd.period_range(end=corte.to_period("M"), periods=6, freq="M")
     v6 = v[v["Fecha"].dt.to_period("M").isin(meses)]
@@ -268,7 +268,7 @@ def h44_reorden(d, r):
 # ---------------------------------------------------------------- 4.5
 
 def rolling_forecast(v, crecimiento=1.20, corte=CORTE):
-    """Budget, forecast y Rolling Forecast de ventas 2026 (03_powerbi/prompts/04_budget_forecast.md)."""
+    """Budget, forecast y Rolling Forecast de ventas 2026 (03_powerbi/MODELO.md, sección 4)."""
     budget = anio(v, 2025)["Total_Factura"].sum() * crecimiento
     real = v[(v["Fecha"].dt.year == 2026) & (v["Fecha"] <= corte)]["Total_Factura"].sum()
     v24_25 = v[v["Fecha"].dt.year.isin([2024, 2025])]
