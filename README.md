@@ -67,7 +67,7 @@ Departamento (12) y Calendario (2023–2026).
 ## 7. Indicadores principales
 
 Unas 140 medidas DAX, documentadas en [`03_powerbi/MODELO.md`](03_powerbi/MODELO.md) y
-[`03_powerbi/prompts/`](03_powerbi/prompts/). El catálogo, con fórmula, granularidad, interpretación y limitaciones de
+en la sección 4 del mismo archivo, por página. El catálogo, con fórmula, granularidad, interpretación y limitaciones de
 cada KPI, está en [`docs/catalogo_kpi.md`](docs/catalogo_kpi.md).
 
 | Área | Indicadores |
@@ -195,7 +195,7 @@ tendencia. Por marca no es fiable.
 - Los traspasos entre almacenes no están en los datos: el sell-through no se lee por tienda.
 - Hay 2.308 ventas de may–jun 2026 sin compras ni inventario de esos meses. El forecast las excluye.
 - Las comparaciones con el año anterior de Resumen anual se cortan en la última venta (8-jun) y las compras terminan el
-  30-abr. La propuesta de un corte único está en `03_powerbi/prompts/05_correcciones_auditoria.md`.
+  30-abr. La propuesta de un corte único está en `docs/auditoria_dax.md` (D2).
 - El filtro de proveedor podría no llegar a las medidas de inventario (por validar, mismo prompt).
 - Los posibles duplicados (1,95 % del importe de ventas) y las ventas con costo 0 se marcan, pero no se excluyen.
 - Los importes absolutos no son los reales.
@@ -205,7 +205,7 @@ tendencia. Por marca no es fiable.
 | Carpeta | Contenido |
 |---|---|
 | `02_anonimizado/` | Datos anonimizados en CSV y Excel, incluidas las fotos de inventario por SKU |
-| `03_powerbi/` | Excel que lee Power BI, documentación del modelo (`MODELO.md`), estado (`ESTADO_PROYECTO.md`) y prompts usados para construir cada página |
+| `03_powerbi/` | Excel que lee Power BI, documentación del modelo (`MODELO.md`), estado (`ESTADO_PROYECTO.md`) |
 | `04_presentacion/` | Bocetos de las páginas y carpeta `capturas/` |
 | `docs/` | Auditoría, modelo de datos, diccionario, catálogo de KPI, validación y guía de capturas |
 | `docs/resultados/` | Salidas de los scripts de control y validación |
@@ -230,7 +230,7 @@ python3 -m pytest tests                # 12 pruebas, incluido el backtest del in
 `scripts/reconstruir_inventario.py` reescribe la tabla Inventario del Excel que lee Power BI. Para probarlo sin tocarlo:
 `python3 scripts/reconstruir_inventario.py --xlsx /ruta/a/una/copia.xlsx`.
 
-El informe se construyó en Power BI Service con los prompts de `03_powerbi/prompts/`, en orden (`00` a `05`).
+El informe se construyó en Power BI Service. Todas sus medidas DAX y el paso de Power Query están en `03_powerbi/MODELO.md`.
 
 ## 15. Capturas del informe
 

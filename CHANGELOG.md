@@ -1,5 +1,9 @@
 # Registro de cambios
 
+## 17-oct-2026 · Prompts fuera del repo
+
+- Se retiró `03_powerbi/prompts/`. Las medidas DAX y el paso de Power Query de cada página pasan a `03_powerbi/MODELO.md`, sección 4.
+
 ## 17-oct-2026 · Página Ventas diarias
 
 - `03_powerbi/prompts/06_ventas_diarias.md`: página nueva con ventas por día, mapa de tiendas, rankings de marca, proveedor y vendedor, y controles de 5 escenarios calculados desde el Excel.

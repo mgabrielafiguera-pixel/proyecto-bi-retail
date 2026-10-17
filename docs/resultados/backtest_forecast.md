@@ -1,7 +1,7 @@
 # Backtest del forecast de ventas (Sell Out)
 
 Generado por `scripts/backtest_forecast.py`. Evalúa el método de forecast de la página Budget / Forecast
-(`03_powerbi/prompts/04_budget_forecast.md`): uds = pieza promedio 12M × estacionalidad en unidades;
+(`03_powerbi/MODELO.md`, sección 4): uds = pieza promedio 12M × estacionalidad en unidades;
 $ = uds × precio promedio 12M. En departamento y marca el cálculo se rehace dentro de cada grupo, como el DAX
 respeta los filtros.
 

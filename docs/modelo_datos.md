@@ -1,8 +1,7 @@
 # Modelo de datos
 
 Modelo semántico **Retail BI v2** en Power BI Service. Lee `03_powerbi/retail_bi_powerbi.xlsx` desde la URL raw de
-GitHub (rama `main`). Las medidas DAX están en [`03_powerbi/MODELO.md`](../03_powerbi/MODELO.md) y en los prompts de
-[`03_powerbi/prompts/`](../03_powerbi/prompts/).
+GitHub (rama `main`). Las medidas DAX están en [`03_powerbi/MODELO.md`](../03_powerbi/MODELO.md).
 
 ## Diagrama
 
@@ -65,7 +64,7 @@ con Ventas, habría dos caminos de filtro hacia Ventas y Power BI daría un erro
 una página se elige **solo** un proveedor, las medidas de stock (stock final, rotación, cobertura, punto de reorden,
 stock proyectado) **no se filtran** y muestran el total de la empresa. Las de ventas y compras sí se filtran. El resultado
 sería, por ejemplo, una rotación que mezcla las ventas de un proveedor con el stock de todos. La prueba y la corrección
-están en [`03_powerbi/prompts/05_correcciones_auditoria.md`](../03_powerbi/prompts/05_correcciones_auditoria.md).
+están en [`docs/auditoria_dax.md`](auditoria_dax.md), hallazgo D1.
 
 **Riesgo 2, comprobado en los datos:** en 173 líneas de venta (0,35 %) y 55 de compra (0,33 %), el proveedor de la línea
 no es el proveedor que tiene el producto en la tabla Producto. Un filtro por proveedor (que usa la línea) y un filtro por

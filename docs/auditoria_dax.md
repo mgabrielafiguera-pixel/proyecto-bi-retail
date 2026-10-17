@@ -1,14 +1,13 @@
 # Auditoría de DAX y Power Query
 
-**Alcance.** Se revisó el código DAX documentado en el repo: [`03_powerbi/MODELO.md`](../03_powerbi/MODELO.md) y los prompts
-`00` a `04` de [`03_powerbi/prompts/`](../03_powerbi/prompts/). El modelo vive en Power BI Service y **no hay exportación
+**Alcance.** Se revisó el código DAX documentado en el repo: [`03_powerbi/MODELO.md`](../03_powerbi/MODELO.md), secciones 2 y 4. El modelo vive en Power BI Service y **no hay exportación
 del modelo** (`.pbix` o `.bim`). Por eso:
 
 - no se puede confirmar que el código del Service sea idéntico al documentado;
 - el número de medidas (unas 140) lo reportó Power BI, no se contó en el repo;
 - las consultas de Power Query no están en el repo, salvo el paso de exclusión de errores de Compras.
 
-Para cerrar esa brecha, el PASO 0 de cada prompt pide un respaldo de medidas con `INFO.VIEW.MEASURES ()`. Guardar ese
+Para cerrar esa brecha, conviene exportar las medidas con `INFO.VIEW.MEASURES ()`. Guardar ese
 resultado en `03_powerbi/medidas_exportadas.csv` permitiría auditar el código real.
 
 ## Medidas por área funcional
@@ -16,15 +15,15 @@ resultado en `03_powerbi/medidas_exportadas.csv` permitiría auditar el código 
 | Área | Medidas principales | Documentadas en |
 |---|---|---|
 | Ventas | Unidades / Importe Sell Out, AA, Var %, Facturas, Ticket Promedio, Devoluciones | `MODELO.md` |
-| Compras | Unidades / Importe Sell In, Importe Sell In ExW, Sell In (selector), Lead Time Días, Factor de importación | `MODELO.md`, prompt `01` |
+| Compras | Unidades / Importe Sell In, Importe Sell In ExW, Sell In (selector), Lead Time Días, Factor de importación | `MODELO.md`, secciones 1 y 4 |
 | Margen | Costo Sell Out, Margen, Margen %, AA, Var | `MODELO.md` |
-| Inventario | Stock Final / Inicial Uds, Inventario Promedio, Valor Inventario Costo, Stock Sin Venta 12M | prompt `02` |
-| Rotación y cobertura | Rotacion Anualizada, Dias de Inventario, Cobertura Meses Real | prompt `02` |
-| Quiebres | SKU Activos 3M, SKU en Quiebre, Venta Perdida Est. | prompt `02` |
-| Reposición | Demanda Mensual, Desv Demanda, Lead Time Meses, Stock Seguridad, Punto de Reorden, Compra Sugerida | prompt `03` |
-| Presupuesto | Presupuesto Comercial, Presupuesto Mes / Acumulado, Avance Presupuesto %, Ritmo Esperado %, Budget $ / Uds / Compras | `MODELO.md`, prompt `04` |
-| Forecast | Estacionalidad Uds / Ventas / Compras, Pieza Promedio, Forecast SO / SI, Rolling, Stock Proyectado | prompt `04` |
-| Comparativos | Crecimiento Obtenido %, Sell In Var %, Histórico Crecimiento %, Var RF vs Budget % | `MODELO.md`, prompt `04` |
+| Inventario | Stock Final / Inicial Uds, Inventario Promedio, Valor Inventario Costo, Stock Sin Venta 12M | `MODELO.md`, sección 4 |
+| Rotación y cobertura | Rotacion Anualizada, Dias de Inventario, Cobertura Meses Real | `MODELO.md`, sección 4 |
+| Quiebres | SKU Activos 3M, SKU en Quiebre, Venta Perdida Est. | `MODELO.md`, sección 4 |
+| Reposición | Demanda Mensual, Desv Demanda, Lead Time Meses, Stock Seguridad, Punto de Reorden, Compra Sugerida | `MODELO.md`, sección 4 |
+| Presupuesto | Presupuesto Comercial, Presupuesto Mes / Acumulado, Avance Presupuesto %, Ritmo Esperado %, Budget $ / Uds / Compras | `MODELO.md`, secciones 1 y 4 |
+| Forecast | Estacionalidad Uds / Ventas / Compras, Pieza Promedio, Forecast SO / SI, Rolling, Stock Proyectado | `MODELO.md`, sección 4 |
+| Comparativos | Crecimiento Obtenido %, Sell In Var %, Histórico Crecimiento %, Var RF vs Budget % | `MODELO.md`, secciones 1 y 4 |
 | Auxiliares | Textos y colores de tarjetas, Filtro Cascada | `MODELO.md` |
 
 ## Hallazgos
@@ -33,8 +32,8 @@ Estado: **Comprobado** = verificado con los datos o el código. **Por validar** 
 
 | # | Medida o área | Problema | Estado | Impacto | Corrección |
 |---|---|---|---|---|---|
-| D1 | Medidas de Inventario con filtro de Proveedor | Proveedor no llega a Inventario (ver `docs/modelo_datos.md`). Con solo un proveedor elegido, el stock, la rotación y el punto de reorden mostrarían el total de la empresa | Por validar | Alto: rotación y cobertura mezclan ventas de un proveedor con stock de todos | Prueba 1 de [`prompts/05_correcciones_auditoria.md`](../03_powerbi/prompts/05_correcciones_auditoria.md). Si falla: columna de proveedor en Inventario y relación con Proveedor |
-| D2 | `Crecimiento Obtenido %`, `Sell In Var %`, `Histórico Crecimiento %`, `Ritmo Esperado %`, `Sell Out Acumulado` | El corte es la última venta (8-jun-2026), pero las compras terminan el 30-abr. La Var. Sell In 2026 sale +101 % en lugar de +346 % (Ex-Work). Además, el corte respeta los filtros de marca o proveedor | Comprobado con los datos | Alto: la tarjeta de compras subestima el aumento a menos de un tercio | Prueba 2 del prompt `05`: un único corte, `[Fecha Ultimo Inventario]` |
+| D1 | Medidas de Inventario con filtro de Proveedor | Proveedor no llega a Inventario (ver `docs/modelo_datos.md`). Con solo un proveedor elegido, el stock, la rotación y el punto de reorden mostrarían el total de la empresa | Por validar | Alto: rotación y cobertura mezclan ventas de un proveedor con stock de todos | Prueba en Power BI: elegir PROV0069 y comparar el stock con el total (2.547 frente a 15.452 uds.). Si falla: columna de proveedor en Inventario y relación con Proveedor |
+| D2 | `Crecimiento Obtenido %`, `Sell In Var %`, `Histórico Crecimiento %`, `Ritmo Esperado %`, `Sell Out Acumulado` | El corte es la última venta (8-jun-2026), pero las compras terminan el 30-abr. La Var. Sell In 2026 sale +101 % en lugar de +346 % (Ex-Work). Además, el corte respeta los filtros de marca o proveedor | Comprobado con los datos | Alto: la tarjeta de compras subestima el aumento a menos de un tercio | Un único corte: `Fecha Corte Comparativos = [Fecha Ultimo Inventario]` |
 | D3 | `Presupuesto Comercial`, `Budget Uds`, `Budget Compras $` | Usan `SELECTEDVALUE ( Calendario[Año] )`: con varios años elegidos devuelven vacío | Comprobado en el código | Bajo: la página fuerza un solo año | Mantener la segmentación de año en selección única (ya está). Documentado |
 | D4 | `Estacionalidad Uds / Ventas / Compras ExW` | Los años de referencia `{ 2024, 2025 }` están escritos en la fórmula | Comprobado en el código | Medio: en 2027 habrá que editar tres medidas | Documentado como supuesto. Alternativa: `Calendario[Año] IN { _anio - 2, _anio - 1 }` |
 | D5 | `Stock Final Uds`, `Stock Inicial Uds`, `Meses con Inventario` | La fecha de inicio `DATE ( 2023, 12, 1 )` está escrita en la fórmula | Comprobado en el código | Bajo | Alternativa: `CALCULATE ( MIN ( Inventario[Fecha] ), REMOVEFILTERS () )` |
