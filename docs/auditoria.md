@@ -42,7 +42,7 @@ comprobar en Power BI queda **por validar**, con un prompt de prueba.
 
 | Elemento | Qué falta | Quién |
 |---|---|---|
-| Página Budget / Forecast | Correr `03_powerbi/prompts/04_budget_forecast.md` | María Gabriela, con Claude in Chrome |
+| Página Budget / Forecast | Creada y con los controles correctos. Faltan dos detalles de formato (fila Rolling resaltada y fondo de la estacionalidad de compras) | María Gabriela, con Claude in Chrome |
 | Capturas y PDF | Sacarlas del Service antes del 5-dic | María Gabriela (`docs/guia_capturas_pdf.md`) |
 | Exportación de medidas | Guardar el resultado de `INFO.VIEW.MEASURES ()` en el repo para auditar el DAX real | María Gabriela |
 | Generalizar la ubicación de los almacenes | Confirmar si las direcciones son reales y correr `scripts/generalizar_almacenes.py` | Decisión de María Gabriela |
@@ -75,7 +75,7 @@ comprobar en Power BI queda **por validar**, con un prompt de prueba.
 | Importante | Controles de calidad, pruebas y reproducibilidad | Hecho en este PR |
 | Importante | Backtest del forecast frente a métodos base | Hecho en este PR |
 | Importante | Corte único de las comparaciones con el año anterior | Prompt listo |
-| Importante | Página Budget / Forecast | Prompt listo |
+| Importante | Página Budget / Forecast | Casi terminada |
 | Recomendada | Capturas y PDF | Guía lista |
 | Recomendada | Exportar las medidas al repo | Pendiente |
 | Opcional | Parametrizar los años de la estacionalidad y la fecha de inicio del inventario | Documentado (`docs/auditoria_dax.md`) |

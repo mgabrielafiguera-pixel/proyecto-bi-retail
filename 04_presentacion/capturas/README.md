@@ -9,4 +9,4 @@ Todavía no hay ninguna. Cómo sacarlas: [`docs/guia_capturas_pdf.md`](../../doc
 | `02_ventas.png` | Ventas | Pendiente |
 | `03_compras.png` | Compras | Pendiente |
 | `04_inventario.png` | Inventario | Pendiente |
-| `05_budget_forecast.png` | Budget / Forecast | Pendiente (la página aún no está creada) |
+| `05_budget_forecast.png` | Budget / Forecast | Pendiente (página casi terminada, faltan dos detalles de formato) |
