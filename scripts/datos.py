@@ -35,7 +35,7 @@ def compras_validas(compras):
     """Compras sin las 6 devoluciones duplicadas con costo erróneo.
 
     Es el mismo filtro que el paso "Excluir errores de captura" de Power Query
-    (03_powerbi/prompts/00_excluir_errores_compras.md).
+    (03_powerbi/MODELO.md, sección 4).
     """
     error = (compras["Es_Posible_Duplicado"] == "Sí") & (compras["Precio_Cero"] == "Sí")
     return compras[~error]

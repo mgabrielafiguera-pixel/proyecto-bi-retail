@@ -579,3 +579,921 @@ SKU sin movimiento: 1.220 productos tienen stock pero ninguna venta ni compra en
 - `Producto[PESO_GR]` es numérico. Las celdas con texto vacío ahora están vacías de verdad.
 - `CATEGORIA_LOTUS` renombrada a `CATEGORIA_VENTA`.
 - Tabla `Calendario` añadida con nombres de mes en español.
+
+## 4. Medidas por página
+
+Código DAX de las páginas 2 a 6, tal como se creó en Power BI Service. Las medidas base (Sell In, Sell Out, margen,
+devoluciones, Resumen anual) están en la sección 2. Si Power BI rechaza las comas, la configuración regional espera `;`.
+
+### Power Query · Compras: paso "Excluir errores de captura"
+
+Excluye las 6 devoluciones duplicadas con costo erróneo (ver la sección 3). Compras queda en 16.715 filas.
+
+```m
+= Table.SelectRows(#"Paso anterior", each not ([Es_Posible_Duplicado] = "Sí" and [Precio_Cero] = "Sí"))
+```
+
+### Ventas y Compras (páginas 2 y 3)
+
+#### Ventas
+
+```dax
+Vendido AA Matriz = COALESCE ( [Importe Sell Out AA], 0 )
+```
+
+```dax
+Estacionalidad Ventas =
+VAR _meses = VALUES ( Calendario[Mes] )
+VAR _total =
+    CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 } )
+VAR _mes =
+    CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 }, _meses )
+RETURN
+    DIVIDE ( _mes, _total / 12 )
+```
+
+```dax
+Unidades Sell Out Var % YTD =
+VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _act = CALCULATE ( [Unidades Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+VAR _aa  = CALCULATE ( [Unidades Sell Out AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+RETURN DIVIDE ( _act - _aa, _aa )
+```
+
+```dax
+Facturas AA = CALCULATE ( [Facturas], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )
+```
+
+```dax
+Facturas Var % YTD =
+VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _act = CALCULATE ( [Facturas], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+VAR _aa  = CALCULATE ( [Facturas AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+RETURN DIVIDE ( _act - _aa, _aa )
+```
+
+```dax
+Ticket Promedio Var % YTD =
+VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _act = CALCULATE ( [Ticket Promedio], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+VAR _aa  = CALCULATE ( [Ticket Promedio AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+RETURN DIVIDE ( _act - _aa, _aa )
+```
+
+```dax
+Margen % Var pp YTD =
+VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _act = CALCULATE ( [Margen %], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+VAR _aa  = CALCULATE ( [Margen % AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+RETURN _act - _aa
+```
+
+```dax
+Precio Promedio Venta = DIVIDE ( [Importe Sell Out], [Unidades Sell Out] )
+```
+
+```dax
+Costo Promedio Pieza Venta = DIVIDE ( [Costo Sell Out], [Unidades Sell Out] )
+```
+
+```dax
+% Venta Global =
+DIVIDE (
+    [Importe Sell Out],
+    CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Proveedor ), REMOVEFILTERS ( Marca ), REMOVEFILTERS ( Departamento ), REMOVEFILTERS ( Producto ) )
+)
+```
+
+```dax
+% del Total Venta = DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], ALLSELECTED () ) )
+```
+
+```dax
+Inventario Final (est.) =
+VAR _fin  = MAX ( Calendario[Fecha] )
+VAR _ultC = CALCULATE ( MAX ( Compras[Fecha_Recepcion] ), REMOVEFILTERS () )
+RETURN
+    IF (
+        MIN ( Calendario[Fecha] ) > _ultC, 0,
+        CALCULATE (
+            [Unidades Sell In] - [Unidades Sell Out],
+            REMOVEFILTERS ( Calendario ),
+            Calendario[Fecha] >= DATE ( 2024, 1, 1 ),
+            Calendario[Fecha] <= MIN ( _fin, _ultC )
+        )
+    )
+```
+
+```dax
+Inventario Inicial (est.) =
+VAR _ini  = MIN ( Calendario[Fecha] )
+VAR _ultC = CALCULATE ( MAX ( Compras[Fecha_Recepcion] ), REMOVEFILTERS () )
+RETURN
+    IF (
+        _ini > _ultC, 0,
+        CALCULATE (
+            [Unidades Sell In] - [Unidades Sell Out],
+            REMOVEFILTERS ( Calendario ),
+            Calendario[Fecha] >= DATE ( 2024, 1, 1 ),
+            Calendario[Fecha] < _ini
+        )
+    )
+```
+
+```dax
+Venta Promedio Mensual Uds =
+DIVIDE (
+    CALCULATE ( [Unidades Sell Out], DATESINPERIOD ( Calendario[Fecha], MAX ( Calendario[Fecha] ), -3, MONTH ) ),
+    3
+)
+```
+
+```dax
+Cobertura Meses = DIVIDE ( [Inventario Final (est.)], [Venta Promedio Mensual Uds] )
+```
+
+```dax
+Det Unidades Compradas = COALESCE ( [Unidades Sell In], 0 )
+```
+
+```dax
+Det Unidades Vendidas = COALESCE ( [Unidades Sell Out], 0 )
+```
+
+```dax
+Det Monto Vendido = COALESCE ( [Importe Sell Out], 0 )
+```
+
+#### Compras
+
+```dax
+Comprado AA Matriz = COALESCE ( [Sell In (selector) AA], 0 )
+```
+
+```dax
+Estacionalidad Compras =
+VAR _meses = VALUES ( Calendario[Mes] )
+VAR _total =
+    CALCULATE ( [Sell In (selector)], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 } )
+VAR _mes =
+    CALCULATE ( [Sell In (selector)], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 }, _meses )
+RETURN
+    DIVIDE ( _mes, _total / 12 )
+```
+
+```dax
+Unidades Sell In Var % YTD =
+VAR _ult = CALCULATE ( MAX ( Compras[Fecha_Recepcion] ), REMOVEFILTERS ( Calendario ) )
+VAR _act = CALCULATE ( [Unidades Sell In], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+VAR _aa  = CALCULATE ( [Unidades Sell In AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
+RETURN DIVIDE ( _act - _aa, _aa )
+```
+
+```dax
+Costo Promedio Pieza Compra = DIVIDE ( [Sell In (selector)], [Unidades Sell In] )
+```
+
+```dax
+Factor Importación = DIVIDE ( [Importe Sell In], [Importe Sell In ExW] )
+```
+
+```dax
+Lead Time Días =
+AVERAGEX (
+    FILTER (
+        Compras,
+        NOT ISBLANK ( Compras[Fecha_Invoice] )
+            && Compras[Fecha_Recepcion] >= Compras[Fecha_Invoice]
+    ),
+    DATEDIFF ( Compras[Fecha_Invoice], Compras[Fecha_Recepcion], DAY )
+)
+```
+
+```dax
+% Compra Global =
+DIVIDE (
+    [Sell In (selector)],
+    CALCULATE ( [Sell In (selector)], REMOVEFILTERS ( Proveedor ), REMOVEFILTERS ( Marca ), REMOVEFILTERS ( Departamento ), REMOVEFILTERS ( Producto ) )
+)
+```
+
+```dax
+% del Total Compra = DIVIDE ( [Sell In (selector)], CALCULATE ( [Sell In (selector)], ALLSELECTED () ) )
+```
+
+```dax
+Compras ÷ Ventas Uds = DIVIDE ( [Unidades Sell In], [Unidades Sell Out] )
+```
+
+```dax
+% Compras Sin Clasificar =
+DIVIDE ( CALCULATE ( [Sell In (selector)], Compras[Tipo_Movi] = "Sin clasificar" ), [Sell In (selector)] )
+```
+
+```dax
+% Devoluciones a Proveedor =
+DIVIDE ( - CALCULATE ( [Sell In (selector)], Compras[Cantidad] < 0 ), [Sell In (selector)] )
+```
+
+```dax
+Det Compras ExW = COALESCE ( [Importe Sell In ExW], 0 )
+```
+
+```dax
+Det Compras Puesto = COALESCE ( [Importe Sell In], 0 )
+```
+
+### Inventario (página 4)
+
+```dax
+Fecha Ultimo Inventario = CALCULATE ( MAX ( Inventario[Fecha] ), REMOVEFILTERS () )
+```
+
+```dax
+Stock Final Uds =
+VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 )
+RETURN
+    IF (
+        MIN ( Calendario[Fecha] ) > [Fecha Ultimo Inventario] || MAX ( Calendario[Fecha] ) < DATE ( 2023, 12, 1 ),
+        BLANK (),
+        CALCULATE ( SUM ( Inventario[Unidades] ), REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _f ) + 0
+    )
+```
+
+```dax
+Stock Inicial Uds =
+VAR _f = EOMONTH ( MIN ( Calendario[Fecha] ), -1 )
+RETURN
+    IF (
+        _f < DATE ( 2023, 12, 31 ) || _f >= [Fecha Ultimo Inventario], BLANK (),
+        CALCULATE ( SUM ( Inventario[Unidades] ), REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _f ) + 0
+    )
+```
+
+```dax
+Meses con Inventario =
+COUNTROWS (
+    FILTER (
+        VALUES ( Calendario[Año_Mes] ),
+        VAR _m = CALCULATE ( MAX ( Calendario[Fecha] ) )
+        RETURN _m >= DATE ( 2023, 12, 1 ) && _m <= [Fecha Ultimo Inventario]
+    )
+)
+```
+
+```dax
+Inventario Promedio Uds =
+AVERAGEX (
+    FILTER (
+        VALUES ( Calendario[Año_Mes] ),
+        VAR _m = CALCULATE ( MAX ( Calendario[Fecha] ) )
+        RETURN _m >= DATE ( 2023, 12, 1 ) && _m <= [Fecha Ultimo Inventario]
+    ),
+    [Stock Final Uds]
+)
+```
+
+```dax
+Uds Vendidas Periodo Inv =
+VAR _u = [Fecha Ultimo Inventario]
+RETURN CALCULATE ( [Unidades Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _u ) )
+```
+
+```dax
+Rotacion Anualizada =
+DIVIDE ( [Uds Vendidas Periodo Inv], [Inventario Promedio Uds] ) * DIVIDE ( 12, [Meses con Inventario] )
+```
+
+```dax
+Dias de Inventario = DIVIDE ( 365, [Rotacion Anualizada] )
+```
+
+```dax
+Costo Unitario SKU =
+VAR _c = DIVIDE (
+    CALCULATE ( SUM ( Compras[Total_Precio_Costo_Nacionalizado] ), REMOVEFILTERS ( Calendario ) ),
+    CALCULATE ( SUM ( Compras[Cantidad] ), REMOVEFILTERS ( Calendario ) ) )
+VAR _v = DIVIDE (
+    CALCULATE ( SUM ( Ventas[Costo_Total_Facturado] ), REMOVEFILTERS ( Calendario ) ),
+    CALCULATE ( SUM ( Ventas[Cantidad] ), REMOVEFILTERS ( Calendario ) ) )
+VAR _marca = SELECTEDVALUE ( Producto[CODIGO_INTERNO_MARCA] )
+VAR _m = CALCULATE (
+    DIVIDE ( SUM ( Compras[Total_Precio_Costo_Nacionalizado] ), SUM ( Compras[Cantidad] ) ),
+    REMOVEFILTERS ( Calendario ), REMOVEFILTERS ( Producto ),
+    Producto[CODIGO_INTERNO_MARCA] = _marca )
+RETURN COALESCE ( _c, _v, _m )
+```
+
+```dax
+Valor Inventario Costo =
+VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 )
+VAR _t =
+    CALCULATETABLE (
+        ADDCOLUMNS ( VALUES ( Inventario[COD_SKU] ), "@u", CALCULATE ( SUM ( Inventario[Unidades] ) ) ),
+        REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _f )
+RETURN
+    IF ( ISBLANK ( [Stock Final Uds] ), BLANK (),
+        SUMX ( _t, [@u] * CALCULATE ( [Costo Unitario SKU], TREATAS ( { Inventario[COD_SKU] }, Producto[COD_SKU] ) ) ) )
+```
+
+```dax
+Cobertura Meses Real =
+VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 )
+VAR _venta =
+    DIVIDE ( CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _f, -3, MONTH ) ), 3 )
+RETURN DIVIDE ( [Stock Final Uds], _venta )
+```
+
+```dax
+SKU Activos 3M =
+VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 )
+RETURN
+    COUNTROWS ( CALCULATETABLE ( VALUES ( Ventas[COD_SKU] ), REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _f, -3, MONTH ) ) )
+```
+
+```dax
+SKU en Quiebre =
+VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 )
+VAR _venta = CALCULATETABLE ( VALUES ( Ventas[COD_SKU] ), REMOVEFILTERS ( Calendario ),
+    DATESINPERIOD ( Calendario[Fecha], _f, -3, MONTH ) )
+VAR _stock = CALCULATETABLE ( VALUES ( Inventario[COD_SKU] ), REMOVEFILTERS ( Calendario ),
+    Inventario[Fecha] = _f, Inventario[Unidades] > 0 )
+RETURN COUNTROWS ( EXCEPT ( _venta, _stock ) ) + 0
+```
+
+```dax
+% SKU en Quiebre = DIVIDE ( [SKU en Quiebre], [SKU Activos 3M] )
+```
+
+```dax
+Venta Perdida Est. =
+VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 )
+VAR _venta = CALCULATETABLE ( VALUES ( Ventas[COD_SKU] ), REMOVEFILTERS ( Calendario ),
+    DATESINPERIOD ( Calendario[Fecha], _f, -3, MONTH ) )
+VAR _stock = CALCULATETABLE ( VALUES ( Inventario[COD_SKU] ), REMOVEFILTERS ( Calendario ),
+    Inventario[Fecha] = _f, Inventario[Unidades] > 0 )
+RETURN
+    SUMX ( EXCEPT ( _venta, _stock ),
+        CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Calendario ),
+            DATESINPERIOD ( Calendario[Fecha], _f, -3, MONTH ),
+            TREATAS ( { Ventas[COD_SKU] }, Producto[COD_SKU] ) ) / 3 )
+```
+
+```dax
+Stock Sin Venta 12M Uds =
+VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 )
+VAR _conVenta = CALCULATETABLE ( VALUES ( Ventas[COD_SKU] ), REMOVEFILTERS ( Calendario ),
+    DATESINPERIOD ( Calendario[Fecha], _f, -12, MONTH ) )
+RETURN
+    CALCULATE ( SUM ( Inventario[Unidades] ), REMOVEFILTERS ( Calendario ),
+        Inventario[Fecha] = _f, NOT Inventario[COD_SKU] IN _conVenta ) + 0
+```
+
+```dax
+% Stock Sin Venta 12M = DIVIDE ( [Stock Sin Venta 12M Uds], [Stock Final Uds] )
+```
+
+```dax
+Origen Inventario =
+VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 )
+RETURN CALCULATE ( MAX ( Inventario[Origen] ), REMOVEFILTERS ( Calendario ), REMOVEFILTERS ( Producto ), Inventario[Fecha] = _f )
+```
+
+```dax
+Inventario Final (est.) = [Stock Final Uds]
+```
+
+```dax
+Inventario Inicial (est.) = [Stock Inicial Uds]
+```
+
+### Punto de reorden (página 4)
+
+```dax
+Fecha Corte Inv = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 )
+```
+
+```dax
+Stock Corte Uds =
+VAR _f = [Fecha Corte Inv]
+RETURN CALCULATE ( SUM ( Inventario[Unidades] ), REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _f ) + 0
+```
+
+```dax
+Demanda Mensual Uds =
+VAR _f = [Fecha Corte Inv]
+RETURN
+    DIVIDE ( CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _f, -6, MONTH ) ), 6 )
+```
+
+```dax
+Desv Demanda Mensual Uds =
+VAR _f = [Fecha Corte Inv]
+RETURN
+    CALCULATE (
+        STDEVX.P ( VALUES ( Calendario[Año_Mes] ), [Unidades Sell Out] + 0 ),
+        REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _f, -6, MONTH )
+    )
+```
+
+```dax
+Lead Time Meses =
+VAR _sel = CALCULATE ( [Lead Time Días], REMOVEFILTERS ( Calendario ) )
+VAR _gen = CALCULATE ( [Lead Time Días], REMOVEFILTERS () )
+RETURN DIVIDE ( COALESCE ( _sel, _gen ), 30 )
+```
+
+```dax
+Stock Seguridad Uds = 1.65 * [Desv Demanda Mensual Uds] * SQRT ( [Lead Time Meses] )
+```
+
+```dax
+Punto de Reorden Uds = [Demanda Mensual Uds] * [Lead Time Meses] + [Stock Seguridad Uds]
+```
+
+```dax
+Stock Maximo Uds = [Punto de Reorden Uds] + [Demanda Mensual Uds]
+```
+
+```dax
+Dias hasta Reorden =
+DIVIDE ( [Stock Corte Uds] - [Punto de Reorden Uds], DIVIDE ( [Demanda Mensual Uds], 30 ) )
+```
+
+```dax
+Estado Reorden =
+VAR _s = [Stock Corte Uds]
+VAR _d = [Demanda Mensual Uds]
+RETURN
+    SWITCH (
+        TRUE (),
+        _d = 0 || ISBLANK ( _d ), "Sin demanda",
+        _s <= [Punto de Reorden Uds], "Reponer",
+        _s > 12 * _d, "Sobrestock",
+        "OK"
+    )
+```
+
+```dax
+Color Estado Reorden =
+SWITCH ( [Estado Reorden], "Reponer", "#C2412D", "Sobrestock", "#E4643F", "OK", "#1F8A4C", "#C9D1E3" )
+```
+
+```dax
+Marcas a Reponer =
+COUNTROWS (
+    FILTER ( VALUES ( Producto[CODIGO_INTERNO_MARCA] ),
+        [Demanda Mensual Uds] > 0 && [Stock Corte Uds] <= [Punto de Reorden Uds] )
+) + 0
+```
+
+```dax
+Marcas con Demanda =
+COUNTROWS ( FILTER ( VALUES ( Producto[CODIGO_INTERNO_MARCA] ), [Demanda Mensual Uds] > 0 ) ) + 0
+```
+
+```dax
+Marcas en Sobrestock =
+COUNTROWS (
+    FILTER ( VALUES ( Producto[CODIGO_INTERNO_MARCA] ),
+        [Demanda Mensual Uds] > 0 && [Stock Corte Uds] > 12 * [Demanda Mensual Uds] )
+) + 0
+```
+
+```dax
+Compra Sugerida Uds =
+SUMX (
+    VALUES ( Producto[CODIGO_INTERNO_MARCA] ),
+    VAR _s = [Stock Corte Uds]
+    RETURN IF ( [Demanda Mensual Uds] > 0 && _s <= [Punto de Reorden Uds], MAX ( 0, [Stock Maximo Uds] - _s ), 0 )
+)
+```
+
+```dax
+Compra Sugerida Costo =
+SUMX (
+    VALUES ( Producto[CODIGO_INTERNO_MARCA] ),
+    VAR _q = [Compra Sugerida Uds]
+    RETURN _q * DIVIDE ( [Valor Inventario Costo], [Stock Final Uds] )
+)
+```
+
+### Budget / Forecast (página 5)
+
+```dax
+Fecha Corte Forecast = [Fecha Ultimo Inventario]
+```
+
+```dax
+Estacionalidad Uds =
+VAR _meses = VALUES ( Calendario[Mes] )
+VAR _total =
+    CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 } )
+VAR _mes =
+    CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 }, _meses )
+RETURN DIVIDE ( _mes, _total / 12 )
+```
+
+#### Budget
+
+```dax
+Budget $ =
+VAR _anual = [Presupuesto Comercial]
+RETURN SUMX ( VALUES ( Calendario[Mes] ), _anual * [Estacionalidad Ventas] / 12 )
+```
+
+```dax
+Budget Uds =
+VAR _anio = SELECTEDVALUE ( Calendario[Año] )
+VAR _anual =
+    CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] = _anio - 1 )
+        * [Proyección Crecimiento]
+RETURN SUMX ( VALUES ( Calendario[Mes] ), _anual * [Estacionalidad Uds] / 12 )
+```
+
+```dax
+Budget Acumulado $ = CALCULATE ( [Budget $], DATESYTD ( Calendario[Fecha] ) )
+```
+
+```dax
+Estacionalidad Compras ExW =
+VAR _meses = VALUES ( Calendario[Mes] )
+VAR _total =
+    CALCULATE ( [Importe Sell In ExW], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 } )
+VAR _mes =
+    CALCULATE ( [Importe Sell In ExW], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 }, _meses )
+RETURN DIVIDE ( _mes, _total / 12 )
+```
+
+```dax
+Budget Compras $ =
+VAR _anio = SELECTEDVALUE ( Calendario[Año] )
+VAR _anual =
+    CALCULATE ( [Importe Sell In ExW], REMOVEFILTERS ( Calendario ), Calendario[Año] = _anio - 1 )
+        * [Proyección Crecimiento]
+RETURN SUMX ( VALUES ( Calendario[Mes] ), _anual * [Estacionalidad Compras ExW] / 12 )
+```
+
+#### Bases del forecast
+
+```dax
+Pieza Promedio Mensual =
+VAR _c = [Fecha Corte Forecast]
+RETURN
+    DIVIDE ( CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _c, -12, MONTH ) ), 12 )
+```
+
+```dax
+Precio Promedio Venta 12M =
+VAR _c = [Fecha Corte Forecast]
+RETURN
+    CALCULATE ( DIVIDE ( [Importe Sell Out], [Unidades Sell Out] ), REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _c, -12, MONTH ) )
+```
+
+```dax
+Costo Promedio ExW 12M =
+VAR _c = [Fecha Corte Forecast]
+RETURN
+    CALCULATE ( DIVIDE ( [Importe Sell In ExW], [Unidades Sell In] ), REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _c, -12, MONTH ) )
+```
+
+#### Forecast
+
+```dax
+Forecast SO Uds =
+VAR _c = [Fecha Corte Forecast]
+VAR _pieza = [Pieza Promedio Mensual]
+RETURN
+    SUMX (
+        VALUES ( Calendario[Año_Mes] ),
+        IF ( CALCULATE ( MIN ( Calendario[Fecha] ) ) > _c, _pieza * [Estacionalidad Uds] )
+    )
+```
+
+```dax
+Forecast SO $ = [Forecast SO Uds] * [Precio Promedio Venta 12M]
+```
+
+```dax
+Rolling SO Uds =
+VAR _c = [Fecha Corte Forecast]
+RETURN
+    SUMX (
+        VALUES ( Calendario[Año_Mes] ),
+        IF ( CALCULATE ( MAX ( Calendario[Fecha] ) ) <= _c, [Unidades Sell Out] + 0, [Forecast SO Uds] )
+    )
+```
+
+```dax
+Forecast SI Uds =
+VAR _c = [Fecha Corte Forecast]
+RETURN
+    SUMX (
+        VALUES ( Calendario[Año_Mes] ),
+        VAR _ini = CALCULATE ( MIN ( Calendario[Fecha] ) )
+        RETURN
+            IF ( _ini > _c,
+                CALCULATE ( [Rolling SO Uds], REMOVEFILTERS ( Calendario ),
+                    DATESBETWEEN ( Calendario[Fecha], EOMONTH ( _ini, -2 ) + 1, EOMONTH ( _ini, -1 ) ) ) )
+    )
+```
+
+```dax
+Forecast SI $ = [Forecast SI Uds] * [Costo Promedio ExW 12M]
+```
+
+#### Rolling Forecast
+
+```dax
+Real SO $ =
+VAR _c = [Fecha Corte Forecast]
+RETURN CALCULATE ( [Importe Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _c ) )
+```
+
+```dax
+Rolling SO $ =
+VAR _c = [Fecha Corte Forecast]
+RETURN
+    SUMX (
+        VALUES ( Calendario[Año_Mes] ),
+        IF ( CALCULATE ( MAX ( Calendario[Fecha] ) ) <= _c, [Importe Sell Out] + 0, [Forecast SO $] )
+    )
+```
+
+```dax
+Rolling SI Uds =
+VAR _c = [Fecha Corte Forecast]
+RETURN
+    SUMX (
+        VALUES ( Calendario[Año_Mes] ),
+        IF ( CALCULATE ( MAX ( Calendario[Fecha] ) ) <= _c, [Unidades Sell In] + 0, [Forecast SI Uds] )
+    )
+```
+
+```dax
+Rolling SI $ =
+VAR _c = [Fecha Corte Forecast]
+RETURN
+    SUMX (
+        VALUES ( Calendario[Año_Mes] ),
+        IF ( CALCULATE ( MAX ( Calendario[Fecha] ) ) <= _c, [Importe Sell In ExW] + 0, [Forecast SI $] )
+    )
+```
+
+```dax
+Stock Proyectado Uds =
+VAR _c = [Fecha Corte Forecast]
+VAR _fin = MAX ( Calendario[Fecha] )
+RETURN
+    IF (
+        _fin <= _c,
+        [Stock Final Uds],
+        VAR _ifc = CALCULATE ( SUM ( Inventario[Unidades] ), REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _c )
+        VAR _soc = CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ),
+            DATESBETWEEN ( Calendario[Fecha], EOMONTH ( _c, -1 ) + 1, _c ) )
+        VAR _som = CALCULATE ( [Forecast SO Uds], REMOVEFILTERS ( Calendario ),
+            DATESBETWEEN ( Calendario[Fecha], EOMONTH ( _fin, -1 ) + 1, EOMONTH ( _fin, 0 ) ) )
+        RETURN MAX ( 0, _ifc + _soc - _som )
+    )
+```
+
+```dax
+Rolling Acumulado $ = CALCULATE ( [Rolling SO $], DATESYTD ( Calendario[Fecha] ) )
+```
+
+```dax
+Real Acumulado $ =
+VAR _c = [Fecha Corte Forecast]
+RETURN IF ( MIN ( Calendario[Fecha] ) > _c, BLANK (), CALCULATE ( [Importe Sell Out], DATESYTD ( Calendario[Fecha] ) ) )
+```
+
+```dax
+Var RF vs Budget % = DIVIDE ( [Rolling SO $] - [Budget $], [Budget $] )
+```
+
+```dax
+Brecha vs Budget $ = [Rolling SO $] - [Budget $]
+```
+
+```dax
+Real SI $ =
+VAR _c = [Fecha Corte Forecast]
+RETURN CALCULATE ( [Importe Sell In ExW], KEEPFILTERS ( Calendario[Fecha] <= _c ) )
+```
+
+```dax
+Var Compras RF vs Budget % = DIVIDE ( [Rolling SI $] - [Budget Compras $], [Budget Compras $] )
+```
+
+```dax
+Color Var Compras = IF ( [Var Compras RF vs Budget %] > 0, "#C2412D", "#1F8A4C" )
+```
+
+```dax
+Avance Real vs Budget % = DIVIDE ( [Real SO $], [Budget $] )
+```
+
+```dax
+Color Var Budget = IF ( [Var RF vs Budget %] < 0, "#C2412D", "#1F8A4C" )
+```
+
+```dax
+Color Mes Forecast =
+IF ( MIN ( Calendario[Fecha] ) > [Fecha Corte Forecast], "#F3F5F9", "#FFFFFF" )
+```
+
+### Ventas diarias (página 6)
+
+```dax
+Dia = DAY ( Calendario[Fecha] )
+```
+
+```dax
+Ubicacion = Almacen[DIRECCION] & ", " & Almacen[CIUDAD] & ", " & Almacen[ESTADO] & ", " & Almacen[PAIS]
+```
+
+```dax
+Ciudad Estado = Almacen[CIUDAD] & ", " & Almacen[ESTADO] & ", " & Almacen[PAIS]
+```
+
+```dax
+Estado Pais = Almacen[ESTADO] & ", Venezuela"
+```
+
+`Estado Pais` tiene la categoría "Estado o provincia" y es la ubicación del mapa coroplético (Azure Maps, capa de relleno).
+El color sale de reglas sobre `% Part Tienda`: más de 50 %, 10–50 %, 5–10 %, 1–5 % y menos de 1 %.
+
+#### Rango de datos y periodo comparable
+
+```dax
+Fecha Primera Venta = CALCULATE ( MIN ( Ventas[Fecha] ), REMOVEFILTERS () )
+```
+
+```dax
+Fecha Ultima Venta = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS () )
+```
+
+```dax
+Periodo Comparable =
+VAR _fin = MAX ( Calendario[Fecha] )
+VAR _ini = MIN ( Calendario[Fecha] )
+RETURN _fin <= [Fecha Ultima Venta] && EDATE ( _ini, -12 ) >= EOMONTH ( [Fecha Primera Venta], -1 ) + 1
+```
+
+#### Gráfico diario
+
+```dax
+Venta Diaria =
+IF (
+    MAX ( Calendario[Fecha] ) < [Fecha Primera Venta] || MIN ( Calendario[Fecha] ) > [Fecha Ultima Venta],
+    BLANK (),
+    [Importe Sell Out] + 0
+)
+```
+
+```dax
+Uds Diarias =
+IF (
+    MAX ( Calendario[Fecha] ) < [Fecha Primera Venta] || MIN ( Calendario[Fecha] ) > [Fecha Ultima Venta],
+    BLANK (),
+    [Unidades Sell Out] + 0
+)
+```
+
+```dax
+Facturas Diarias =
+IF (
+    MAX ( Calendario[Fecha] ) < [Fecha Primera Venta] || MIN ( Calendario[Fecha] ) > [Fecha Ultima Venta],
+    BLANK (),
+    [Facturas] + 0
+)
+```
+
+```dax
+Titulo Ventas Diarias =
+VAR _mes = SELECTEDVALUE ( Calendario[Nombre_Mes] )
+VAR _anio = SELECTEDVALUE ( Calendario[Año] )
+RETURN
+    IF (
+        ISBLANK ( _mes ) || ISBLANK ( _anio ),
+        "Ventas diarias · elige un mes y un año",
+        "Ventas diarias · " & _mes & " " & _anio
+    )
+```
+
+```dax
+Nota Periodo =
+IF (
+    MAX ( Calendario[Fecha] ) > [Fecha Ultima Venta],
+    "Datos hasta el " & FORMAT ( [Fecha Ultima Venta], "d-mmm-yyyy", "es-ES" ) & ". El resto del mes no tiene datos.",
+    ""
+)
+```
+
+#### Variaciones de las tarjetas
+
+```dax
+Var Ventas Diarias % =
+VAR _aa = [Importe Sell Out AA]
+RETURN IF ( [Periodo Comparable] && _aa > 0, DIVIDE ( [Importe Sell Out] - _aa, _aa ) )
+```
+
+```dax
+Var Uds Diarias % =
+VAR _aa = [Unidades Sell Out AA]
+RETURN IF ( [Periodo Comparable] && _aa > 0, DIVIDE ( [Unidades Sell Out] - _aa, _aa ) )
+```
+
+```dax
+Var Ticket Diarias % =
+VAR _aa = [Ticket Promedio AA]
+RETURN IF ( [Periodo Comparable] && _aa > 0, DIVIDE ( [Ticket Promedio] - _aa, _aa ) )
+```
+
+```dax
+Var Margen Diarias pp =
+VAR _aa = [Margen % AA]
+VAR _baseAA = [Importe Sell Out AA]
+RETURN IF ( [Periodo Comparable] && _baseAA > 0, [Margen %] - _aa )
+```
+
+```dax
+Devoluciones % AA Diarias =
+CALCULATE ( [Devoluciones %], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )
+```
+
+```dax
+Var Devoluciones Diarias pp =
+VAR _baseAA = [Importe Sell Out AA]
+RETURN IF ( [Periodo Comparable] && _baseAA > 0, [Devoluciones %] - [Devoluciones % AA Diarias] )
+```
+
+```dax
+Texto Var Ventas Diarias =
+VAR g = [Var Ventas Diarias %]
+RETURN IF ( ISBLANK ( g ), "sin comparable", IF ( g >= 0, "▲ ", "▼ " ) & FORMAT ( g, "0.0%", "es-ES" ) & " vs año anterior" )
+```
+
+```dax
+Texto Var Margen Diarias =
+VAR g = [Var Margen Diarias pp]
+RETURN IF ( ISBLANK ( g ), "sin comparable", IF ( g >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( g ) * 100, "0.0", "es-ES" ) & " pp vs año anterior" )
+```
+
+#### Líderes del periodo
+
+```dax
+Marca Lider =
+VAR _t =
+    TOPN ( 1, FILTER ( VALUES ( Marca[CODIGO_INTERNO_MARCA] ), [Importe Sell Out] > 0 ),
+        [Importe Sell Out], DESC, Marca[CODIGO_INTERNO_MARCA], ASC )
+RETURN MAXX ( _t, Marca[CODIGO_INTERNO_MARCA] )
+```
+
+```dax
+Venta Marca Lider =
+VAR _m = [Marca Lider]
+RETURN CALCULATE ( [Importe Sell Out], Marca[CODIGO_INTERNO_MARCA] = _m )
+```
+
+```dax
+% Marca Lider = DIVIDE ( [Venta Marca Lider], [Importe Sell Out] )
+```
+
+#### Participación en los rankings
+
+```dax
+% Part Marca = DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], ALLSELECTED ( Marca ) ) )
+```
+
+```dax
+% Part Proveedor = DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], ALLSELECTED ( Proveedor ) ) )
+```
+
+```dax
+% Part Vendedor = DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], ALLSELECTED ( Vendedor ) ) )
+```
+
+```dax
+% Part Tienda = DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], ALLSELECTED ( Almacen ) ) )
+```
+
+Las tablas Top 5 de proveedor y vendedor usan `REMOVEFILTERS` en lugar de `ALLSELECTED`: con un filtro Top N en el
+visual, `ALLSELECTED` repartiría el 100 % entre los cinco.
+
+```dax
+% Venta Proveedor Periodo = DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Proveedor ) ) )
+```
+
+```dax
+% Venta Vendedor Periodo = DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Vendedor ) ) )
+```
+
+Las medidas Texto Var de esta página terminan en "vs. mismo mes año anterior".

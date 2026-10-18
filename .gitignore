@@ -16,3 +16,4 @@ trabajo/
 # ── Caché local de los scripts ──
 .cache/
 .pytest_cache/
+03_powerbi/prompts/
