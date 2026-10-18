@@ -1309,7 +1309,7 @@ Color Mes Forecast =
 IF ( MIN ( Calendario[Fecha] ) > [Fecha Corte Forecast], "#F3F5F9", "#FFFFFF" )
 ```
 
-### Ventas diarias (página 6, en construcción)
+### Ventas diarias (página 6)
 
 ```dax
 Dia = DAY ( Calendario[Fecha] )
@@ -1322,6 +1322,13 @@ Ubicacion = Almacen[DIRECCION] & ", " & Almacen[CIUDAD] & ", " & Almacen[ESTADO]
 ```dax
 Ciudad Estado = Almacen[CIUDAD] & ", " & Almacen[ESTADO] & ", " & Almacen[PAIS]
 ```
+
+```dax
+Estado Pais = Almacen[ESTADO] & ", Venezuela"
+```
+
+`Estado Pais` tiene la categoría "Estado o provincia" y es la ubicación del mapa coroplético (Azure Maps, capa de relleno).
+El color sale de reglas sobre `% Part Tienda`: más de 50 %, 10–50 %, 5–10 %, 1–5 % y menos de 1 %.
 
 #### Rango de datos y periodo comparable
 
@@ -1477,3 +1484,16 @@ RETURN CALCULATE ( [Importe Sell Out], Marca[CODIGO_INTERNO_MARCA] = _m )
 ```dax
 % Part Tienda = DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], ALLSELECTED ( Almacen ) ) )
 ```
+
+Las tablas Top 5 de proveedor y vendedor usan `REMOVEFILTERS` en lugar de `ALLSELECTED`: con un filtro Top N en el
+visual, `ALLSELECTED` repartiría el 100 % entre los cinco.
+
+```dax
+% Venta Proveedor Periodo = DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Proveedor ) ) )
+```
+
+```dax
+% Venta Vendedor Periodo = DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Vendedor ) ) )
+```
+
+Las medidas Texto Var de esta página terminan en "vs. mismo mes año anterior".
