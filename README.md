@@ -251,8 +251,8 @@ completa está en [`04_presentacion/capturas/`](04_presentacion/capturas/).
 **Ventas diarias, abril 2026**
 ![Ventas diarias abril 2026](04_presentacion/capturas/11_ventas_diarias_abr2026.png)
 
-Las capturas de Resumen anual y Compras muestran la variación de Sell In 2026 a costo Ex-Work en +101 %. El 19-oct se
-corrigió el corte en el modelo y ahora es +346 % (D2 en `docs/auditoria_dax.md`). Las capturas se repetirán.
+Las capturas de Resumen anual y Compras se repitieron el 19-oct-2026, después de corregir el corte de las comparaciones
+(D2 en `docs/auditoria_dax.md`): la variación de Sell In 2026 es +346,3 % a costo Ex-Work y +396,1 % a costo puesto.
 
 ## 16. Informe en PDF
 

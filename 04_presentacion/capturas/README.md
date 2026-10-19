@@ -19,8 +19,8 @@ e importes escalados. Cómo se sacaron: [`docs/guia_capturas_pdf.md`](../../docs
 | `12_ventas_diarias_clic_miranda.png` | Ventas diarias | abril 2026, clic en Miranda en el mapa |
 | `13_ventas_diarias_almacen7.png` | Ventas diarias | abril 2026, Almacén 7 |
 
-Pendiente de repetir: `01` y `05` muestran la variación de Sell In 2026 con el corte antiguo (+101 %). Desde el
-19-oct el modelo da +346 % (D2 en `docs/auditoria_dax.md`, resuelto).
+`01`, `05` y `06` se repitieron el 19-oct-2026 tras la corrección D2 (`docs/auditoria_dax.md`), con el panel de páginas
+contraído. Muestran la variación de Sell In 2026 en +346,3 % (Ex-Work) y +396,1 % (puesto).
 
 En `12`, Miranda sube un 11.898 % frente a abril 2025 porque en abril 2026 la facturación central pasó del Almacén 1
 (Distrito Capital) al Almacén 6 (Miranda). Ver README, hallazgo 9.6.
