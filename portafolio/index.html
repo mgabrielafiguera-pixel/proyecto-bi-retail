@@ -26,7 +26,7 @@
     <section class="hero">
       <div class="hero-texto">
         <div class="etiqueta mono">ANALISTA DE DATOS · BI · OPERACIONES</div>
-        <h1>Más de 18 años en operaciones de retail. Ahora los convierto en <span class="acento">decisiones con datos.</span></h1>
+        <h1>Más de 15 años en operaciones de retail. Ahora los convierto en <span class="acento">decisiones con datos.</span></h1>
         <p class="entrada">Logística, inventarios, compras, ventas y control de costos, con Power BI, Python y Machine Learning.</p>
         <div class="botones">
           <a class="boton lleno" href="#proyectos">Ver proyectos</a>
@@ -72,6 +72,7 @@
     <div class="filtros" role="group" aria-label="Filtrar proyectos">
       <button type="button" aria-pressed="true" data-filtro="todos">Todos</button>
       <button type="button" aria-pressed="false" data-filtro="bi">BI</button>
+      <button type="button" aria-pressed="false" data-filtro="ml">Machine Learning</button>
       <button type="button" aria-pressed="false" data-filtro="datos">Ingeniería de datos</button>
       <button type="button" aria-pressed="false" data-filtro="apps">Apps e IA</button>
     </div>
@@ -86,10 +87,23 @@
           <a class="ver" href="proyecto-01.html">Ver el caso completo</a>
         </div>
       </article>
+      <article class="proyecto" data-area="ml">
+        <div class="imagen" style="background: var(--navy); color: var(--claro-2); flex-direction: column; gap: 6px"><span class="mono" style="color: var(--turq)">SmartAudit AI</span><span>Auditoría de precios con IA</span></div>
+        <div class="cuerpo">
+          <div class="meta"><span class="mono">02 · Machine Learning</span><span class="estado listo">Publicado</span></div>
+          <h3>SmartAudit AI: auditoría de precios en relojería y joyería</h3>
+          <p>App que estima el precio esperado de cada producto con un Random Forest (R² 0,75) y marca en verde, amarillo o rojo las desviaciones y los productos vendidos sin margen, para Finanzas y Comercial.</p>
+          <div class="mono" style="font-size: 12px; color: var(--texto-2)">Python · SQL · scikit-learn · Streamlit · Render</div>
+          <div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 16px">
+            <a class="ver" href="https://smartaudit-mgf.onrender.com">Ver la app en vivo</a>
+            <a class="ver" href="https://github.com/mgabrielafiguera-pixel/ProyectoDataScience">Ver el código</a>
+          </div>
+        </div>
+      </article>
       <article class="proyecto pronto" data-area="datos">
         <div class="imagen">Próximamente</div>
         <div class="cuerpo">
-          <div class="meta"><span class="mono">02 · Ingeniería de datos</span><span class="estado">En construcción</span></div>
+          <div class="meta"><span class="mono">03 · Ingeniería de datos</span><span class="estado">En construcción</span></div>
           <h3>De un respaldo SQL a un modelo analítico</h3>
           <p>Restaurar la base de datos de una tienda de electrodomésticos y llevarla a un modelo estrella. ¿Qué productos, tiendas y meses dejan el margen?</p>
           <div class="mono" style="font-size: 12px; color: var(--texto-2)">SQL Server · Docker · Python · Pandas</div>
@@ -98,7 +112,7 @@
       <article class="proyecto pronto" data-area="apps">
         <div class="imagen">Próximamente</div>
         <div class="cuerpo">
-          <div class="meta"><span class="mono">03 · Apps</span><span class="estado">Próximamente</span></div>
+          <div class="meta"><span class="mono">04 · Apps</span><span class="estado">Próximamente</span></div>
           <h3>Conciliación de inventario: sistema contra toma física</h3>
           <p>Una app que compara el stock del sistema con el conteo físico y devuelve las diferencias valoradas y un plan de conteo cíclico.</p>
           <div class="mono" style="font-size: 12px; color: var(--texto-2)">Python · Pandas · Streamlit</div>
@@ -107,7 +121,7 @@
       <article class="proyecto pronto" data-area="apps">
         <div class="imagen">Próximamente</div>
         <div class="cuerpo">
-          <div class="meta"><span class="mono">04 · Apps e IA</span><span class="estado">Próximamente</span></div>
+          <div class="meta"><span class="mono">05 · Apps e IA</span><span class="estado">Próximamente</span></div>
           <h3>Costeo de joyería con el precio del oro</h3>
           <p>Costo y precio sugerido de cada pieza con el precio del oro del día, desde el teléfono.</p>
           <div class="mono" style="font-size: 12px; color: var(--texto-2)">Python · API pública · Streamlit</div>
