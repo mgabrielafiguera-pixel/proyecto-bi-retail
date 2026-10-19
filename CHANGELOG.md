@@ -1,5 +1,13 @@
 # Registro de cambios
 
+## 19-oct-2026 · Corrección D2: corte de las comparaciones con el año anterior
+
+- Modelo semántico: `Sell In Var %` corta en la última recepción de compras (30-abr-2026) y `Crecimiento Obtenido %`,
+  `Histórico Crecimiento %`, `Sell Out Acumulado` y `Ritmo Esperado %` en `[Fecha Ultima Venta]`, que no cambia con
+  los filtros de marca o proveedor. Sell In 2026 a Ex-Work pasa de +101,0 % a +346,3 % (Puesto: +127,5 % → +396,1 %).
+- `03_powerbi/medidas_exportadas.csv` y `03_powerbi/MODELO.md`: las cinco medidas actualizadas.
+- `docs/auditoria_dax.md`: D2 resuelto, con la validación.
+
 ## 18-oct-2026 · Capturas, respaldo de medidas y página Ventas diarias terminada
 
 - `04_presentacion/capturas/`: 13 capturas reales del informe; las principales, en la sección 15 del README.

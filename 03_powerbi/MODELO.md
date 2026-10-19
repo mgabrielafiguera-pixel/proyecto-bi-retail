@@ -284,7 +284,7 @@ Devoluciones % Var pp =
 
 Medidas y tablas añadidas para la página **Resumen anual**, una réplica de la hoja de Excel original del mismo nombre.
 
-**Regla para comparar con el año anterior:** el año actual y el anterior se cortan en la **misma fecha**, que es la última venta cargada. Si no, un año incompleto se compara contra un año completo. En DAX, el corte se aplica *fuera* de la medida AA: `CALCULATE ( [X AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )`. Si `SAMEPERIODLASTYEAR` va en el mismo `CALCULATE` que el corte, el año anterior no se recorta.
+**Regla para comparar con el año anterior:** el año actual y el anterior se cortan en la **misma fecha**, que es la última fecha con datos de la tabla que se mide: la última venta para Sell Out y la última recepción de compras para Sell In. Esa fecha se calcula con `REMOVEFILTERS ()`, para que no cambie al filtrar por marca o proveedor. Si no, un año incompleto se compara contra un año completo. En DAX, el corte se aplica *fuera* de la medida AA: `CALCULATE ( [X AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )`. Si `SAMEPERIODLASTYEAR` va en el mismo `CALCULATE` que el corte, el año anterior no se recorta.
 
 #### Tablas sin relaciones (parámetros)
 
@@ -327,7 +327,7 @@ CALCULATE ( [Sell In (selector)], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )
 
 ```dax
 Sell In Var % =
-VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _ult = CALCULATE ( MAX ( Compras[Fecha_Recepcion] ), REMOVEFILTERS () )
 VAR _act = CALCULATE ( [Sell In (selector)], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
 VAR _aa  = CALCULATE ( [Sell In (selector) AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
 RETURN DIVIDE ( _act - _aa, _aa )
@@ -345,7 +345,7 @@ S/O Matriz = COALESCE ( [Importe Sell Out], 0 )
 
 ```dax
 Histórico Crecimiento % =
-VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _ult = [Fecha Ultima Venta]
 VAR _act = CALCULATE ( [Importe Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
 VAR _aa  = CALCULATE ( [Importe Sell Out AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
 RETURN
@@ -374,7 +374,7 @@ Proyección Crecimiento = SELECTEDVALUE ( Proyeccion[Value], 1.20 )
 
 ```dax
 Crecimiento Obtenido % =
-VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _ult = [Fecha Ultima Venta]
 VAR _act = CALCULATE ( [Importe Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
 VAR _aa  = CALCULATE ( [Importe Sell Out AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) )
 RETURN DIVIDE ( _act - _aa, _aa )
@@ -409,7 +409,7 @@ CALCULATE ( [Importe Sell Out AA], DATESYTD ( Calendario[Fecha] ) ) * [Proyecci�
 
 ```dax
 Sell Out Acumulado =
-VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _ult = [Fecha Ultima Venta]
 RETURN
     IF (
         MIN ( Calendario[Fecha] ) > _ult,
@@ -420,7 +420,7 @@ RETURN
 
 ```dax
 Ritmo Esperado % =
-VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) )
+VAR _ult = [Fecha Ultima Venta]
 VAR _anio = SELECTEDVALUE ( Calendario[Año] )
 VAR _aaHasta =
     CALCULATE (

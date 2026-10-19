@@ -198,8 +198,6 @@ tendencia. Por marca no es fiable.
 - Desde jul-2025 el inventario es estimado, y en 2026 sin calibración (sesgo a la baja).
 - Los traspasos entre almacenes no están en los datos: el sell-through no se lee por tienda.
 - Hay 2.308 ventas de may–jun 2026 sin compras ni inventario de esos meses. El forecast las excluye.
-- Las comparaciones con el año anterior de Resumen anual se cortan en la última venta (8-jun) y las compras terminan el
-  30-abr. La propuesta de un corte único está en `docs/auditoria_dax.md` (D2).
 - El filtro de proveedor podría no llegar a las medidas de inventario (por validar, mismo prompt).
 - Los posibles duplicados (1,95 % del importe de ventas) y las ventas con costo 0 se marcan, pero no se excluyen.
 - Los importes absolutos no son los reales.
@@ -253,8 +251,8 @@ completa está en [`04_presentacion/capturas/`](04_presentacion/capturas/).
 **Ventas diarias, abril 2026**
 ![Ventas diarias abril 2026](04_presentacion/capturas/11_ventas_diarias_abr2026.png)
 
-Las capturas de Resumen anual y Compras muestran la variación de Sell In 2026 a costo Ex-Work en +101 %. Con el
-corte corregido (D2 en `docs/auditoria_dax.md`) es +346 %. Se repetirán cuando se aplique la corrección.
+Las capturas de Resumen anual y Compras muestran la variación de Sell In 2026 a costo Ex-Work en +101 %. El 19-oct se
+corrigió el corte en el modelo y ahora es +346 % (D2 en `docs/auditoria_dax.md`). Las capturas se repetirán.
 
 ## 16. Informe en PDF
 
