@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proyecto 01 · Sell In / Sell Out · María Gabriela Figuera</title>
+<meta name="description" content="Informe de Power BI sobre ventas, compras e inventario de una cadena de retail de lujo, con datos anonimizados.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<div class="oscuro">
+  <div class="envoltura">
+    <header class="cabecera">
+      <a class="marca" href="index.html">María Gabriela Figuera</a>
+      <a href="index.html#proyectos" style="color: var(--turq); font-size: 14px; font-weight: 600">Volver a proyectos</a>
+    </header>
+    <section class="hero" style="flex-direction: column; align-items: start; gap: 18px; padding-top: 32px">
+      <div class="etiqueta mono">PROYECTO 01 · BI · RETAIL DE LUJO</div>
+      <h1 style="max-width: 860px">Sell In / Sell Out: ¿compramos al ritmo que vendemos?</h1>
+      <p class="entrada">Informe de Power BI sobre ventas, compras e inventario de una cadena de retail de lujo, de 2023 a 2026. Los datos están anonimizados: proveedores, marcas, productos, tiendas y vendedores aparecen con códigos, y los importes están escalados.</p>
+      <div class="chips mono"><span>Python</span><span>Pandas</span><span>Power BI</span><span>DAX</span><span>Power Query</span><span>pytest</span></div>
+      <div class="botones">
+        <a class="boton lleno" href="https://github.com/mgabrielafiguera-pixel/proyecto-bi-retail">Ver el código en GitHub</a>
+        <!-- Pendiente: botón "Descargar el informe en PDF" cuando exista 04_presentacion/informe_sell_in_sell_out.pdf -->
+      </div>
+    </section>
+  </div>
+</div>
+
+<main class="envoltura">
+  <section>
+    <div class="rejilla" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))">
+      <div class="caja"><h3 style="color: var(--turq-osc); font-size: 13px">EL PROBLEMA</h3><p>Compras y ventas se miraban por separado y faltaban meses de inventario. No se sabía qué marcas reponer ni cuáles frenar.</p></div>
+      <div class="caja"><h3 style="color: var(--turq-osc); font-size: 13px">LO QUE HICE</h3><p>Limpié y anonimicé los datos, reconstruí el inventario faltante, armé un modelo estrella y calculé punto de reorden, presupuesto y pronóstico.</p></div>
+      <div class="caja"><h3 style="color: var(--turq-osc); font-size: 13px">CÓMO LO COMPROBÉ</h3><p>68 controles de calidad, 12 pruebas automáticas y un backtest que mide el pronóstico contra lo que pasó de verdad.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Recorrido del informe</h2>
+    <p class="sub">Un minuto por las 6 páginas: Resumen anual, Ventas, Compras, Inventario, Budget / Forecast y Ventas diarias.</p>
+    <div class="video">
+      <video controls preload="none" poster="video/portada.jpg" style="width: 100%">
+        <source src="video/sell_in_sell_out.mp4" type="video/mp4">
+      </video>
+    </div>
+  </section>
+
+  <section>
+    <h2>El informe, página por página</h2>
+    <p class="sub">Capturas del informe publicado en Power BI Service. Toca una para verla en grande.</p>
+    <div class="galeria">
+      <figure><img src="img/03_ventas_2026.png" alt="Página Ventas 2026" loading="lazy"><figcaption><strong>Ventas.</strong> Filtros por año, mes, tienda y proveedor.</figcaption></figure>
+      <figure><img src="img/04_ventas_ranking_proveedor.png" alt="Página Ventas con ranking por proveedor" loading="lazy"><figcaption><strong>Ventas.</strong> El ranking cambia entre marca, proveedor y departamento.</figcaption></figure>
+      <figure><img src="img/07_inventario_2026.png" alt="Página Inventario 2026" loading="lazy"><figcaption><strong>Inventario.</strong> Stock, rotación, cobertura y punto de reorden por marca.</figcaption></figure>
+      <figure><img src="img/08_inventario_filtro_MARC0086.png" alt="Página Inventario filtrada por la marca MARC0086" loading="lazy"><figcaption><strong>Inventario.</strong> Un clic en una marca filtra toda la página.</figcaption></figure>
+      <figure><img src="img/09_budget_forecast_120.png" alt="Página Budget y Forecast con proyección 1,20" loading="lazy"><figcaption><strong>Budget / Forecast.</strong> Presupuesto y rolling forecast con el parámetro Proyección en 1,20.</figcaption></figure>
+      <figure><img src="img/10_budget_forecast_110.png" alt="Página Budget y Forecast con proyección 1,10" loading="lazy"><figcaption><strong>Budget / Forecast.</strong> Con el parámetro en 1,10, todo se recalcula.</figcaption></figure>
+      <figure><img src="img/11_ventas_diarias_abr2026.png" alt="Página Ventas diarias de abril 2026" loading="lazy"><figcaption><strong>Ventas diarias.</strong> Abril 2026 por día, estado, marca, proveedor y vendedor.</figcaption></figure>
+      <figure><img src="img/12_ventas_diarias_clic_miranda.png" alt="Página Ventas diarias filtrada por un estado del mapa" loading="lazy"><figcaption><strong>Ventas diarias.</strong> Un clic en un estado del mapa filtra los rankings.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Hallazgos</h2>
+    <p class="sub">Cada cifra se recalcula con un script del repositorio. Las causas se validaron con el negocio.</p>
+    <div class="rejilla" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))">
+      <div class="caja hallazgo"><div class="cifra mono">4,5×</div><div><h3>Se compró más mientras se vendía menos</h3><p>Compras de ene–abr 2026 a 4,5 veces las de 2025. Fue un desfase por una disrupción logística, no una sobrecompra.</p></div></div>
+      <div class="caja hallazgo"><div class="cifra mono">−11 %</div><div><h3>Baja el ticket, no el volumen</h3><p>El ticket promedio baja un 11 % por un cambio de mezcla hacia piezas de menor precio.</p></div></div>
+      <div class="caja hallazgo"><div class="cifra mono">46 %</div><div><h3>Casi la mitad del stock no rota</h3><p>El 46 % de las unidades no tuvo ninguna venta en 12 meses.</p></div></div>
+      <div class="caja hallazgo"><div class="cifra mono">7</div><div><h3>Pocas marcas a reponer</h3><p>7 marcas están bajo su punto de reorden, con una compra sugerida de 308 unidades.</p></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="caja" style="display: flex; flex-wrap: wrap; gap: 28px; padding: 24px">
+      <div style="flex: 1 1 300px; min-width: 0">
+        <h2 style="font-size: 22px">¿Qué tan bueno es el pronóstico?</h2>
+        <p style="font-size: 15px">Lo probé ocultando may–dic 2025 y pronosticando con los datos hasta abril. El método del informe se equivoca menos que las dos alternativas simples, pero subestima cuando el negocio crece.</p>
+      </div>
+      <div style="flex: 1 1 400px; min-width: 0; overflow-x: auto">
+        <table class="tabla">
+          <thead><tr><th>Error (WAPE)</th><th>Unidades</th><th>Importe</th></tr></thead>
+          <tbody>
+            <tr class="mejor"><td>Método del informe</td><td class="mono">15,9 %</td><td class="mono">30,0 %</td></tr>
+            <tr><td>Mismo mes del año anterior</td><td class="mono">22,7 %</td><td class="mono">34,7 %</td></tr>
+            <tr><td>Promedio plano</td><td class="mono">29,3 %</td><td class="mono">39,6 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Límites</h2>
+    <ul class="limites">
+      <li>El pronóstico es fiable en total, no por marca: por marca y mes el error es de 65,6 %.</li>
+      <li>El inventario de jul-2025 en adelante es estimado: el kardex puro lo subestima un 22 % a 6 meses.</li>
+      <li>Los datos por sí solos no prueban causalidad; las causas se confirmaron con el negocio.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="oscuro">
+  <div class="envoltura pie">
+    <a href="index.html#proyectos">Volver a proyectos</a>
+    <span style="color: var(--claro-2)">Datos anonimizados. No contiene información confidencial.</span>
+  </div>
+</footer>
+
+<dialog id="visor"><img alt=""></dialog>
+<script>
+  const visor = document.getElementById('visor');
+  document.querySelectorAll('.galeria img').forEach((img) => img.addEventListener('click', () => {
+    visor.querySelector('img').src = img.src;
+    visor.querySelector('img').alt = img.alt;
+    visor.showModal();
+  }));
+  visor.addEventListener('click', () => visor.close());
+</script>
+</body>
+</html>
