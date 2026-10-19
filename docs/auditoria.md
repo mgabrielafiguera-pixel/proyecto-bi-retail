@@ -51,7 +51,7 @@ comprobar en Power BI queda **por validar**, con una prueba descrita.
 | Elemento | Cómo se valida |
 |---|---|
 | El filtro de Proveedor no llega a las medidas de Inventario | Prueba descrita en `docs/auditoria_dax.md`, D1 |
-| La variación de Sell In se subestima por el corte en la última venta | `docs/auditoria_dax.md`, D2 (comprobado en los datos; falta verlo en la tarjeta) |
+| La variación de Sell In se subestima por el corte en la última venta | `docs/auditoria_dax.md`, D2 (resuelto en el modelo el 19-oct-2026) |
 | Unas 140 medidas en el modelo | Exportación de medidas |
 | Tipos de datos de Power Query | Exportación del modelo o revisión en el editor |
 
