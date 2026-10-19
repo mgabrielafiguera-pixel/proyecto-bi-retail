@@ -1,5 +1,10 @@
 # Registro de cambios
 
+## 19-oct-2026 · Capturas tras la corrección D2
+
+- `04_presentacion/capturas/`: `01`, `05` y `06` repetidas con el corte corregido, con los departamentos difuminados.
+- `portafolio/video/`: video y portada regenerados con las capturas nuevas.
+
 ## 19-oct-2026 · Corrección D2: corte de las comparaciones con el año anterior
 
 - Modelo semántico: `Sell In Var %` corta en la última recepción de compras (30-abr-2026) y `Crecimiento Obtenido %`,
