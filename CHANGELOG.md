@@ -1,5 +1,12 @@
 # Registro de cambios
 
+## 18-oct-2026 · Capturas, respaldo de medidas y página Ventas diarias terminada
+
+- `04_presentacion/capturas/`: 13 capturas reales del informe; las principales, en la sección 15 del README.
+- `03_powerbi/medidas_exportadas.csv`: las 218 medidas del modelo exportadas con `INFO.VIEW.MEASURES` (tabla, medida,
+  carpeta, formato y DAX).
+- Hallazgo 9.6: desde abr-2026 la facturación central pasa del Almacén 1 al Almacén 6.
+
 ## 17-oct-2026 · Prompts fuera del repo
 
 - Se retiró `03_powerbi/prompts/`. Las medidas DAX y el paso de Power Query de cada página pasan a `03_powerbi/MODELO.md`, sección 4.

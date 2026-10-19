@@ -142,6 +142,10 @@ negocio; los datos por sí solos no demuestran causalidad.
 - **Dato:** el Almacén 1 factura el 89 % de la venta: es una tienda y además el punto central de facturación, así que
   la venta por almacén no equivale a la venta por tienda. **78 de 13.090 clientes** hacen el 50 % de la venta, y el
   primero el 7,6 %.
+- **Cambio en abr-2026:** el punto central de facturación pasa del Almacén 1 (Distrito Capital) al Almacén 6 (Miranda).
+  En abr-2026 el Almacén 1 factura el 0,7 % y el Almacén 6 el 90,8 %, cuando hasta mar-2026 eran el 92 % y el 0 %.
+  Por eso, comparada por estado o por tienda contra el año anterior, Miranda sube un 11.898 % y Distrito Capital cae
+  un 99 %: no es un cambio de demanda, es un cambio de dónde se factura. La comparación válida es la del total.
 - **Recomendación:** programa de atención personalizada para los clientes VIP, con seguimiento de su frecuencia de compra.
 
 ### 9.7 Calidad de datos que afecta a las decisiones
@@ -234,8 +238,23 @@ El informe se construyó en Power BI Service. Todas sus medidas DAX y el paso de
 
 ## 15. Capturas del informe
 
-Pendientes. Se guardarán en [`04_presentacion/capturas/`](04_presentacion/capturas/) siguiendo
-[`docs/guia_capturas_pdf.md`](docs/guia_capturas_pdf.md). Mientras tanto, hay bocetos (no capturas) en `04_presentacion/`.
+Capturas reales del informe en Power BI Service (18-oct-2026), con datos anonimizados e importes escalados. La lista
+completa está en [`04_presentacion/capturas/`](04_presentacion/capturas/).
+
+**Resumen anual 2026**
+![Resumen anual 2026](04_presentacion/capturas/01_resumen_anual_2026.png)
+
+**Inventario y punto de reorden 2026**
+![Inventario 2026](04_presentacion/capturas/07_inventario_2026.png)
+
+**Budget / Forecast 2026**
+![Budget / Forecast 2026](04_presentacion/capturas/09_budget_forecast_120.png)
+
+**Ventas diarias, abril 2026**
+![Ventas diarias abril 2026](04_presentacion/capturas/11_ventas_diarias_abr2026.png)
+
+Las capturas de Resumen anual y Compras muestran la variación de Sell In 2026 a costo Ex-Work en +101 %. Con el
+corte corregido (D2 en `docs/auditoria_dax.md`) es +346 %. Se repetirán cuando se aplique la corrección.
 
 ## 16. Informe en PDF
 

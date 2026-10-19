@@ -1,0 +1,389 @@
+﻿Tabla,Medida,Carpeta,Formato,DAX
+"Medidas","Importe Sell Out","","""#,0.00""","SUM ( Ventas[Total_Factura] )"
+"Medidas","Unidades Sell Out","","""#,0""","SUM ( Ventas[Cantidad] )"
+"Medidas","Unidades Sell Out AA","","""#,0""","CALCULATE ( [Unidades Sell Out], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Unidades Sell Out Var %","","""Percent""","DIVIDE ( [Unidades Sell Out] - [Unidades Sell Out AA], [Unidades Sell Out AA] )"
+"Medidas","Importe Sell Out AA","","""#,0.00""","CALCULATE ( [Importe Sell Out], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Importe Sell Out Var %","","""Percent""","DIVIDE ( [Importe Sell Out] - [Importe Sell Out AA], [Importe Sell Out AA] )"
+"Medidas","Unidades Sell In","","""#,0""","SUM ( Compras[Cantidad] )"
+"Medidas","Importe Sell In","","""#,0.00""","SUM ( Compras[Total_Precio_Costo_Nacionalizado] )"
+"Medidas","Unidades Sell In AA","","""#,0""","CALCULATE ( [Unidades Sell In], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Unidades Sell In Var %","","""Percent""","DIVIDE ( [Unidades Sell In] - [Unidades Sell In AA], [Unidades Sell In AA] )"
+"Medidas","Importe Sell In AA","","""#,0.00""","CALCULATE ( [Importe Sell In], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Importe Sell In Var %","","""Percent""","DIVIDE ( [Importe Sell In] - [Importe Sell In AA], [Importe Sell In AA] )"
+"Medidas","Sell-Through %","","""Percent""","DIVIDE ( [Unidades Sell Out], [Unidades Sell In] )"
+"Medidas","Sell-Through % AA","","""Percent""","DIVIDE ( [Unidades Sell Out AA], [Unidades Sell In AA] )"
+"Medidas","Sell-Through % Var pp","","""Percent""","[Sell-Through %] - [Sell-Through % AA]"
+"Medidas","Sell-Through % (sin almacén)","","""Percent""","DIVIDE ( [Unidades Sell Out], CALCULATE ( [Unidades Sell In], REMOVEFILTERS ( Almacen ) ) )"
+"Medidas","Sell-Through % (sin almacén) AA","","""Percent""","CALCULATE ( [Sell-Through % (sin almacén)], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Sell-Through % (sin almacén) Var pp","","""Percent""","[Sell-Through % (sin almacén)] - [Sell-Through % (sin almacén) AA]"
+"Medidas","Facturas","","""#,0""","CALCULATE ( DISTINCTCOUNT ( Ventas[Num_Factura] ), Ventas[Mov] = ""FACT"" )"
+"Medidas","Ticket Promedio","","""0.00""","DIVIDE ( CALCULATE ( [Importe Sell Out], Ventas[Mov] = ""FACT"" ), [Facturas] )"
+"Medidas","Ticket Promedio AA","","""0.00""","CALCULATE ( [Ticket Promedio], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Ticket Promedio Var %","","""Percent""","DIVIDE ( [Ticket Promedio] - [Ticket Promedio AA], [Ticket Promedio AA] )"
+"Medidas","Costo Sell Out","","""#,0.00""","SUMX ( Ventas, IF ( Ventas[Cantidad] < 0, - ABS ( Ventas[Costo_Total_Facturado] ), ABS ( Ventas[Costo_Total_Facturado] ) ) )"
+"Medidas","Margen","","""#,0.00""","[Importe Sell Out] - [Costo Sell Out]"
+"Medidas","Margen %","","""Percent""","DIVIDE ( [Margen], [Importe Sell Out] )"
+"Medidas","Margen AA","","""#,0.00""","CALCULATE ( [Margen], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Margen Var %","","""Percent""","DIVIDE ( [Margen] - [Margen AA], [Margen AA] )"
+"Medidas","Margen % AA","","""Percent""","CALCULATE ( [Margen %], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Margen % Var pp","","""Percent""","[Margen %] - [Margen % AA]"
+"Medidas","Unidades Devueltas","","""#,0""","- CALCULATE ( SUM ( Ventas[Cantidad] ), Ventas[Es_Devolucion] = ""Sí"" )"
+"Medidas","Importe Devoluciones","","""#,0.00""","- CALCULATE ( SUM ( Ventas[Total_Factura] ), Ventas[Es_Devolucion] = ""Sí"" )"
+"Medidas","Devoluciones %","","""Percent""","DIVIDE ( [Importe Devoluciones], CALCULATE ( [Importe Sell Out], Ventas[Es_Devolucion] = ""No"" ) )"
+"Medidas","Unidades Devueltas AA","","""#,0""","CALCULATE ( [Unidades Devueltas], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Unidades Devueltas Var %","","""Percent""","DIVIDE ( [Unidades Devueltas] - [Unidades Devueltas AA], [Unidades Devueltas AA] )"
+"Medidas","Importe Devoluciones AA","","""#,0.00""","CALCULATE ( [Importe Devoluciones], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Importe Devoluciones Var %","","""Percent""","DIVIDE ( [Importe Devoluciones] - [Importe Devoluciones AA], [Importe Devoluciones AA] )"
+"Medidas","Devoluciones % AA","","""Percent""","CALCULATE ( [Devoluciones %], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Devoluciones % Var pp","","""Percent""","[Devoluciones %] - [Devoluciones % AA]"
+"Medidas","Importe Sell In ExW","","""#,0""","SUM ( Compras[Total_Costo_Ex_Works] )"
+"Medidas","Sell In (selector)","","""#,0""","SWITCH ( SELECTEDVALUE ( 'Tipo Costo'[Tipo Costo], ""Ex-Work"" ), ""Ex-Work"", [Importe Sell In ExW], ""Puesto"", [Importe Sell In] )"
+"Medidas","S/I Matriz","","""#,0,""","COALESCE ( [Sell In (selector)], 0 )"
+"Medidas","S/O Matriz","","""#,0,""","COALESCE ( [Importe Sell Out], 0 )"
+"Medidas","Histórico Crecimiento %","","""0%""","VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) ) VAR _act = CALCULATE ( [Importe Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) VAR _aa = CALCULATE ( [Importe Sell Out AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) RETURN IF ( ISBLANK ( _act ), 0, COALESCE ( DIVIDE ( _act - _aa, _aa ), 0 ) )"
+"Medidas","Proyección Crecimiento","","""0.00""","SELECTEDVALUE ( Proyeccion[Value], 1.20 )"
+"Medidas","Ratio Reposición","","""0.00""","DIVIDE ( [Importe Sell Out], [Sell In (selector)] )"
+"Medidas","Ratio Reposición Unidades","","""0.00""","DIVIDE ( [Unidades Sell Out], [Unidades Sell In] )"
+"Medidas","Crecimiento Obtenido %","","""0.0%""","VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) ) VAR _act = CALCULATE ( [Importe Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) VAR _aa = CALCULATE ( [Importe Sell Out AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) RETURN DIVIDE ( _act - _aa, _aa )"
+"Medidas","Presupuesto Comercial","","""#,0""","VAR _anio = SELECTEDVALUE ( Calendario[Año] ) RETURN CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] = _anio - 1 ) * [Proyección Crecimiento]"
+"Medidas","Avance Presupuesto %","","""0.0%""","DIVIDE ( [Importe Sell Out], [Presupuesto Comercial] )"
+"Medidas","Presupuesto Mes","","""#,0""","[Importe Sell Out AA] * [Proyección Crecimiento]"
+"Medidas","Presupuesto Acumulado","","""#,0""","CALCULATE ( [Importe Sell Out AA], DATESYTD ( Calendario[Fecha] ) ) * [Proyección Crecimiento]"
+"Medidas","Sell Out Acumulado","","""#,0""","VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) ) RETURN IF ( MIN ( Calendario[Fecha] ) > _ult, BLANK (), CALCULATE ( [Importe Sell Out], DATESYTD ( Calendario[Fecha] ) ) )"
+"Medidas","Ritmo Esperado %","","""0.0%""","VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) ) VAR _anio = SELECTEDVALUE ( Calendario[Año] ) VAR _aaHasta = CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Fecha] >= DATE ( _anio - 1, 1, 1 ), Calendario[Fecha] <= EDATE ( _ult, -12 ) ) VAR _aaAnual = CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] = _anio - 1 ) RETURN DIVIDE ( _aaHasta, _aaAnual )"
+"Medidas","Color Crec","","","VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) ) VAR _v = [Histórico Crecimiento %] RETURN IF ( MIN ( Calendario[Fecha] ) > _ult, ""#A6A6A6"", IF ( _v > 0, ""#107C10"", IF ( _v < 0, ""#C50F1F"", ""#252423"" ) ) )"
+"Medidas","Color Mes Futuro","","","VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) ) RETURN IF ( MIN ( Calendario[Fecha] ) > _ult, ""#B3B3B3"", ""#252423"" )"
+"Medidas","Sell In (selector) AA","","""#,0""","CALCULATE ( [Sell In (selector)], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Color Crecimiento Obtenido","Auxiliares","","VAR _v = [Crecimiento Obtenido %] RETURN IF ( _v > 0, ""#107C10"", IF ( _v < 0, ""#C50F1F"", ""#605E5C"" ) )"
+"Medidas","Etiqueta Último Punto","Auxiliares","","VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) ) RETURN IF ( MIN ( Calendario[Fecha] ) <= _ult && MAX ( Calendario[Fecha] ) >= _ult, FORMAT ( [Sell Out Acumulado], ""#,0,"" ) )"
+"Medidas","Subtítulo Sell In","Auxiliares","","SELECTEDVALUE ( 'Tipo Costo'[Tipo Costo], ""Ex-Work"" ) & "" por categoría y mes"""
+"Medidas","Ref Ratio","Auxiliares","","""S/O ÷ S/I (importe)"""
+"Medidas","Ref Ratio Unidades","Auxiliares","","""> 1: se consume stock"""
+"Medidas","Ref Proyección","Auxiliares","","""Parámetro editable"""
+"Medidas","Ref Crecimiento","Auxiliares","","""mismo periodo vs AA"""
+"Medidas","Ref Presupuesto","Auxiliares","","""Sell Out AA × proyección"""
+"Medidas","Sell In Var %","","""0.0%""","VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) ) VAR _act = CALCULATE ( [Sell In (selector)], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) VAR _aa = CALCULATE ( [Sell In (selector) AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) RETURN DIVIDE ( _act - _aa, _aa )"
+"Medidas","Texto Var Sell In","Auxiliares","","VAR g = [Sell In Var %] RETURN IF ( g >= 0, ""▲ "", ""▼ "" ) & FORMAT ( g, ""0.0%"", ""es-ES"" ) & "" vs AA"""
+"Medidas","Texto Var Sell Out","Auxiliares","","VAR g = [Crecimiento Obtenido %] RETURN IF ( g >= 0, ""▲ "", ""▼ "" ) & FORMAT ( g, ""0.0%"", ""es-ES"" ) & "" vs AA"""
+"Medidas","Color Var Sell In","Auxiliares","","IF ( [Sell In Var %] >= 0, ""#1F8A4C"", ""#C2412D"" )"
+"Medidas","Color Var Sell Out","Auxiliares","","IF ( [Crecimiento Obtenido %] >= 0, ""#1F8A4C"", ""#C2412D"" )"
+"Medidas","Ref Avance","Auxiliares","","""Esperado a la fecha: "" & FORMAT ( [Ritmo Esperado %], ""0.0%"", ""es-ES"" )"
+"Medidas","Vendido AA Matriz","Ventas","""#,0,""","COALESCE ( [Importe Sell Out AA], 0 )"
+"Medidas","Estacionalidad Ventas","Ventas","""0.00""","VAR _meses = VALUES ( Calendario[Mes] ) VAR _total = CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 } ) VAR _mes = CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 }, _meses ) RETURN DIVIDE ( _mes, _total / 12 )"
+"Medidas","Unidades Sell Out Var % YTD","Ventas","""0.0%""","VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) ) VAR _act = CALCULATE ( [Unidades Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) VAR _aa = CALCULATE ( [Unidades Sell Out AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) RETURN DIVIDE ( _act - _aa, _aa )"
+"Medidas","Facturas AA","Ventas","""#,0""","CALCULATE ( [Facturas], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Facturas Var % YTD","Ventas","""0.0%""","VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) ) VAR _act = CALCULATE ( [Facturas], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) VAR _aa = CALCULATE ( [Facturas AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) RETURN DIVIDE ( _act - _aa, _aa )"
+"Medidas","Ticket Promedio Var % YTD","Ventas","""0.0%""","VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) ) VAR _act = CALCULATE ( [Ticket Promedio], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) VAR _aa = CALCULATE ( [Ticket Promedio AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) RETURN DIVIDE ( _act - _aa, _aa )"
+"Medidas","Margen % Var pp YTD","Ventas","""0.0%""","VAR _ult = CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS ( Calendario ) ) VAR _act = CALCULATE ( [Margen %], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) VAR _aa = CALCULATE ( [Margen % AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) RETURN _act - _aa"
+"Medidas","Precio Promedio Venta","Ventas","""#,0.0""","DIVIDE ( [Importe Sell Out], [Unidades Sell Out] )"
+"Medidas","Costo Promedio Pieza Venta","Ventas","""#,0.0""","DIVIDE ( [Costo Sell Out], [Unidades Sell Out] )"
+"Medidas","% Venta Global","Ventas","""0.0%""","DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Proveedor ), REMOVEFILTERS ( Marca ), REMOVEFILTERS ( Departamento ), REMOVEFILTERS ( Producto ) ) )"
+"Medidas","% del Total Venta","Ventas","""0.0%""","DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], ALLSELECTED () ) )"
+"Medidas","Inventario Final (est.)","Ventas","""#,0""","[Stock Final Uds]"
+"Medidas","Inventario Inicial (est.)","Ventas","""#,0""","[Stock Inicial Uds]"
+"Medidas","Venta Promedio Mensual Uds","Ventas","""#,0.0""","DIVIDE ( CALCULATE ( [Unidades Sell Out], DATESINPERIOD ( Calendario[Fecha], MAX ( Calendario[Fecha] ), -3, MONTH ) ), 3 )"
+"Medidas","Cobertura Meses","Ventas","""0.0""","DIVIDE ( [Inventario Final (est.)], [Venta Promedio Mensual Uds] )"
+"Medidas","Det Unidades Compradas","Ventas","""#,0""","COALESCE ( [Unidades Sell In], 0 )"
+"Medidas","Det Unidades Vendidas","Ventas","""#,0""","COALESCE ( [Unidades Sell Out], 0 )"
+"Medidas","Det Monto Vendido","Ventas","""#,0,""","COALESCE ( [Importe Sell Out], 0 )"
+"Medidas","Comprado AA Matriz","Compras","""#,0,""","COALESCE ( [Sell In (selector) AA], 0 )"
+"Medidas","Estacionalidad Compras","Compras","""0.00""","VAR _meses = VALUES ( Calendario[Mes] ) VAR _total = CALCULATE ( [Sell In (selector)], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 } ) VAR _mes = CALCULATE ( [Sell In (selector)], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 }, _meses ) RETURN DIVIDE ( _mes, _total / 12 )"
+"Medidas","Unidades Sell In Var % YTD","Compras","""0.0%""","VAR _ult = CALCULATE ( MAX ( Compras[Fecha_Recepcion] ), REMOVEFILTERS ( Calendario ) ) VAR _act = CALCULATE ( [Unidades Sell In], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) VAR _aa = CALCULATE ( [Unidades Sell In AA], KEEPFILTERS ( Calendario[Fecha] <= _ult ) ) RETURN DIVIDE ( _act - _aa, _aa )"
+"Medidas","Costo Promedio Pieza Compra","Compras","""#,0.0""","DIVIDE ( [Sell In (selector)], [Unidades Sell In] )"
+"Medidas","Factor Importación","Compras","""0.00""","DIVIDE ( [Importe Sell In], [Importe Sell In ExW] )"
+"Medidas","Lead Time Días","Compras","""0""","AVERAGEX ( FILTER ( Compras, NOT ISBLANK ( Compras[Fecha_Invoice] ) && Compras[Fecha_Recepcion] >= Compras[Fecha_Invoice] ), DATEDIFF ( Compras[Fecha_Invoice], Compras[Fecha_Recepcion], DAY ) )"
+"Medidas","% Compra Global","Compras","""0.0%""","DIVIDE ( [Sell In (selector)], CALCULATE ( [Sell In (selector)], REMOVEFILTERS ( Proveedor ), REMOVEFILTERS ( Marca ), REMOVEFILTERS ( Departamento ), REMOVEFILTERS ( Producto ) ) )"
+"Medidas","% del Total Compra","Compras","""0.0%""","DIVIDE ( [Sell In (selector)], CALCULATE ( [Sell In (selector)], ALLSELECTED () ) )"
+"Medidas","Compras ÷ Ventas Uds","Compras","""0.00""","DIVIDE ( [Unidades Sell In], [Unidades Sell Out] )"
+"Medidas","% Compras Sin Clasificar","Compras","""0.0%""","DIVIDE ( CALCULATE ( [Sell In (selector)], Compras[Tipo_Movi] = ""Sin clasificar"" ), [Sell In (selector)] )"
+"Medidas","% Devoluciones a Proveedor","Compras","""0.0%""","DIVIDE ( - CALCULATE ( [Sell In (selector)], Compras[Cantidad] < 0 ), [Sell In (selector)] )"
+"Medidas","Det Compras ExW","Compras","""#,0,""","COALESCE ( [Importe Sell In ExW], 0 )"
+"Medidas","Det Compras Puesto","Compras","""#,0,""","COALESCE ( [Importe Sell In], 0 )"
+"Medidas","Filtro Cascada","Filtros","""0""","VAR _prov = VALUES ( Proveedor[CODIGO_INTERNO_PROVEEDOR] ) RETURN IF ( NOT ISEMPTY ( FILTER ( Producto, Producto[CODIGO_INTERNO_PROVEEDOR] IN _prov ) ), 1 )"
+"Medidas","Fecha Ultimo Inventario","Inventario","""Short Date""","CALCULATE ( MAX ( Inventario[Fecha] ), REMOVEFILTERS () )"
+"Medidas","Stock Final Uds","Inventario","""#,0""","VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 ) RETURN IF ( MIN ( Calendario[Fecha] ) > [Fecha Ultimo Inventario] || MAX ( Calendario[Fecha] ) < DATE ( 2023, 12, 1 ), BLANK (), CALCULATE ( SUM ( Inventario[Unidades] ), REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _f ) + 0 )"
+"Medidas","Stock Inicial Uds","Inventario","""#,0""","VAR _f = EOMONTH ( MIN ( Calendario[Fecha] ), -1 ) RETURN IF ( _f < DATE ( 2023, 12, 31 ) || _f >= [Fecha Ultimo Inventario], BLANK (), CALCULATE ( SUM ( Inventario[Unidades] ), REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _f ) + 0 )"
+"Medidas","Meses con Inventario","Inventario","""#,0""","COUNTROWS ( FILTER ( VALUES ( Calendario[Año_Mes] ), VAR _m = CALCULATE ( MAX ( Calendario[Fecha] ) ) RETURN _m >= DATE ( 2023, 12, 1 ) && _m <= [Fecha Ultimo Inventario] ) )"
+"Medidas","Inventario Promedio Uds","Inventario","""#,0""","AVERAGEX ( FILTER ( VALUES ( Calendario[Año_Mes] ), VAR _m = CALCULATE ( MAX ( Calendario[Fecha] ) ) RETURN _m >= DATE ( 2023, 12, 1 ) && _m <= [Fecha Ultimo Inventario] ), [Stock Final Uds] )"
+"Medidas","Uds Vendidas Periodo Inv","Inventario","""#,0""","VAR _u = [Fecha Ultimo Inventario] RETURN CALCULATE ( [Unidades Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _u ) )"
+"Medidas","Rotacion Anualizada","Inventario","""#,0.00""""x""""""","DIVIDE ( [Uds Vendidas Periodo Inv], [Inventario Promedio Uds] ) * DIVIDE ( 12, [Meses con Inventario] )"
+"Medidas","Dias de Inventario","Inventario","""#,0.0""","DIVIDE ( 365, [Rotacion Anualizada] )"
+"Medidas","Costo Unitario SKU","Inventario","""#,0.00""","VAR _c = DIVIDE ( CALCULATE ( SUM ( Compras[Total_Precio_Costo_Nacionalizado] ), REMOVEFILTERS ( Calendario ) ), CALCULATE ( SUM ( Compras[Cantidad] ), REMOVEFILTERS ( Calendario ) ) ) VAR _v = DIVIDE ( CALCULATE ( SUM ( Ventas[Costo_Total_Facturado] ), REMOVEFILTERS ( Calendario ) ), CALCULATE ( SUM ( Ventas[Cantidad] ), REMOVEFILTERS ( Calendario ) ) ) VAR _marca = SELECTEDVALUE ( Producto[CODIGO_INTERNO_MARCA] ) VAR _m = CALCULATE ( DIVIDE ( SUM ( Compras[Total_Precio_Costo_Nacionalizado] ), SUM ( Compras[Cantidad] ) ), REMOVEFILTERS ( Calendario ), REMOVEFILTERS ( Producto ), Producto[CODIGO_INTERNO_MARCA] = _marca ) RETURN COALESCE ( _c, _v, _m )"
+"Medidas","Valor Inventario Costo","Inventario","","VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 ) VAR _t = CALCULATETABLE ( ADDCOLUMNS ( VALUES ( Inventario[COD_SKU] ), ""@u"", CALCULATE ( SUM ( Inventario[Unidades] ) ) ), REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _f ) RETURN IF ( ISBLANK ( [Stock Final Uds] ), BLANK (), SUMX ( _t, [@u] * CALCULATE ( [Costo Unitario SKU], TREATAS ( { Inventario[COD_SKU] }, Producto[COD_SKU] ) ) ) )"
+"Medidas","Cobertura Meses Real","Inventario","""#,0.0""","VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 )
+VAR _venta =
+    DIVIDE ( CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _f, -3, MONTH ) ), 3 )
+RETURN DIVIDE ( [Stock Final Uds], _venta )"
+"Medidas","SKU Activos 3M","Inventario","""#,0""","VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 ) RETURN COUNTROWS ( CALCULATETABLE ( VALUES ( Ventas[COD_SKU] ), REMOVEFILTERS ( Calendario ), DATESINPERIOD ( Calendario[Fecha], _f, -3, MONTH ) ) )"
+"Medidas","SKU en Quiebre","Inventario","""#,0""","VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 ) VAR _venta = CALCULATETABLE ( VALUES ( Ventas[COD_SKU] ), REMOVEFILTERS ( Calendario ), DATESINPERIOD ( Calendario[Fecha], _f, -3, MONTH ) ) VAR _stock = CALCULATETABLE ( VALUES ( Inventario[COD_SKU] ), REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _f, Inventario[Unidades] > 0 ) RETURN COUNTROWS ( EXCEPT ( _venta, _stock ) ) + 0"
+"Medidas","% SKU en Quiebre","Inventario","""0.0%""","DIVIDE ( [SKU en Quiebre], [SKU Activos 3M] )"
+"Medidas","Venta Perdida Est.","Inventario","","VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 ) VAR _venta = CALCULATETABLE ( VALUES ( Ventas[COD_SKU] ), REMOVEFILTERS ( Calendario ), DATESINPERIOD ( Calendario[Fecha], _f, -3, MONTH ) ) VAR _stock = CALCULATETABLE ( VALUES ( Inventario[COD_SKU] ), REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _f, Inventario[Unidades] > 0 ) RETURN SUMX ( EXCEPT ( _venta, _stock ), CALCULATE ( [Importe Sell Out], REMOVEFILTERS ( Calendario ), DATESINPERIOD ( Calendario[Fecha], _f, -3, MONTH ), TREATAS ( { Ventas[COD_SKU] }, Producto[COD_SKU] ) ) / 3 )"
+"Medidas","Stock Sin Venta 12M Uds","Inventario","""#,0""","VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 ) VAR _conVenta = CALCULATETABLE ( VALUES ( Ventas[COD_SKU] ), REMOVEFILTERS ( Calendario ), DATESINPERIOD ( Calendario[Fecha], _f, -12, MONTH ) ) RETURN CALCULATE ( SUM ( Inventario[Unidades] ), REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _f, NOT Inventario[COD_SKU] IN _conVenta ) + 0"
+"Medidas","% Stock Sin Venta 12M","Inventario","""0.0%""","DIVIDE ( [Stock Sin Venta 12M Uds], [Stock Final Uds] )"
+"Medidas","Origen Inventario","Inventario","","VAR _f = EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 ) RETURN CALCULATE ( MAX ( Inventario[Origen] ), REMOVEFILTERS ( Calendario ), REMOVEFILTERS ( Producto ), Inventario[Fecha] = _f )"
+"Medidas","Fecha Corte Inv","Inventario · Reorden","""Short Date""","EOMONTH ( MIN ( MAX ( Calendario[Fecha] ), [Fecha Ultimo Inventario] ), 0 )"
+"Medidas","Stock Corte Uds","Inventario · Reorden","""#,0""","VAR _f = [Fecha Corte Inv]
+RETURN CALCULATE ( SUM ( Inventario[Unidades] ), REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _f ) + 0"
+"Medidas","Demanda Mensual Uds","Inventario · Reorden","""#,0""","VAR _f = [Fecha Corte Inv]
+RETURN
+    DIVIDE ( CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _f, -6, MONTH ) ), 6 )"
+"Medidas","Desv Demanda Mensual Uds","Inventario · Reorden","""#,0""","VAR _f = [Fecha Corte Inv]
+RETURN
+    CALCULATE (
+        STDEVX.P ( VALUES ( Calendario[Año_Mes] ), [Unidades Sell Out] + 0 ),
+        REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _f, -6, MONTH )
+    )"
+"Medidas","Lead Time Meses","Inventario · Reorden","""#,0.0""","VAR _sel = CALCULATE ( [Lead Time Días], REMOVEFILTERS ( Calendario ) )
+VAR _gen = CALCULATE ( [Lead Time Días], REMOVEFILTERS () )
+RETURN DIVIDE ( COALESCE ( _sel, _gen ), 30 )"
+"Medidas","Stock Seguridad Uds","Inventario · Reorden","""#,0""","1.65 * [Desv Demanda Mensual Uds] * SQRT ( [Lead Time Meses] )"
+"Medidas","Punto de Reorden Uds","Inventario · Reorden","""#,0""","[Demanda Mensual Uds] * [Lead Time Meses] + [Stock Seguridad Uds]"
+"Medidas","Stock Maximo Uds","Inventario · Reorden","""#,0""","[Punto de Reorden Uds] + [Demanda Mensual Uds]"
+"Medidas","Dias hasta Reorden","Inventario · Reorden","""#,0""","DIVIDE ( [Stock Corte Uds] - [Punto de Reorden Uds], DIVIDE ( [Demanda Mensual Uds], 30 ) )"
+"Medidas","Estado Reorden","Inventario · Reorden","","VAR _s = [Stock Corte Uds]
+VAR _d = [Demanda Mensual Uds]
+RETURN
+    SWITCH (
+        TRUE (),
+        _d = 0 || ISBLANK ( _d ), ""Sin demanda"",
+        _s <= [Punto de Reorden Uds], ""Reponer"",
+        _s > 12 * _d, ""Sobrestock"",
+        ""OK""
+    )"
+"Medidas","Color Estado Reorden","Inventario · Reorden","","SWITCH ( [Estado Reorden], ""Reponer"", ""#C2412D"", ""Sobrestock"", ""#E4643F"", ""OK"", ""#1F8A4C"", ""#C9D1E3"" )"
+"Medidas","Marcas a Reponer","Inventario · Reorden","""#,0""","COUNTROWS (
+    FILTER ( VALUES ( Producto[CODIGO_INTERNO_MARCA] ),
+        [Demanda Mensual Uds] > 0 && [Stock Corte Uds] <= [Punto de Reorden Uds] )
+) + 0"
+"Medidas","Marcas con Demanda","Inventario · Reorden","""#,0""","COUNTROWS ( FILTER ( VALUES ( Producto[CODIGO_INTERNO_MARCA] ), [Demanda Mensual Uds] > 0 ) ) + 0"
+"Medidas","Marcas en Sobrestock","Inventario · Reorden","""#,0""","COUNTROWS (
+    FILTER ( VALUES ( Producto[CODIGO_INTERNO_MARCA] ),
+        [Demanda Mensual Uds] > 0 && [Stock Corte Uds] > 12 * [Demanda Mensual Uds] )
+) + 0"
+"Medidas","Compra Sugerida Uds","Inventario · Reorden","""#,0""","SUMX (
+    VALUES ( Producto[CODIGO_INTERNO_MARCA] ),
+    VAR _s = [Stock Corte Uds]
+    RETURN IF ( [Demanda Mensual Uds] > 0 && _s <= [Punto de Reorden Uds], MAX ( 0, [Stock Maximo Uds] - _s ), 0 )
+)"
+"Medidas","Compra Sugerida Costo","Inventario · Reorden","""#,0""","SUMX (
+    VALUES ( Producto[CODIGO_INTERNO_MARCA] ),
+    VAR _q = [Compra Sugerida Uds]
+    RETURN _q * DIVIDE ( [Valor Inventario Costo], [Stock Final Uds] )
+)"
+"Medidas","Lead Time Dias Reorden","Inventario · Reorden","""#,0""","[Lead Time Meses] * 30"
+"Medidas","Ref Stock Seguridad","Inventario · Reorden","","""stock de seguridad: "" & FORMAT ( [Stock Seguridad Uds], ""#,0"", ""es-ES"" )"
+"Medidas","Ref Lead Time Reorden","Inventario · Reorden","","""factura → recepción"""
+"Medidas","Ref Marcas Reorden","Inventario · Reorden","","""de "" & FORMAT ( [Marcas con Demanda], ""0"" ) & "" con venta · "" & FORMAT ( [Marcas en Sobrestock], ""0"" ) & "" en sobrestock"""
+"Medidas","Ref Compra Sugerida Costo","Inventario · Reorden","","FORMAT ( [Compra Sugerida Costo], ""#,0"", ""es-ES"" ) & "" a costo"""
+"Medidas","Color Marcas a Reponer","Inventario · Reorden","","IF ( [Marcas a Reponer] > 0, ""#C2412D"", ""#1E2430"" )"
+"Medidas","Fecha Corte Forecast","Budget Forecast","""Short Date""","[Fecha Ultimo Inventario]"
+"Medidas","Estacionalidad Uds","Budget Forecast","""0.00""","VAR _meses = VALUES ( Calendario[Mes] )
+VAR _total =
+    CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 } )
+VAR _mes =
+    CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 }, _meses )
+RETURN DIVIDE ( _mes, _total / 12 )"
+"Medidas","Budget $","Budget Forecast","""#,0,""","VAR _anual = [Presupuesto Comercial]
+RETURN SUMX ( VALUES ( Calendario[Mes] ), _anual * [Estacionalidad Ventas] / 12 )"
+"Medidas","Budget Uds","Budget Forecast","""#,0""","VAR _anio = SELECTEDVALUE ( Calendario[Año] )
+VAR _anual =
+    CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ), Calendario[Año] = _anio - 1 )
+        * [Proyección Crecimiento]
+RETURN SUMX ( VALUES ( Calendario[Mes] ), _anual * [Estacionalidad Uds] / 12 )"
+"Medidas","Budget Acumulado $","Budget Forecast","""#,0,""","CALCULATE ( [Budget $], DATESYTD ( Calendario[Fecha] ) )"
+"Medidas","Estacionalidad Compras ExW","Budget Forecast","""0.00""","VAR _meses = VALUES ( Calendario[Mes] )
+VAR _total =
+    CALCULATE ( [Importe Sell In ExW], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 } )
+VAR _mes =
+    CALCULATE ( [Importe Sell In ExW], REMOVEFILTERS ( Calendario ), Calendario[Año] IN { 2024, 2025 }, _meses )
+RETURN DIVIDE ( _mes, _total / 12 )"
+"Medidas","Budget Compras $","Budget Forecast","""#,0,""","VAR _anio = SELECTEDVALUE ( Calendario[Año] )
+VAR _anual =
+    CALCULATE ( [Importe Sell In ExW], REMOVEFILTERS ( Calendario ), Calendario[Año] = _anio - 1 )
+        * [Proyección Crecimiento]
+RETURN SUMX ( VALUES ( Calendario[Mes] ), _anual * [Estacionalidad Compras ExW] / 12 )"
+"Medidas","Pieza Promedio Mensual","Budget Forecast","""#,0""","VAR _c = [Fecha Corte Forecast]
+RETURN
+    DIVIDE ( CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _c, -12, MONTH ) ), 12 )"
+"Medidas","Precio Promedio Venta 12M","Budget Forecast","""#,0""","VAR _c = [Fecha Corte Forecast]
+RETURN
+    CALCULATE ( DIVIDE ( [Importe Sell Out], [Unidades Sell Out] ), REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _c, -12, MONTH ) )"
+"Medidas","Costo Promedio ExW 12M","Budget Forecast","""#,0""","VAR _c = [Fecha Corte Forecast]
+RETURN
+    CALCULATE ( DIVIDE ( [Importe Sell In ExW], [Unidades Sell In] ), REMOVEFILTERS ( Calendario ),
+        DATESINPERIOD ( Calendario[Fecha], _c, -12, MONTH ) )"
+"Medidas","Forecast SO Uds","Budget Forecast","""#,0""","VAR _c = [Fecha Corte Forecast]
+VAR _pieza = [Pieza Promedio Mensual]
+RETURN
+    SUMX (
+        VALUES ( Calendario[Año_Mes] ),
+        IF ( CALCULATE ( MIN ( Calendario[Fecha] ) ) > _c, _pieza * [Estacionalidad Uds] )
+    )"
+"Medidas","Forecast SO $","Budget Forecast","""#,0,""","[Forecast SO Uds] * [Precio Promedio Venta 12M]"
+"Medidas","Rolling SO Uds","Budget Forecast","""#,0""","VAR _c = [Fecha Corte Forecast]
+RETURN
+    SUMX (
+        VALUES ( Calendario[Año_Mes] ),
+        IF ( CALCULATE ( MAX ( Calendario[Fecha] ) ) <= _c, [Unidades Sell Out] + 0, [Forecast SO Uds] )
+    )"
+"Medidas","Forecast SI Uds","Budget Forecast","""#,0""","VAR _c = [Fecha Corte Forecast]
+RETURN
+    SUMX (
+        VALUES ( Calendario[Año_Mes] ),
+        VAR _ini = CALCULATE ( MIN ( Calendario[Fecha] ) )
+        RETURN
+            IF ( _ini > _c,
+                CALCULATE ( [Rolling SO Uds], REMOVEFILTERS ( Calendario ),
+                    DATESBETWEEN ( Calendario[Fecha], EOMONTH ( _ini, -2 ) + 1, EOMONTH ( _ini, -1 ) ) ) )
+    )"
+"Medidas","Forecast SI $","Budget Forecast","""#,0,""","[Forecast SI Uds] * [Costo Promedio ExW 12M]"
+"Medidas","Real SO $","Budget Forecast","""#,0,""","VAR _c = [Fecha Corte Forecast]
+RETURN CALCULATE ( [Importe Sell Out], KEEPFILTERS ( Calendario[Fecha] <= _c ) )"
+"Medidas","Rolling SO $","Budget Forecast","""#,0,""","VAR _c = [Fecha Corte Forecast]
+RETURN
+    SUMX (
+        VALUES ( Calendario[Año_Mes] ),
+        IF ( CALCULATE ( MAX ( Calendario[Fecha] ) ) <= _c, [Importe Sell Out] + 0, [Forecast SO $] )
+    )"
+"Medidas","Rolling SI Uds","Budget Forecast","""#,0""","VAR _c = [Fecha Corte Forecast]
+RETURN
+    SUMX (
+        VALUES ( Calendario[Año_Mes] ),
+        IF ( CALCULATE ( MAX ( Calendario[Fecha] ) ) <= _c, [Unidades Sell In] + 0, [Forecast SI Uds] )
+    )"
+"Medidas","Rolling SI $","Budget Forecast","""#,0,""","VAR _c = [Fecha Corte Forecast]
+RETURN
+    SUMX (
+        VALUES ( Calendario[Año_Mes] ),
+        IF ( CALCULATE ( MAX ( Calendario[Fecha] ) ) <= _c, [Importe Sell In ExW] + 0, [Forecast SI $] )
+    )"
+"Medidas","Stock Proyectado Uds","Budget Forecast","""#,0""","VAR _c = [Fecha Corte Forecast]
+VAR _fin = MAX ( Calendario[Fecha] )
+RETURN
+    IF (
+        _fin <= _c,
+        [Stock Final Uds],
+        VAR _ifc = CALCULATE ( SUM ( Inventario[Unidades] ), REMOVEFILTERS ( Calendario ), Inventario[Fecha] = _c )
+        VAR _soc = CALCULATE ( [Unidades Sell Out], REMOVEFILTERS ( Calendario ),
+            DATESBETWEEN ( Calendario[Fecha], EOMONTH ( _c, -1 ) + 1, _c ) )
+        VAR _som = CALCULATE ( [Forecast SO Uds], REMOVEFILTERS ( Calendario ),
+            DATESBETWEEN ( Calendario[Fecha], EOMONTH ( _fin, -1 ) + 1, EOMONTH ( _fin, 0 ) ) )
+        RETURN MAX ( 0, _ifc + _soc - _som )
+    )"
+"Medidas","Rolling Acumulado $","Budget Forecast","""#,0,""","CALCULATE ( [Rolling SO $], DATESYTD ( Calendario[Fecha] ) )"
+"Medidas","Real Acumulado $","Budget Forecast","""#,0,""","VAR _c = [Fecha Corte Forecast]
+RETURN IF ( MIN ( Calendario[Fecha] ) > _c, BLANK (), CALCULATE ( [Importe Sell Out], DATESYTD ( Calendario[Fecha] ) ) )"
+"Medidas","Var RF vs Budget %","Budget Forecast","""0.0%""","DIVIDE ( [Rolling SO $] - [Budget $], [Budget $] )"
+"Medidas","Brecha vs Budget $","Budget Forecast","""#,0,""","[Rolling SO $] - [Budget $]"
+"Medidas","Real SI $","Budget Forecast","""#,0,""","VAR _c = [Fecha Corte Forecast]
+RETURN CALCULATE ( [Importe Sell In ExW], KEEPFILTERS ( Calendario[Fecha] <= _c ) )"
+"Medidas","Var Compras RF vs Budget %","Budget Forecast","""0.0%""","DIVIDE ( [Rolling SI $] - [Budget Compras $], [Budget Compras $] )"
+"Medidas","Color Var Compras","Budget Forecast","","IF ( [Var Compras RF vs Budget %] > 0, ""#C2412D"", ""#1F8A4C"" )"
+"Medidas","Avance Real vs Budget %","Budget Forecast","""0.0%""","DIVIDE ( [Real SO $], [Budget $] )"
+"Medidas","Color Var Budget","Budget Forecast","","IF ( [Var RF vs Budget %] < 0, ""#C2412D"", ""#1F8A4C"" )"
+"Medidas","Color Mes Forecast","Budget Forecast","","IF ( MIN ( Calendario[Fecha] ) > [Fecha Corte Forecast], ""#F3F5F9"", ""#FFFFFF"" )"
+"Medidas","Ref Budget Anual","Budget Forecast","","""venta año anterior × proyección"""
+"Medidas","Ref Avance Budget","Budget Forecast","","FORMAT ( [Avance Real vs Budget %], ""0.0%"", ""es-ES"" ) & "" del budget"""
+"Medidas","Ref Brecha Budget","Budget Forecast","","""brecha: "" & FORMAT ( [Brecha vs Budget $] / 1000, ""#,0"", ""es-ES"" ) & "" mil"""
+"Medidas","Ref Stock Dic","Budget Forecast","","""inventario final proyectado"""
+"Medidas","Nota Bases Forecast","Budget Forecast","","""últimos 12 meses al 30-abr-2026"""
+"Medidas","Titulo Budget Forecast","Budget Forecast","","""Budget / Forecast · "" & SELECTEDVALUE ( Calendario[Año] )"
+"Medidas","Fecha Primera Venta","Ventas diarias","""Short Date""","CALCULATE ( MIN ( Ventas[Fecha] ), REMOVEFILTERS () )"
+"Medidas","Fecha Ultima Venta","Ventas diarias","""Short Date""","CALCULATE ( MAX ( Ventas[Fecha] ), REMOVEFILTERS () )"
+"Medidas","Periodo Comparable","Ventas diarias","","VAR _fin = MAX ( Calendario[Fecha] )
+VAR _ini = MIN ( Calendario[Fecha] )
+RETURN _fin <= [Fecha Ultima Venta] && EDATE ( _ini, -12 ) >= EOMONTH ( [Fecha Primera Venta], -1 ) + 1"
+"Medidas","Venta Diaria","Ventas diarias","""#,0""","IF (
+    MAX ( Calendario[Fecha] ) < [Fecha Primera Venta] || MIN ( Calendario[Fecha] ) > [Fecha Ultima Venta],
+    BLANK (),
+    [Importe Sell Out] + 0
+)"
+"Medidas","Uds Diarias","Ventas diarias","""#,0""","IF (
+    MAX ( Calendario[Fecha] ) < [Fecha Primera Venta] || MIN ( Calendario[Fecha] ) > [Fecha Ultima Venta],
+    BLANK (),
+    [Unidades Sell Out] + 0
+)"
+"Medidas","Facturas Diarias","Ventas diarias","""#,0""","IF (
+    MAX ( Calendario[Fecha] ) < [Fecha Primera Venta] || MIN ( Calendario[Fecha] ) > [Fecha Ultima Venta],
+    BLANK (),
+    [Facturas] + 0
+)"
+"Medidas","Titulo Ventas Diarias","Ventas diarias","","VAR _mes = SELECTEDVALUE ( Calendario[Nombre_Mes] )
+VAR _anio = SELECTEDVALUE ( Calendario[Año] )
+RETURN
+    IF (
+        ISBLANK ( _mes ) || ISBLANK ( _anio ),
+        ""Ventas diarias · elige un mes y un año"",
+        ""Ventas diarias · "" & _mes & "" "" & _anio
+    )"
+"Medidas","Nota Periodo","Ventas diarias","","IF (
+    MAX ( Calendario[Fecha] ) > [Fecha Ultima Venta],
+    ""Datos hasta el "" & FORMAT ( [Fecha Ultima Venta], ""d-mmm-yyyy"", ""es-ES"" ) & "". El resto del mes no tiene datos."",
+    """"
+)"
+"Medidas","Var Ventas Diarias %","Ventas diarias","""0.0%""","VAR _aa = [Importe Sell Out AA]
+RETURN IF ( [Periodo Comparable] && _aa > 0, DIVIDE ( [Importe Sell Out] - _aa, _aa ) )"
+"Medidas","Var Uds Diarias %","Ventas diarias","""0.0%""","VAR _aa = [Unidades Sell Out AA]
+RETURN IF ( [Periodo Comparable] && _aa > 0, DIVIDE ( [Unidades Sell Out] - _aa, _aa ) )"
+"Medidas","Var Ticket Diarias %","Ventas diarias","""0.0%""","VAR _aa = [Ticket Promedio AA]
+RETURN IF ( [Periodo Comparable] && _aa > 0, DIVIDE ( [Ticket Promedio] - _aa, _aa ) )"
+"Medidas","Var Margen Diarias pp","Ventas diarias","""0.0%""","VAR _aa = [Margen % AA]
+VAR _baseAA = [Importe Sell Out AA]
+RETURN IF ( [Periodo Comparable] && _baseAA > 0, [Margen %] - _aa )"
+"Medidas","Devoluciones % AA Diarias","Ventas diarias","""0.0%""","CALCULATE ( [Devoluciones %], SAMEPERIODLASTYEAR ( Calendario[Fecha] ) )"
+"Medidas","Var Devoluciones Diarias pp","Ventas diarias","""0.0%""","VAR _baseAA = [Importe Sell Out AA]
+RETURN IF ( [Periodo Comparable] && _baseAA > 0, [Devoluciones %] - [Devoluciones % AA Diarias] )"
+"Medidas","Texto Var Ventas Diarias","Ventas diarias","","VAR g = [Var Ventas Diarias %]
+RETURN IF ( ISBLANK ( g ), ""sin comparable"", IF ( g >= 0, ""▲ "", ""▼ "" ) & FORMAT ( ABS ( g ), ""0.0%"", ""es-ES"" ) & "" vs año anterior"" )"
+"Medidas","Texto Var Uds Diarias","Ventas diarias","","VAR g = [Var Uds Diarias %]
+RETURN IF ( ISBLANK ( g ), ""sin comparable"", IF ( g >= 0, ""▲ "", ""▼ "" ) & FORMAT ( ABS ( g ), ""0.0%"", ""es-ES"" ) & "" vs año anterior"" )"
+"Medidas","Texto Var Ticket Diarias","Ventas diarias","","VAR g = [Var Ticket Diarias %]
+RETURN IF ( ISBLANK ( g ), ""sin comparable"", IF ( g >= 0, ""▲ "", ""▼ "" ) & FORMAT ( ABS ( g ), ""0.0%"", ""es-ES"" ) & "" vs año anterior"" )"
+"Medidas","Texto Var Margen Diarias","Ventas diarias","","VAR g = [Var Margen Diarias pp]
+RETURN IF ( ISBLANK ( g ), ""sin comparable"", IF ( g >= 0, ""▲ "", ""▼ "" ) & FORMAT ( ABS ( g ) * 100, ""0.0"", ""es-ES"" ) & "" pp vs año anterior"" )"
+"Medidas","Texto Var Devoluciones Diarias","Ventas diarias","","VAR g = [Var Devoluciones Diarias pp]
+RETURN IF ( ISBLANK ( g ), ""sin comparable"", IF ( g >= 0, ""▲ "", ""▼ "" ) & FORMAT ( ABS ( g ) * 100, ""0.0"", ""es-ES"" ) & "" pp vs año anterior"" )"
+"Medidas","Color Var Ventas Diarias","Ventas diarias","","VAR g = [Var Ventas Diarias %]
+RETURN SWITCH ( TRUE (), ISBLANK ( g ), ""#6B7280"", g > 0, ""#1F8A4C"", g < 0, ""#C2412D"", ""#6B7280"" )"
+"Medidas","Color Var Uds Diarias","Ventas diarias","","VAR g = [Var Uds Diarias %]
+RETURN SWITCH ( TRUE (), ISBLANK ( g ), ""#6B7280"", g > 0, ""#1F8A4C"", g < 0, ""#C2412D"", ""#6B7280"" )"
+"Medidas","Color Var Ticket Diarias","Ventas diarias","","VAR g = [Var Ticket Diarias %]
+RETURN SWITCH ( TRUE (), ISBLANK ( g ), ""#6B7280"", g > 0, ""#1F8A4C"", g < 0, ""#C2412D"", ""#6B7280"" )"
+"Medidas","Color Var Margen Diarias","Ventas diarias","","VAR g = [Var Margen Diarias pp]
+RETURN SWITCH ( TRUE (), ISBLANK ( g ), ""#6B7280"", g > 0, ""#1F8A4C"", g < 0, ""#C2412D"", ""#6B7280"" )"
+"Medidas","Color Var Devoluciones Diarias","Ventas diarias","","VAR g = [Var Devoluciones Diarias pp]
+RETURN SWITCH ( TRUE (), ISBLANK ( g ), ""#6B7280"", g > 0, ""#C2412D"", g < 0, ""#1F8A4C"", ""#6B7280"" )"
+"Medidas","Marca Lider","Ventas diarias","","VAR _t =
+    TOPN ( 1, FILTER ( VALUES ( Marca[CODIGO_INTERNO_MARCA] ), [Importe Sell Out] > 0 ),
+        [Importe Sell Out], DESC, Marca[CODIGO_INTERNO_MARCA], ASC )
+RETURN MAXX ( _t, Marca[CODIGO_INTERNO_MARCA] )"
+"Medidas","Venta Marca Lider","Ventas diarias","""#,0""","VAR _m = [Marca Lider]
+RETURN CALCULATE ( [Importe Sell Out], Marca[CODIGO_INTERNO_MARCA] = _m )"
+"Medidas","% Marca Lider","Ventas diarias","""0.0%""","DIVIDE ( [Venta Marca Lider], [Importe Sell Out] )"
+"Medidas","Proveedor Lider","Ventas diarias","","VAR _t =
+    TOPN ( 1, FILTER ( VALUES ( Proveedor[CODIGO_INTERNO_PROVEEDOR] ), [Importe Sell Out] > 0 ),
+        [Importe Sell Out], DESC, Proveedor[CODIGO_INTERNO_PROVEEDOR], ASC )
+RETURN MAXX ( _t, Proveedor[CODIGO_INTERNO_PROVEEDOR] )"
+"Medidas","Venta Proveedor Lider","Ventas diarias","""#,0""","VAR _m = [Proveedor Lider]
+RETURN CALCULATE ( [Importe Sell Out], Proveedor[CODIGO_INTERNO_PROVEEDOR] = _m )"
+"Medidas","% Proveedor Lider","Ventas diarias","""0.0%""","DIVIDE ( [Venta Proveedor Lider], [Importe Sell Out] )"
+"Medidas","Vendedor Lider","Ventas diarias","","VAR _t =
+    TOPN ( 1, FILTER ( VALUES ( Vendedor[COD_VENDEDOR] ), [Importe Sell Out] > 0 ),
+        [Importe Sell Out], DESC, Vendedor[COD_VENDEDOR], ASC )
+RETURN MAXX ( _t, Vendedor[COD_VENDEDOR] )"
+"Medidas","Venta Vendedor Lider","Ventas diarias","""#,0""","VAR _m = [Vendedor Lider]
+RETURN CALCULATE ( [Importe Sell Out], Vendedor[COD_VENDEDOR] = _m )"
+"Medidas","% Vendedor Lider","Ventas diarias","""0.0%""","DIVIDE ( [Venta Vendedor Lider], [Importe Sell Out] )"
+"Medidas","% Part Marca","Ventas diarias","""0.0%""","DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], ALLSELECTED ( Marca ) ) )"
+"Medidas","% Part Proveedor","Ventas diarias","""0.0%""","DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], ALLSELECTED ( Proveedor ) ) )"
+"Medidas","% Part Vendedor","Ventas diarias","""0.0%""","DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], ALLSELECTED ( Vendedor ) ) )"
+"Medidas","% Part Tienda","Ventas diarias","""0.0%""","DIVIDE ( [Importe Sell Out], CALCULATE ( [Importe Sell Out], ALLSELECTED ( Almacen ) ) )"
+"Medidas","Texto % Marca Lider","Ventas diarias","","FORMAT ( [% Marca Lider], ""0.0%"", ""es-ES"" ) & "" de la venta del periodo"""
+"Medidas","Texto % Proveedor Lider","Ventas diarias","","FORMAT ( [% Proveedor Lider], ""0.0%"", ""es-ES"" ) & "" de la venta del periodo"""
+"Medidas","Texto % Vendedor Lider","Ventas diarias","","FORMAT ( [% Vendedor Lider], ""0.0%"", ""es-ES"" ) & "" de la venta del periodo"""
