@@ -9,7 +9,7 @@
 | Datos limpios | `03_powerbi/retail_bi_powerbi.xlsx` (repo público `mgabrielafiguera-pixel/proyecto-bi-retail`, rama `main`) |
 | URL que lee Power BI | `https://raw.githubusercontent.com/mgabrielafiguera-pixel/proyecto-bi-retail/main/03_powerbi/retail_bi_powerbi.xlsx` |
 | Documentación del modelo | `03_powerbi/MODELO.md` |
-| Prompts usados en Power BI | `03_powerbi/prompts/` |
+| Medidas DAX por página | `03_powerbi/MODELO.md`, sección 4 |
 | Scripts de inventario | `scripts/anonimizar_inventario.py` (se corre en local) y `scripts/reconstruir_inventario.py` |
 | Modelo semántico | **Retail BI v2**, en "Mi área de trabajo" |
 | Informe | **Sell In Sell Out v2**, en "Mi área de trabajo" (página 1 terminada) |
@@ -42,10 +42,11 @@ Cada página replica una hoja del Excel de trabajo original.
 | # | Página | Estado |
 |---|---|---|
 | 1 | **Resumen anual** | ✅ Terminada |
-| 2 | **Ventas** | ✅ Terminada (`prompts/01_ventas_compras.md`) |
+| 2 | **Ventas** | ✅ Terminada (medidas en `MODELO.md`, sección 4) |
 | 3 | **Compras** | ✅ Terminada, falta excluir 6 compras con error de captura en Power Query |
-| 4 | **Inventario** | ✅ Terminada (`prompts/02_inventario.md`). Controles: stock jun-25 11.715, dic-25 14.063, abr-26 15.452; rotación 2025 1,41x. Punto de reorden por marca (`prompts/03_punto_reorden.md`): 2026 ROP 3.615 uds., 7 de 88 marcas a reponer, 38 en sobrestock, compra sugerida 308 uds. |
-| 5 | **Budget / Forecast** | Prompt listo (`prompts/04_budget_forecast.md`). Boceto `04_presentacion/budget_forecast_propuesta.png` |
+| 4 | **Inventario** | ✅ Terminada (medidas en `MODELO.md`, sección 4). Controles: stock jun-25 11.715, dic-25 14.063, abr-26 15.452; rotación 2025 1,41x. Punto de reorden por marca (medidas en `MODELO.md`, sección 4): 2026 ROP 3.615 uds., 7 de 88 marcas a reponer, 38 en sobrestock, compra sugerida 308 uds. |
+| 5 | **Budget / Forecast** | ✅ Terminada (medidas en `MODELO.md`, sección 4). Faltan dos ajustes de formato: negrita en Rolling y fondo de la estacionalidad de compras |
+| 6 | **Ventas diarias** | ✅ Terminada el 18-oct-2026 (medidas en `MODELO.md`, sección 4). Controles: abr-2024 742.138; Almacén 7 abr-2024 6.381; abr-2025 914.584 (+23,2 %); abr-2026 1.340.387, 1.129 uds., ticket 1.753; top 5 proveedores 50,4 % y vendedores 67,7 % de la venta |
 
 Ventas y Compras tienen segmentaciones en cascada **Proveedor → Marca → Departamento** con la medida `Filtro Cascada` (ver `MODELO.md`). Resumen anual se deja como vista global, sin cascada.
 
@@ -80,13 +81,13 @@ Las 6 compras con error de captura siguen en el Excel y se excluyen en Power Que
 
 - Power BI: páginas Resumen anual, Ventas, Compras e Inventario (con punto de reorden) terminadas y guardadas.
 - README reescrito como caso de negocio, con los hallazgos validados.
-- **Siguiente sesión:** correr `prompts/04_budget_forecast.md` en Claude in Chrome y validar sus controles. Después, capturas y PDF del informe antes del 5-dic.
+- **Siguiente sesión:** aplicar los dos ajustes de formato de Budget / Forecast. Después, capturas y PDF del informe antes del 5-dic.
 
 ## Auditoría (17-oct-2026)
 
 Auditoría completa en `docs/auditoria.md`. Nuevos: controles de calidad (`scripts/validar_modelo.py`), recálculo de las cifras del README (`scripts/hallazgos.py`), backtest del forecast (`scripts/backtest_forecast.py`), pruebas (`tests/`) y documentación en `docs/`.
 
-Pendiente en Power BI: `prompts/05_correcciones_auditoria.md` (probar el filtro de proveedor en Inventario y el corte de las comparaciones con el año anterior). Decisión: las direcciones de los almacenes se mantienen para el mapa de ventas por almacén.
+Pendiente en Power BI: probar el filtro de proveedor en Inventario y el corte de las comparaciones con el año anterior (ver `docs/auditoria_dax.md`, D1 y D2). Decisión: las direcciones de los almacenes se mantienen para el mapa de ventas por almacén.
 
 ## Próximo paso
 

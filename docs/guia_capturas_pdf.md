@@ -9,7 +9,7 @@ presentan como tales.
 ## Antes de capturar
 
 1. Actualiza el modelo semántico (Retail BI v2 → Actualizar ahora) y espera a que termine sin errores.
-2. Si ya aplicaste las correcciones de `03_powerbi/prompts/05_correcciones_auditoria.md`, comprueba sus controles.
+2. Si ya aplicaste las correcciones D1 y D2 de `docs/auditoria_dax.md`, comprueba sus controles.
 3. Pon las segmentaciones así en todas las páginas: **Año 2026**, Origen, Proveedor, Marca y Departamento en
    **"Todas"**, Tipo de costo **Ex-Work**, Proyección **1,20**.
 4. Guarda el informe con esos filtros (Archivo → Guardar). Así quien abra el PDF ve lo mismo que las capturas.
