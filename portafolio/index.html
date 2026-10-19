@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>María Gabriela Figuera · Portafolio de datos</title>
+<meta name="description" content="Analista de datos y BI con experiencia en operaciones de retail: logística, inventarios, compras, ventas y costos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<div class="oscuro">
+  <div class="envoltura">
+    <header class="cabecera">
+      <a class="marca" href="index.html">María Gabriela Figuera<small>Data &amp; Ops · datos que generan valor</small></a>
+      <nav class="menu">
+        <a href="#proyectos">Proyectos</a>
+        <a href="#experiencia">Experiencia</a>
+        <a href="#habilidades">Habilidades</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-texto">
+        <div class="etiqueta mono">ANALISTA DE DATOS · BI · OPERACIONES</div>
+        <h1>Más de 18 años en operaciones de retail. Ahora los convierto en <span class="acento">decisiones con datos.</span></h1>
+        <p class="entrada">Logística, inventarios, compras, ventas y control de costos, con Power BI, Python y Machine Learning.</p>
+        <div class="botones">
+          <a class="boton lleno" href="#proyectos">Ver proyectos</a>
+          <a class="boton borde" href="proyecto-01.html">Caso destacado</a>
+        </div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="panel-titulo">Proyecto 01 · Sell In / Sell Out <span class="chip">Cifras reales del proyecto</span></div>
+        <div class="kpis">
+          <div class="kpi"><span>Controles de datos</span><strong class="mono">68</strong><em>0 con error</em></div>
+          <div class="kpi"><span>Cifras del informe</span><strong class="mono">52/52</strong><em>recalculadas y cuadran</em></div>
+          <div class="kpi"><span>Modelo</span><strong class="mono">3 + 8</strong><em>hechos y dimensiones</em></div>
+        </div>
+        <div class="barras">
+          <strong>Error del pronóstico de ventas (WAPE, unidades; menos es mejor)</strong>
+          <div class="barra mejor"><span>Método del informe</span><i style="width: 54%"></i><span class="mono">15,9 %</span></div>
+          <div class="barra"><span>Año anterior</span><i style="width: 77%"></i><span class="mono">22,7 %</span></div>
+          <div class="barra"><span>Promedio plano</span><i style="width: 100%"></i><span class="mono">29,3 %</span></div>
+        </div>
+        <img class="captura" src="img/11_ventas_diarias_abr2026.png" alt="Página Ventas diarias del informe de Power BI, abril 2026, con códigos anonimizados" loading="lazy">
+      </div>
+    </section>
+  </div>
+</div>
+
+<main class="envoltura">
+  <section id="experiencia">
+    <h2>Áreas de experiencia</h2>
+    <p class="sub">Donde aprendí el negocio antes de analizarlo.</p>
+    <div class="rejilla">
+      <div class="caja"><div class="numero mono">01</div><h3>Logística y distribución</h3><p>Recepción, despacho y movimiento entre tiendas.</p></div>
+      <div class="caja"><div class="numero mono">02</div><h3>Inventario y almacén</h3><p>Conteos, quiebres de stock y reposición.</p></div>
+      <div class="caja"><div class="numero mono">03</div><h3>Compras y proveedores</h3><p>Importaciones, costo puesto y lead time.</p></div>
+      <div class="caja"><div class="numero mono">04</div><h3>Ventas y gestión comercial</h3><p>Sell out por marca, tienda y vendedor.</p></div>
+      <div class="caja"><div class="numero mono">05</div><h3>Finanzas y costos</h3><p>Márgenes, conciliaciones y auditoría.</p></div>
+    </div>
+  </section>
+
+  <section id="proyectos">
+    <h2>Proyectos</h2>
+    <p class="sub">Cada proyecto tiene su propia página con la pregunta de negocio, el método, los resultados y los límites.</p>
+    <div class="filtros" role="group" aria-label="Filtrar proyectos">
+      <button type="button" aria-pressed="true" data-filtro="todos">Todos</button>
+      <button type="button" aria-pressed="false" data-filtro="bi">BI</button>
+      <button type="button" aria-pressed="false" data-filtro="datos">Ingeniería de datos</button>
+      <button type="button" aria-pressed="false" data-filtro="apps">Apps e IA</button>
+    </div>
+    <div class="proyectos">
+      <article class="proyecto" data-area="bi">
+        <img class="imagen" src="img/07_inventario_2026.png" alt="Página Inventario del informe de Power BI" loading="lazy">
+        <div class="cuerpo">
+          <div class="meta"><span class="mono">01 · BI</span><span class="estado listo">Publicado</span></div>
+          <h3>Sell In / Sell Out en retail de lujo</h3>
+          <p>Modelo estrella en Power BI con ventas, compras e inventario anonimizados. Inventario reconstruido, punto de reorden por marca y pronóstico probado contra la realidad.</p>
+          <div class="mono" style="font-size: 12px; color: var(--texto-2)">Python · Power BI · DAX · Power Query</div>
+          <a class="ver" href="proyecto-01.html">Ver el caso completo</a>
+        </div>
+      </article>
+      <article class="proyecto pronto" data-area="datos">
+        <div class="imagen">Próximamente</div>
+        <div class="cuerpo">
+          <div class="meta"><span class="mono">02 · Ingeniería de datos</span><span class="estado">En construcción</span></div>
+          <h3>De un respaldo SQL a un modelo analítico</h3>
+          <p>Restaurar la base de datos de una tienda de electrodomésticos y llevarla a un modelo estrella. ¿Qué productos, tiendas y meses dejan el margen?</p>
+          <div class="mono" style="font-size: 12px; color: var(--texto-2)">SQL Server · Docker · Python · Pandas</div>
+        </div>
+      </article>
+      <article class="proyecto pronto" data-area="apps">
+        <div class="imagen">Próximamente</div>
+        <div class="cuerpo">
+          <div class="meta"><span class="mono">03 · Apps</span><span class="estado">Próximamente</span></div>
+          <h3>Conciliación de inventario: sistema contra toma física</h3>
+          <p>Una app que compara el stock del sistema con el conteo físico y devuelve las diferencias valoradas y un plan de conteo cíclico.</p>
+          <div class="mono" style="font-size: 12px; color: var(--texto-2)">Python · Pandas · Streamlit</div>
+        </div>
+      </article>
+      <article class="proyecto pronto" data-area="apps">
+        <div class="imagen">Próximamente</div>
+        <div class="cuerpo">
+          <div class="meta"><span class="mono">04 · Apps e IA</span><span class="estado">Próximamente</span></div>
+          <h3>Costeo de joyería con el precio del oro</h3>
+          <p>Costo y precio sugerido de cada pieza con el precio del oro del día, desde el teléfono.</p>
+          <div class="mono" style="font-size: 12px; color: var(--texto-2)">Python · API pública · Streamlit</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="habilidades">
+    <h2>Habilidades técnicas</h2>
+    <p class="sub">Lo que uso en los proyectos de esta página.</p>
+    <div class="rejilla">
+      <div class="caja"><h3>BI y análisis</h3><p>Power BI · DAX · Power Query · SQL · Excel avanzado</p></div>
+      <div class="caja"><h3>Data Science y ML</h3><p>Python · Pandas · NumPy · Scikit-learn · PyTorch · Streamlit</p></div>
+      <div class="caja"><h3>Gestión de datos</h3><p>ETL · calidad de datos · anonimización · catálogos de productos</p></div>
+      <div class="caja"><h3>ERP y WMS</h3><p>Experiencia con ERP y sistemas de almacén en retail</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Formación</h2>
+    <div class="rejilla">
+      <div class="caja"><h3>Data Science &amp; Machine Learning</h3><p>4Geeks Academy · 320 horas</p></div>
+      <div class="caja"><h3>T.S.U. en Contaduría Pública</h3><p>Instituto Universitario de Gerencia y Tecnología (IUGT)</p></div>
+    </div>
+  </section>
+</main>
+
+<footer id="contacto" class="oscuro">
+  <div class="envoltura pie">
+    <div>
+      <div style="font-size: 26px; font-weight: 800">Hablemos de tus datos.</div>
+      <div style="color: var(--claro-2); margin-top: 6px">Abierta a roles de análisis de datos, BI y operaciones, y a proyectos freelance.</div>
+    </div>
+    <div class="enlaces">
+      <a href="mailto:m.gabrielafiguera@gmail.com">m.gabrielafiguera@gmail.com</a>
+      <a href="https://www.linkedin.com/in/mar%C3%ADa-gabriela-figuera-m-843830a5">LinkedIn</a>
+      <a href="https://github.com/mgabrielafiguera-pixel">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const botones = document.querySelectorAll('.filtros button');
+  botones.forEach((b) => b.addEventListener('click', () => {
+    botones.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+    document.querySelectorAll('.proyecto').forEach((p) => {
+      p.hidden = b.dataset.filtro !== 'todos' && p.dataset.area !== b.dataset.filtro;
+    });
+  }));
+</script>
+</body>
+</html>
