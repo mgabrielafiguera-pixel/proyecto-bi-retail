@@ -1,5 +1,10 @@
 # Registro de cambios
 
+## 19-oct-2026 · Proyecto 06: Clientes y vendedores en Looker Studio
+
+- `portafolio/index.html`: tarjeta del proyecto 06 con enlace al tablero público (solo lectura).
+- `portafolio/img/`: capturas de las dos páginas del tablero.
+
 ## 19-oct-2026 · Capturas tras la corrección D2
 
 - `04_presentacion/capturas/`: `01`, `05` y `06` repetidas con el corte corregido, con los departamentos difuminados.
