@@ -8,4 +8,4 @@ Sitio estático del portafolio (HTML y CSS, sin dependencias). Abre `index.html`
 - `video/`: recorrido del informe (59 s, sin audio).
 
 Se publicará en GitHub Pages cuando el repo pase a público. Cada proyecto nuevo agrega su página y su tarjeta en el inicio.
-Pendiente: correo y LinkedIn en el contacto, y el botón del PDF del informe.
+Pendiente: el botón del PDF del informe.
