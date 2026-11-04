@@ -95,7 +95,7 @@ h2 { margin: 0 0 8px; font-size: 28px; font-weight: 800; }
 .galeria figcaption strong { color: var(--texto); }
 .video { background: var(--navy); border-radius: 12px; overflow: hidden; }
 .hallazgo { display: flex; gap: 16px; align-items: start; }
-.hallazgo .cifra { font-size: 24px; font-weight: 600; color: var(--turq-osc); min-width: 88px; }
+.hallazgo .cifra { font-size: 24px; font-weight: 600; color: var(--turq-osc); min-width: 88px; white-space: nowrap; }
 .tabla { width: 100%; border-collapse: collapse; font-size: 14px; }
 .tabla th, .tabla td { padding: 8px; border-bottom: 1px solid var(--borde); text-align: right; }
 .tabla th:first-child, .tabla td:first-child { text-align: left; }

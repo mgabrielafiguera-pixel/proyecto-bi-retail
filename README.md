@@ -232,7 +232,9 @@ python3 -m pytest tests                # 12 pruebas, incluido el backtest del in
 `scripts/reconstruir_inventario.py` reescribe la tabla Inventario del Excel que lee Power BI. Para probarlo sin tocarlo:
 `python3 scripts/reconstruir_inventario.py --xlsx /ruta/a/una/copia.xlsx`.
 
-El informe se construyó en Power BI Service. Todas sus medidas DAX y el paso de Power Query están en `03_powerbi/MODELO.md`.
+El informe se construyó en Power BI Service. Las medidas DAX y el paso de Power Query hasta la página Ventas diarias
+están en `03_powerbi/MODELO.md`. Las medidas añadidas en noviembre de 2026 (conclusión de Ventas diarias, resultado por
+tienda y Tendencia y estacionalidad) están en el modelo semántico y todavía no se exportaron a ese archivo.
 
 ## 15. Capturas del informe
 
@@ -250,6 +252,12 @@ completa está en [`04_presentacion/capturas/`](04_presentacion/capturas/).
 
 **Ventas diarias, abril 2026**
 ![Ventas diarias abril 2026](04_presentacion/capturas/11_ventas_diarias_abr2026.png)
+
+**Tendencia y estacionalidad (todas las tiendas)**
+![Tendencia y estacionalidad](portafolio/img/16_tendencia_estacionalidad.png)
+
+Ventas diarias (con conclusión y resultado por tienda) y Tendencia y estacionalidad se explican en el
+[proyecto 07 del portafolio](portafolio/proyecto-07.html).
 
 Las capturas de Resumen anual y Compras se repitieron el 19-oct-2026, después de corregir el corte de las comparaciones
 (D2 en `docs/auditoria_dax.md`): la variación de Sell In 2026 es +346,3 % a costo Ex-Work y +396,1 % a costo puesto.
