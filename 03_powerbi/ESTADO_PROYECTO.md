@@ -83,6 +83,15 @@ Las 6 compras con error de captura siguen en el Excel y se excluyen en Power Que
 - README reescrito como caso de negocio, con los hallazgos validados.
 - **Siguiente sesión:** aplicar los dos ajustes de formato de Budget / Forecast. Después, capturas y PDF del informe antes del 5-dic.
 
+## Ventas diarias y Tendencia y estacionalidad (3-nov-2026)
+
+- Ventas diarias: frase de conclusión automática (variación, presupuesto y riesgo por vendedor; VEND0002 aparece como "vendedor web"), cuadro de resultado de la tienda con gasto operativo estimado, ventas por tienda y participación por vendedor.
+- Página **Tendencia y estacionalidad**: 5 tarjetas, conclusión, promedio móvil de 3 meses, índice por mes, índice por día de la semana y matriz por tienda. 18 medidas en la carpeta Estacionalidad del modelo.
+- Respaldo del informe antes de rehacer la página: **Sell In Sell Out v2 respaldo 2026-11-03**.
+- Lección: en el Service, los cambios de diseño en modo Editar solo quedan con Archivo > Guardar; al salir, elegir "Guardar". Las medidas del modelo se guardan solas.
+- Pendiente menor: el título de la página dice "Estacionalidad", el subtítulo de la matriz dice "Solo tiendas con 12 meses" y "Meses de historia" muestra 0 en tiendas nuevas.
+- Pendiente: exportar las medidas nuevas a `MODELO.md`.
+
 ## Auditoría (17-oct-2026)
 
 Auditoría completa en `docs/auditoria.md`. Nuevos: controles de calidad (`scripts/validar_modelo.py`), recálculo de las cifras del README (`scripts/hallazgos.py`), backtest del forecast (`scripts/backtest_forecast.py`), pruebas (`tests/`) y documentación en `docs/`.

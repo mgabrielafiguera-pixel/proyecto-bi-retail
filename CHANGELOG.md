@@ -1,5 +1,13 @@
 # Registro de cambios
 
+## 04-nov-2026 · Enlaces al proyecto 07 y estado del informe
+
+- `portafolio/index.html`: botón "Nuevo: resultado por tienda" en la portada.
+- `portafolio/proyecto-01.html`: enlace al proyecto 07 bajo las capturas de Ventas diarias.
+- `portafolio/estilos.css`: las cifras de los hallazgos no se parten en dos líneas.
+- `README.md`: captura de Tendencia y estacionalidad, enlace al proyecto 07 y aviso de que las medidas nuevas aún no están en `MODELO.md`.
+- `03_powerbi/ESTADO_PROYECTO.md`: páginas nuevas, respaldo del informe y pendientes.
+
 ## 04-nov-2026 · Proyecto 07: resultado por tienda, tendencia y estacionalidad
 
 - `portafolio/proyecto-07.html`: página nueva con el problema, el video de presentación, 5 capturas, hallazgos y límites.
