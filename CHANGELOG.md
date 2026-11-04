@@ -1,5 +1,12 @@
 # Registro de cambios
 
+## 04-nov-2026 · Proyecto 07: resultado por tienda, tendencia y estacionalidad
+
+- `portafolio/proyecto-07.html`: página nueva con el problema, el video de presentación, 5 capturas, hallazgos y límites.
+- `portafolio/index.html`: tarjeta del proyecto 07.
+- `portafolio/img/`: capturas 13 a 17 de Ventas diarias y de Tendencia y estacionalidad (abril 2026, solo códigos anonimizados).
+- `portafolio/video/`: `resultados_tiendas.mp4` (70 s, sin audio) y su portada.
+
 ## 19-oct-2026 · Proyecto 06: Clientes y vendedores en Looker Studio
 
 - `portafolio/index.html`: tarjeta del proyecto 06 con enlace al tablero público (solo lectura).
