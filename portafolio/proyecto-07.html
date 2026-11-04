@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proyecto 07 · Resultado por tienda y estacionalidad · María Gabriela Figuera</title>
+<meta name="description" content="Ampliación del informe de Power BI: resultado estimado por tienda, conclusión automática y página de tendencia y estacionalidad, con datos anonimizados.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<div class="oscuro">
+  <div class="envoltura">
+    <header class="cabecera">
+      <a class="marca" href="index.html">María Gabriela Figuera</a>
+      <a href="index.html#proyectos" style="color: var(--turq); font-size: 14px; font-weight: 600">Volver a proyectos</a>
+    </header>
+    <section class="hero" style="flex-direction: column; align-items: start; gap: 18px; padding-top: 32px">
+      <div class="etiqueta mono">PROYECTO 07 · BI · AMPLIACIÓN DEL PROYECTO 01</div>
+      <h1 style="max-width: 860px">¿Qué tiendas aportan y cuándo conviene comprar?</h1>
+      <p class="entrada">Dos páginas nuevas en el informe de Power BI del proyecto 01: Ventas diarias con el resultado de cada tienda después de gastos, y Tendencia y estacionalidad. Los datos están anonimizados: tiendas, marcas y vendedores aparecen con códigos, y los importes están escalados.</p>
+      <div class="chips mono"><span>Power BI</span><span>DAX</span><span>Narrativa dinámica</span><span>Series de tiempo</span></div>
+      <div class="botones">
+        <a class="boton lleno" href="https://github.com/mgabrielafiguera-pixel/proyecto-bi-retail">Ver el código en GitHub</a>
+        <a class="boton borde" href="proyecto-01.html">Ver el proyecto 01</a>
+      </div>
+    </section>
+  </div>
+</div>
+
+<main class="envoltura">
+  <section>
+    <div class="rejilla" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))">
+      <div class="caja"><h3 style="color: var(--turq-osc); font-size: 13px">EL PROBLEMA</h3><p>Ver solo la venta engaña: una tienda puede parecer en caída porque cambió dónde se factura, y otra puede verse pequeña solo porque acaba de abrir. Un comentario en LinkedIn también señaló que el tablero no hablaba de tendencias.</p></div>
+      <div class="caja"><h3 style="color: var(--turq-osc); font-size: 13px">LO QUE HICE</h3><p>Una frase de conclusión en DAX que se reescribe con cada filtro, el resultado de cada tienda después de un gasto estimado, y una página que separa la tendencia (promedio móvil) de la estacionalidad (índices por mes y por día).</p></div>
+      <div class="caja"><h3 style="color: var(--turq-osc); font-size: 13px">DECISIONES QUE PERMITE</h3><p>Comprar antes de los picos y liquidar en los meses flojos, reforzar personal en los días fuertes, facturar en la tienda donde se vende y dar tiempo a las tiendas nuevas antes de decidir sobre ellas.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Presentación de resultados</h2>
+    <p class="sub">70 segundos, sin audio, en formato de presentación a gerencia: el mes, el resultado por tienda, la tendencia y las decisiones.</p>
+    <div class="video" style="max-width: 440px">
+      <video controls preload="none" poster="video/portada_resultados.jpg" style="width: 100%">
+        <source src="video/resultados_tiendas.mp4" type="video/mp4">
+      </video>
+    </div>
+  </section>
+
+  <section>
+    <h2>Las páginas nuevas</h2>
+    <p class="sub">Capturas del informe publicado en Power BI Service. Toca una para verla en grande.</p>
+    <div class="galeria">
+      <figure><img src="img/13_ventas_diarias_resultado_tienda.png" alt="Página Ventas diarias de abril 2026 con conclusión, resultado de la tienda, ventas por tienda y participación por vendedor" loading="lazy"><figcaption><strong>Ventas diarias.</strong> La frase de arriba resume el mes y avisa del riesgo de depender de un vendedor.</figcaption></figure>
+      <figure><img src="img/14_ventas_diarias_lara.png" alt="Página Ventas diarias filtrada por una tienda nueva" loading="lazy"><figcaption><strong>Tienda nueva.</strong> Sin año anterior, la conclusión lo dice en vez de inventar una variación.</figcaption></figure>
+      <figure><img src="img/15_ventas_diarias_distrito_capital.png" alt="Página Ventas diarias filtrada por la tienda cuya facturación pasó a otro punto" loading="lazy"><figcaption><strong>Una caída que no es de la tienda.</strong> Su venta pasó a facturarse en otro punto en abril de 2026.</figcaption></figure>
+      <figure><img src="img/16_tendencia_estacionalidad.png" alt="Página Tendencia y estacionalidad con tarjetas, promedio móvil, índice por mes, índice por día y matriz por tienda" loading="lazy"><figcaption><strong>Tendencia y estacionalidad.</strong> El promedio móvil quita la temporada; los índices muestran cuándo se vende.</figcaption></figure>
+      <figure><img src="img/17_tendencia_estacionalidad_almacen7.png" alt="Página Tendencia y estacionalidad filtrada por Almacén 7" loading="lazy"><figcaption><strong>Filtro por tienda.</strong> Con Almacén 7, tarjetas, conclusión y gráficos se recalculan.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Hallazgos</h2>
+    <p class="sub">Leídos en el informe publicado. Los importes están escalados.</p>
+    <div class="rejilla" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))">
+      <div class="caja hallazgo"><div class="cifra mono">6 de 9</div><div><h3>La mayoría de las tiendas cubre su gasto</h3><p>De octubre de 2025 a abril de 2026, 6 tiendas cubren su gasto operativo estimado y 3 no. Dos de ellas son nuevas y necesitan maduración antes de decidir.</p></div></div>
+      <div class="caja hallazgo"><div class="cifra mono">+16,9 %</div><div><h3>El negocio crece</h3><p>La venta de los últimos 12 meses crece frente a los 12 anteriores, medida sin el efecto de la temporada.</p></div></div>
+      <div class="caja hallazgo"><div class="cifra mono">2,9×</div><div><h3>Diciembre manda</h3><p>Diciembre vende casi tres veces un mes normal y mayo supera el promedio. Enero es el mes más flojo.</p></div></div>
+      <div class="caja hallazgo"><div class="cifra mono">Mié–Sáb</div><div><h3>La semana se gana a mitad de semana</h3><p>De miércoles a sábado se vende sobre el promedio; el domingo, la mitad.</p></div></div>
+      <div class="caja hallazgo"><div class="cifra mono">45 %</div><div><h3>Dependencia de un canal</h3><p>En abril de 2026 el vendedor web genera el 45 % de la venta. El tablero lo marca cuando alguien supera el 30 %.</p></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Límites</h2>
+    <ul class="limites">
+      <li>El gasto operativo por tienda es una estimación con referencias públicas (local pequeño, 3 personas, servicios y depreciación), no un dato contable.</li>
+      <li>La facturación centralizada hace que unas tiendas parezcan vender mucho y otras nada; los márgenes muy altos de algunas tiendas nuevas sugieren costo faltante.</li>
+      <li>Solo dos tiendas tienen 12 meses de historia: la estacionalidad de las demás es preliminar.</li>
+      <li>2026 llega hasta junio y ese mes está incompleto.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="oscuro">
+  <div class="envoltura pie">
+    <a href="index.html#proyectos">Volver a proyectos</a>
+    <span style="color: var(--claro-2)">Datos anonimizados. No contiene información confidencial.</span>
+  </div>
+</footer>
+
+<dialog id="visor"><img alt=""></dialog>
+<script>
+  const visor = document.getElementById('visor');
+  document.querySelectorAll('.galeria img').forEach((img) => img.addEventListener('click', () => {
+    visor.querySelector('img').src = img.src;
+    visor.querySelector('img').alt = img.alt;
+    visor.showModal();
+  }));
+  visor.addEventListener('click', () => visor.close());
+</script>
+</body>
+</html>
