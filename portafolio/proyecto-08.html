@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proyecto 08 · Salud financiera de retail · María Gabriela Figuera</title>
+<meta name="description" content="Análisis del ciclo de caja y la salud financiera de Walmart, Target, Costco, Best Buy y Dollar General con datos públicos de la SEC y un dashboard Streamlit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<div class="oscuro">
+  <div class="envoltura">
+    <header class="cabecera">
+      <a class="marca" href="index.html">María Gabriela Figuera</a>
+      <a href="index.html#proyectos" style="color: var(--turq); font-size: 14px; font-weight: 600">Volver a proyectos</a>
+    </header>
+    <section class="hero" style="flex-direction: column; align-items: start; gap: 18px; padding-top: 32px">
+      <div class="etiqueta mono">PROYECTO 08 · ANÁLISIS FINANCIERO · DATOS PÚBLICOS</div>
+      <h1 style="max-width: 860px">¿Qué cadena de retail convierte mejor su inventario en caja?</h1>
+      <p class="entrada">Comparé los informes 10-K de Walmart, Target, Costco, Best Buy y Dollar General presentados ante la SEC entre 2019 y 2025. Extraje sus datos XBRL, calculé indicadores financieros con SQL y los llevé a un dashboard interactivo de ocho páginas.</p>
+      <div class="chips mono"><span>Python</span><span>SEC XBRL</span><span>DuckDB</span><span>SQL</span><span>Streamlit</span><span>Plotly</span></div>
+      <div class="botones">
+        <a class="boton lleno" href="https://github.com/mgabrielafiguera-pixel/salud-financiera-retail">Ver el código en GitHub</a>
+      </div>
+    </section>
+  </div>
+</div>
+
+<main class="envoltura">
+  <section>
+    <div class="rejilla" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))">
+      <div class="caja"><h3 style="color: var(--turq-osc); font-size: 13px">LA PREGUNTA</h3><p>Un ciclo de caja corto puede venir de vender inventario más rápido o de negociar más días con proveedores. ¿Qué estrategia explica la diferencia entre estas cadenas?</p></div>
+      <div class="caja"><h3 style="color: var(--turq-osc); font-size: 13px">LO QUE CONSTRUÍ</h3><p>Un proceso reproducible que extrae cifras de SEC Companyfacts, conserva la etiqueta XBRL usada, normaliza los estados financieros y calcula ratios en DuckDB.</p></div>
+      <div class="caja"><h3 style="color: var(--turq-osc); font-size: 13px">EL DASHBOARD</h3><p>Ocho páginas para explorar resumen ejecutivo, ingresos y gastos, cuentas por cobrar y pagar, flujo de efectivo, estado de resultados, balance general y ciclo de caja comparativo.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Hallazgo principal</h2>
+    <p class="sub">En 2025 Target tuvo el ciclo de caja más corto: −1,5 días. No fue quien más rápido vendió el inventario; su ventaja estuvo en pagar a proveedores después.</p>
+    <div class="caja" style="overflow-x: auto">
+      <table class="tabla">
+        <thead><tr><th>Cadena</th><th>Ciclo 2019</th><th>Ciclo 2025</th><th>Días inventario 2025</th><th>Días pago 2025</th></tr></thead>
+        <tbody>
+          <tr class="mejor"><td>Target</td><td>−6,2</td><td>−1,5</td><td>59,5</td><td>61,0</td></tr>
+          <tr><td>Costco</td><td>2,9</td><td>1,7</td><td>27,6</td><td>30,1</td></tr>
+          <tr><td>Walmart</td><td>2,0</td><td>2,8</td><td>40,1</td><td>43,0</td></tr>
+          <tr><td>Best Buy</td><td>8,4</td><td>14,6</td><td>59,1</td><td>53,6</td></tr>
+          <tr><td>Dollar General</td><td>34,4</td><td>28,1</td><td>78,0</td><td>49,9</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 12px; color: var(--texto-2); margin: 12px 0 0">Días calculados con saldos al cierre; los resultados son indicadores del análisis, no asesoría de inversión.</p>
+    </div>
+    <div class="rejilla" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-top: 16px">
+      <div class="caja hallazgo"><div class="cifra mono">−1,5 d</div><div><h3>Target: proveedores financian el ciclo</h3><p>Su inventario tarda 59,5 días en venderse y paga a proveedores a 61 días; el ciclo de caja resulta negativo.</p></div></div>
+      <div class="caja hallazgo"><div class="cifra mono">27,6 d</div><div><h3>Costco: rotación de inventario</h3><p>Su ciclo corto se explica por la velocidad: vende el inventario en menos de 28 días, con una rotación aproximada de 13 veces al año.</p></div></div>
+      <div class="caja hallazgo"><div class="cifra mono">46,1 d</div><div><h3>Dollar General: pico en 2023</h3><p>Su ciclo llegó a 46,1 días y sus días de inventario rondaron 95 en 2022–2023. En 2025 el ciclo bajó a 28,1 días.</p></div></div>
+      <div class="caja hallazgo"><div class="cifra mono">+6,2 d</div><div><h3>Best Buy: ciclo más largo</h3><p>Pasó de 8,4 días en 2019 a 14,6 en 2025, mientras los días de pago cayeron de 69,4 en 2020 a 53,6.</p></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>El dashboard</h2>
+    <p class="sub">Capturas de la aplicación interactiva. Las cifras de origen son públicas y provienen de los formularios 10-K de la SEC.</p>
+    <div class="galeria">
+      <figure><img src="img/22_salud_financiera_resumen_vista.png" data-full="img/18_salud_financiera_resumen.png" alt="Página de resumen ejecutivo con métricas de Best Buy 2025" loading="lazy"><figcaption><strong>Resumen ejecutivo.</strong> Ingresos, utilidad, márgenes, flujo de caja y alertas anuales. Toca para ampliar.</figcaption></figure>
+      <figure><img src="img/23_salud_financiera_ingresos_vista.png" data-full="img/19_salud_financiera_ingresos.png" alt="Página de ingresos y gastos de Best Buy 2025" loading="lazy"><figcaption><strong>Ingresos y gastos.</strong> Evolución de ventas, costos, márgenes y crecimiento. Toca para ampliar.</figcaption></figure>
+      <figure><img src="img/24_salud_financiera_balance_vista.png" data-full="img/20_salud_financiera_balance.png" alt="Página de balance general de Best Buy 2025" loading="lazy"><figcaption><strong>Balance general.</strong> Activos, pasivos, patrimonio y controles de consistencia. Toca para ampliar.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Herramientas y límites</h2>
+    <div class="rejilla" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))">
+      <div class="caja"><h3>Proceso</h3><p>Python descarga y normaliza XBRL; SQL con DuckDB construye estados por empresa y año fiscal y calcula márgenes, liquidez, endeudamiento, rotación y días del ciclo de caja.</p></div>
+      <div class="caja"><h3>Comparabilidad</h3><p>Las empresas cierran el año fiscal en meses distintos. Los ratios usan saldos de cierre, no promedios; Walmart y Costco incluyen cuotas de membresía en ingresos.</p></div>
+      <div class="caja"><h3>Datos ausentes</h3><p>Target y Dollar General no reportan cuentas por cobrar. Los días de cobro se consideran cero para este análisis, dado que venden casi todo al contado; los pasivos faltantes se derivan como activos menos patrimonio.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="oscuro">
+  <div class="envoltura pie">
+    <a href="index.html#proyectos">Volver a proyectos</a>
+    <span style="color: var(--claro-2)">Fuentes: informes públicos 10-K de la SEC. Indicadores con fines analíticos e informativos.</span>
+  </div>
+</footer>
+
+<dialog id="visor"><img alt=""></dialog>
+<script>
+  const visor = document.getElementById('visor');
+  document.querySelectorAll('.galeria img').forEach((img) => img.addEventListener('click', () => {
+    visor.querySelector('img').src = img.dataset.full || img.src;
+    visor.querySelector('img').alt = img.alt;
+    visor.showModal();
+  }));
+  visor.addEventListener('click', () => visor.close());
+</script>
+</body>
+</html>
