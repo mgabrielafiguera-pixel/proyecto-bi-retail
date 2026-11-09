@@ -6,6 +6,7 @@ Sitio estático del portafolio (HTML y CSS, sin dependencias). Abre `index.html`
 - `proyecto-01.html`: caso Sell In / Sell Out, con video, capturas, hallazgos y límites.
 - `proyecto-07.html`: resultado por tienda, tendencia y estacionalidad, con video de presentación (70 s).
 - `proyecto-08.html`: análisis de salud financiera de cinco cadenas de retail con datos públicos 10-K de la SEC, DuckDB y Streamlit.
+- `proyecto-08.html`: análisis de salud financiera de cinco cadenas de retail con datos públicos 10-K de la SEC, DuckDB y Streamlit.
 - `img/`: capturas del informe de Power BI, solo con códigos anonimizados.
 - `video/`: recorrido del informe (59 s) y presentación de resultados por tienda (70 s), ambos sin audio.
 
