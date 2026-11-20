@@ -1,5 +1,10 @@
 # Registro de cambios
 
+## 20-nov-2026 · Proyecto 10: Venezuela Oil Intelligence
+
+- `portafolio/index.html`: tarjeta del proyecto 10 con enlaces a la demo en Streamlit y al código.
+- `portafolio/img/`: captura 27, brecha de trazabilidad (producción frente a compras registradas, 2003–2025).
+
 ## 04-nov-2026 · Proyecto 07: resultado por tienda, tendencia y estacionalidad
 
 - `portafolio/proyecto-07.html`: página nueva con el problema, el video de presentación, 5 capturas, hallazgos y límites.
